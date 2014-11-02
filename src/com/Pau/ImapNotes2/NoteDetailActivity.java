@@ -25,7 +25,6 @@ public class NoteDetailActivity extends Activity{
 				this.hm.get("body").toString(),
 				this.hm.get("date").toString());
 
-
         String plainText = Html.fromHtml(this.currentNote.GetBody()).toString();
        ((EditText)findViewById(R.id.bodyView)).setText(plainText);
        this.ResetColors();

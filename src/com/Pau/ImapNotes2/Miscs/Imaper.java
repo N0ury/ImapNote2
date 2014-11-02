@@ -34,7 +34,10 @@ public class Imaper {
 		
 		notesList.clear();
 		for(int index=notesMessages.length-1; index>=0; index--){
-			OneNote aNote = new OneNote(notesMessages[index].getSubject(), ((String)notesMessages[index].getContent()), notesMessages[index].getReceivedDate().toLocaleString());
+			OneNote aNote = new OneNote(
+			notesMessages[index].getSubject(),
+			((String)notesMessages[index].getContent()),
+			notesMessages[index].getReceivedDate().toLocaleString());
 			notesList.add(aNote);
 		}
 		

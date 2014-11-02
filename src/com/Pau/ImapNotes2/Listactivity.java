@@ -34,51 +34,44 @@ public class Listactivity extends Activity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        this.noteList = new ArrayList<OneNote>();
-        ((ImapNotes2)this.getApplicationContext()).SetNotesList(this.noteList);
-        this.listToView = new SimpleAdapter(
-        		getApplicationContext(),
-                this.noteList,
-                R.layout.note_element,
-                new String[]{"title","date"},
-                new int[]{R.id.noteTitle, R.id.noteInformation});
-        ((ListView)findViewById(R.id.notesList)).setAdapter(this.listToView);
-        
-        this.settings = new ConfigurationFile(this.getApplicationContext());
-        ((ImapNotes2)this.getApplicationContext()).SetConfigurationFile(this.settings);
-        
-        this.imapFolder = new Imaper();
-        ((ImapNotes2)this.getApplicationContext()).SetImaper(this.imapFolder);
-        
-        this.storedNotes = new NotesDb(this.getApplicationContext());
-        
-        if (this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null){
-            startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
-        
-        } else {
-        	this.storedNotes.OpenDb();
-        	this.storedNotes.GetStoredNotes(this.noteList);
-        	this.listToView.notifyDataSetChanged();
-        	this.storedNotes.CloseDb();
-        }
-        
-        ((ListView)findViewById(R.id.notesList)).setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
-				Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
-				toDetail.putExtra("selectedNote", (OneNote)noteList.get(selectedNote));
-				startActivity(toDetail);
-			}
-          });
-                
-    }
-    
-    public void DeleteItem(View v){
-    	this.noteList.remove(this.noteList.size()-1);
-    	this.listToView.notifyDataSetChanged();
-    	
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.main);
+	
+	this.noteList = new ArrayList<OneNote>();
+	((ImapNotes2)this.getApplicationContext()).SetNotesList(this.noteList);
+	this.listToView = new SimpleAdapter(
+			getApplicationContext(),
+			this.noteList,
+			R.layout.note_element,
+			new String[]{"title","date"},
+			new int[]{R.id.noteTitle, R.id.noteInformation});
+	((ListView)findViewById(R.id.notesList)).setAdapter(this.listToView);
+	
+	this.settings = new ConfigurationFile(this.getApplicationContext());
+	((ImapNotes2)this.getApplicationContext()).SetConfigurationFile(this.settings);
+	
+	this.imapFolder = new Imaper();
+	((ImapNotes2)this.getApplicationContext()).SetImaper(this.imapFolder);
+	
+	this.storedNotes = new NotesDb(this.getApplicationContext());
+	
+	if (this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null){
+	    startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
+	
+	} else {
+		this.storedNotes.OpenDb();
+		this.storedNotes.GetStoredNotes(this.noteList);
+		this.listToView.notifyDataSetChanged();
+		this.storedNotes.CloseDb();
+	}
+	
+	((ListView)findViewById(R.id.notesList)).setOnItemClickListener(new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
+			Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
+			toDetail.putExtra("selectedNote", (OneNote)noteList.get(selectedNote));
+			startActivity(toDetail);
+		}
+	  });
     }
     
     public void RefreshList(){
@@ -101,7 +94,10 @@ public class Listactivity extends Activity {
 	
 			try {
 				if(!((Imaper)stuffs[0]).IsConnected())
-					((Imaper)stuffs[0]).ConnectToProvider(((ConfigurationFile)stuffs[1]).GetUsername(), ((ConfigurationFile)stuffs[1]).GetPassword(), ((ConfigurationFile)stuffs[1]).GetServer());
+					((Imaper)stuffs[0]).ConnectToProvider(
+						((ConfigurationFile)stuffs[1]).GetUsername(),
+						((ConfigurationFile)stuffs[1]).GetPassword(),
+						((ConfigurationFile)stuffs[1]).GetServer());
 				((Imaper)stuffs[0]).GetNotes(this.notesList);
 		    	return true;
 			} catch (Exception e) {
@@ -130,30 +126,30 @@ public class Listactivity extends Activity {
     
     /***************************************************/
     public boolean onCreateOptionsMenu(Menu menu){
-        menu.add(0, Listactivity.LOGIN_BUTTON, 0, "Account");
-        //.setIcon(R.drawable.ic_menu_barcode);
-        menu.add(0, Listactivity.REFRESH_BUTTON, 0, "Refresh");
-        
-        return true;
+	menu.add(0, Listactivity.LOGIN_BUTTON, 0, "Account");
+	//.setIcon(R.drawable.ic_menu_barcode);
+	menu.add(0, Listactivity.REFRESH_BUTTON, 0, "Refresh");
+	
+	return true;
 
     }
     
     public boolean onOptionsItemSelected (MenuItem item){
-        switch (item.getItemId()){
-        	case Listactivity.LOGIN_BUTTON:
-                startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
-                return true;
-        	case Listactivity.REFRESH_BUTTON:
-        		if(this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null)
-                    startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
-        		else
-        			this.RefreshList();
-        		return true;
-                    
-        }
-        
-        return false;
-        
+	switch (item.getItemId()){
+		case Listactivity.LOGIN_BUTTON:
+		startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
+		return true;
+		case Listactivity.REFRESH_BUTTON:
+			if(this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null)
+		    startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
+			else
+				this.RefreshList();
+			return true;
+		    
+	}
+	
+	return false;
+	
     }
     
     /***************************************************/
