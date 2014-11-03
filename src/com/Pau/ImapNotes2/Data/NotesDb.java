@@ -16,13 +16,15 @@ public class NotesDb {
 	private static final String TITLE_LABEL = "title";
 	private static final String BODY_LABEL = "body";
 	private static final String DATE_LABEL = "date";
+	private static final String NUMBER_LABEL = "number";
 	
 	private static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
             + NotesDb.NOTES_TABLE_NAME + " (" 
             + "pk integer primary key autoincrement, "
             + NotesDb.TITLE_LABEL + " text not null, "
             + NotesDb.BODY_LABEL + " text not null, "
-            + NotesDb.DATE_LABEL + " text not null);";
+            + NotesDb.DATE_LABEL + " text not null, "
+            + NotesDb.NUMBER_LABEL + " text not null);";
 	
 	private SQLiteDatabase notesDb;
 	private NotesDbHelper defaultHelper;
@@ -47,6 +49,7 @@ public class NotesDb {
         tableRow.put(NotesDb.TITLE_LABEL, noteElement.GetTitle());
         tableRow.put(NotesDb.BODY_LABEL, noteElement.GetBody());
         tableRow.put(NotesDb.DATE_LABEL, noteElement.GetDate());
+        tableRow.put(NotesDb.NUMBER_LABEL, noteElement.GetNumber());
         this.notesDb.insert(NotesDb.NOTES_TABLE_NAME, null, tableRow);
     
     }
@@ -59,10 +62,12 @@ public class NotesDb {
         	int titleIndex = resultPointer.getColumnIndex(NotesDb.TITLE_LABEL);
         	int bodyIndex = resultPointer.getColumnIndex(NotesDb.BODY_LABEL);
         	int dateIndex = resultPointer.getColumnIndex(NotesDb.DATE_LABEL);
+        	int numberIndex = resultPointer.getColumnIndex(NotesDb.NUMBER_LABEL);
             do {
             	noteList.add(new OneNote(resultPointer.getString(titleIndex),
             							 resultPointer.getString(bodyIndex),
-            							 resultPointer.getString(dateIndex)));
+            							 resultPointer.getString(dateIndex),
+            							 resultPointer.getString(numberIndex)));
                 } while (resultPointer.moveToNext());
         }
     

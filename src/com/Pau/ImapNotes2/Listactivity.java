@@ -23,6 +23,8 @@ import android.widget.ListView;
 public class Listactivity extends Activity {
 	private static final int LOGIN_BUTTON = 0;
 	private static final int REFRESH_BUTTON = 1;
+	private static final int SEE_DETAIL = 2;
+	private static final int DELETE_BUTTON = 3;
 		
 	private ArrayList<OneNote> noteList;
 	private SimpleAdapter listToView;
@@ -30,6 +32,7 @@ public class Listactivity extends Activity {
 	private ConfigurationFile settings;
 	private Imaper imapFolder;
 	private NotesDb storedNotes;
+	private static final String TAG = "IN_Listactivity";
 	
 	/** Called when the activity is first created. */
     @Override
@@ -69,11 +72,11 @@ public class Listactivity extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
 			Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
 			toDetail.putExtra("selectedNote", (OneNote)noteList.get(selectedNote));
-			startActivity(toDetail);
+			startActivityForResult(toDetail,SEE_DETAIL); 
 		}
 	  });
     }
-    
+
     public void RefreshList(){
 		ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2" , "Refreshing notes list... ", true);
 
@@ -154,16 +157,26 @@ public class Listactivity extends Activity {
     
     /***************************************************/
     protected void onActivityResult(int requestCode, int resultCode, Intent data){ 
-    	switch(requestCode){
+    	switch(requestCode) {
     		case Listactivity.LOGIN_BUTTON:
     			if(resultCode==AccontConfigurationActivity.TO_REFRESH)
     				this.RefreshList();
-    			
+    		case Listactivity.SEE_DETAIL:
+			// Returning from NoteDetailActivity
+			if (resultCode == this.DELETE_BUTTON) {
+				// Delete Message asked for
+				// String res will contain the Message Number to delete
+				String res = data.getStringExtra("DELETE_ITEM");
+				Log.d(TAG,"Received request to delete message #"+res);
+				Integer resi = new Integer(res);
+				try {
+					this.imapFolder.DeleteNote(resi);
+					this.RefreshList();
+				} catch (Exception ex) {
+					this.RefreshList();
+					Log.d(TAG,"Exception rencontrée: " + ex.getMessage());
+				}
+			}
     	}
-    	
     }
-    
-    
 }
-
-

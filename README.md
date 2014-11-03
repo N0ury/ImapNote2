@@ -17,7 +17,8 @@ Main changes are:
 - app can be used with other servers, not only gmail
 - it's possible to open notes
 - number of permissions asked by the app is reduced to minimum
-- it works in landscape and portrait modes. Landscape is useful with some devices.
+- it works in landscape and portrait modes. Landscape is useful with some devices
+- it's possible to delete notes (menu option on detail screen)
 
 It is still possible to sync one way from server to device only
 
