@@ -25,6 +25,8 @@ public class Listactivity extends Activity {
 	private static final int REFRESH_BUTTON = 1;
 	private static final int SEE_DETAIL = 2;
 	private static final int DELETE_BUTTON = 3;
+	private static final int NEW_BUTTON = 4;
+	private static final int SAVE_BUTTON = 5;
 		
 	private ArrayList<OneNote> noteList;
 	private SimpleAdapter listToView;
@@ -68,6 +70,7 @@ public class Listactivity extends Activity {
 		this.storedNotes.CloseDb();
 	}
 	
+	// When item is clicked, we go to NoteDetailActivity
 	((ListView)findViewById(R.id.notesList)).setOnItemClickListener(new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
 			Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
@@ -127,11 +130,29 @@ public class Listactivity extends Activity {
     	
     }
     
+    public void NewMessage(){
+	Intent editNew = new Intent(this, NewNoteActivity.class);
+	startActivityForResult(editNew, NEW_BUTTON);
+    }
+
+    public void DeleteMessage(String res){
+	Log.d(TAG,"Received request to delete message #"+res);
+	Integer resi = new Integer(res);
+	try {
+		this.imapFolder.DeleteNote(resi);
+		this.RefreshList();
+	} catch (Exception ex) {
+		this.RefreshList();
+		Log.d(TAG,"Exception rencontrée: " + ex.getMessage());
+	}
+    }
+
     /***************************************************/
     public boolean onCreateOptionsMenu(Menu menu){
 	menu.add(0, Listactivity.LOGIN_BUTTON, 0, "Account");
 	//.setIcon(R.drawable.ic_menu_barcode);
 	menu.add(0, Listactivity.REFRESH_BUTTON, 0, "Refresh");
+	menu.add(0, Listactivity.NEW_BUTTON, 0, "New");
 	
 	return true;
 
@@ -144,9 +165,12 @@ public class Listactivity extends Activity {
 		return true;
 		case Listactivity.REFRESH_BUTTON:
 			if(this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null)
-		    startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
+				startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
 			else
 				this.RefreshList();
+			return true;
+		case Listactivity.NEW_BUTTON:
+			this.NewMessage();
 			return true;
 		    
 	}
@@ -167,15 +191,14 @@ public class Listactivity extends Activity {
 				// Delete Message asked for
 				// String res will contain the Message Number to delete
 				String res = data.getStringExtra("DELETE_ITEM");
-				Log.d(TAG,"Received request to delete message #"+res);
-				Integer resi = new Integer(res);
-				try {
-					this.imapFolder.DeleteNote(resi);
-					this.RefreshList();
-				} catch (Exception ex) {
-					this.RefreshList();
-					Log.d(TAG,"Exception rencontrée: " + ex.getMessage());
-				}
+				DeleteMessage(res);
+			}
+    		case Listactivity.NEW_BUTTON:
+			// Returning from NewNoteActivity
+			if (resultCode == this.SAVE_BUTTON) {
+				String res = data.getStringExtra("SAVE_ITEM");
+Log.d(TAG,"Received request to save message:"+res);
+				this.RefreshList();
 			}
     	}
     }
