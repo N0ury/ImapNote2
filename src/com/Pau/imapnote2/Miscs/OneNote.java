@@ -1,4 +1,4 @@
-package com.Pau.ImapNotes2.Miscs;
+package com.Pau.imapnote2.Miscs;
 
 import java.util.HashMap;
 

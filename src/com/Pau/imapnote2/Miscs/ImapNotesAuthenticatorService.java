@@ -1,6 +1,6 @@
-package com.Pau.ImapNotes2.Miscs;
+package com.Pau.imapnote2.Miscs;
 
-import com.Pau.ImapNotes2.AccontConfigurationActivity;
+import com.Pau.imapnote2.AccontConfigurationActivity;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

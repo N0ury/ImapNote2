@@ -1,6 +1,6 @@
-package com.Pau.ImapNotes2;
+package com.Pau.imapnote2;
 
-import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.imapnote2.Miscs.OneNote;
 
 import android.app.Activity;
 import android.graphics.Color;

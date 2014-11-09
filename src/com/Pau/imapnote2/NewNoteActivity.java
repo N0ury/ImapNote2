@@ -1,4 +1,4 @@
-package com.Pau.ImapNotes2;
+package com.Pau.imapnote2;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 import android.content.Intent;
-import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.imapnote2.Miscs.OneNote;
 
 public class NewNoteActivity extends Activity{
 	

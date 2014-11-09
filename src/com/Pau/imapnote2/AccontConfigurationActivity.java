@@ -1,7 +1,7 @@
-package com.Pau.ImapNotes2;
+package com.Pau.imapnote2;
 
-import com.Pau.ImapNotes2.Data.ConfigurationFile;
-import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.imapnote2.Data.ConfigurationFile;
+import com.Pau.imapnote2.Miscs.Imaper;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

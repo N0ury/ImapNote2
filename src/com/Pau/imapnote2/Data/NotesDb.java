@@ -1,8 +1,8 @@
-package com.Pau.ImapNotes2.Data;
+package com.Pau.imapnote2.Data;
 
 import java.util.ArrayList;
 
-import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.imapnote2.Miscs.OneNote;
 
 import android.content.ContentValues;
 import android.content.Context;
