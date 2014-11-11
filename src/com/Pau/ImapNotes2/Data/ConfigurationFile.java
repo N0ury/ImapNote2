@@ -1,4 +1,4 @@
-package com.Pau.imapnote2.Data;
+package com.Pau.ImapNotes2.Data;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +27,7 @@ public class ConfigurationFile {
 		
 		try {
 			Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-									new File(this.applicationContext.getFilesDir()+"/imapnote2.conf"));
+									new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf"));
 			this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
             		this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
             		this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
@@ -74,7 +74,7 @@ public class ConfigurationFile {
 	}
 	
 	public void Clear(){
-        new File(this.applicationContext.getFilesDir()+"/imapnote2.conf").delete();
+        new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf").delete();
         this.username=null;
         this.password=null;
         this.server=null;
@@ -82,7 +82,7 @@ public class ConfigurationFile {
 	}
 	
     public void SaveConfigurationToXML() throws IllegalArgumentException, IllegalStateException, IOException{
-        FileOutputStream configurationFile = this.applicationContext.openFileOutput("imapnote2.conf", Context.MODE_PRIVATE);
+        FileOutputStream configurationFile = this.applicationContext.openFileOutput("ImapNotes2.conf", Context.MODE_PRIVATE);
         XmlSerializer serializer = Xml.newSerializer();
         serializer.setOutput(configurationFile, "UTF-8");
         serializer.startDocument(null, Boolean.valueOf(true)); 

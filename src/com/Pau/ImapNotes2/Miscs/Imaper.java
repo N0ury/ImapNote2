@@ -1,4 +1,4 @@
-package com.Pau.imapnote2.Miscs;
+package com.Pau.ImapNotes2.Miscs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class Imaper {
 	public void DeleteNote(int numMessage) throws MessagingException, IOException{
 		Folder notesFolder = this.store.getFolder("Notes");
 		notesFolder.open(Folder.READ_WRITE);
-		Log.d(TAG,"Mark as deleted message #"+numMessage);
+//		Log.d(TAG,"Mark as deleted message #"+numMessage);
 		final int[] msgs = {numMessage};
 		notesFolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
 		notesFolder.expunge();
@@ -68,7 +68,7 @@ public class Imaper {
 		// Here we add the new note to the "Notes" folder
 		Folder notesFolder = this.store.getFolder("Notes");
 		notesFolder.open(Folder.READ_WRITE);
-		Log.d(TAG,"Add new note");
+//		Log.d(TAG,"Add new note");
 		MimeMessage message = new MimeMessage(this.session);
 		message.setHeader("X-Uniform-Type-Identifier","com.apple.mail-note");
 		UUID uuid = UUID.randomUUID();

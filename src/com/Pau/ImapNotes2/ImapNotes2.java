@@ -1,10 +1,10 @@
-package com.Pau.imapnote2;
+package com.Pau.ImapNotes2;
 
 import java.util.ArrayList;
 
-import com.Pau.imapnote2.Data.ConfigurationFile;
-import com.Pau.imapnote2.Miscs.Imaper;
-import com.Pau.imapnote2.Miscs.OneNote;
+import com.Pau.ImapNotes2.Data.ConfigurationFile;
+import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Application;
 

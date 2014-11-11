@@ -1,6 +1,7 @@
-package com.Pau.imapnote2;
+package com.Pau.ImapNotes2;
 
-import com.Pau.imapnote2.Miscs.OneNote;
+import com.Pau.ImapNotes2.R;
+import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -14,11 +15,13 @@ import android.view.MenuItem;
 import android.util.Log;
 import android.content.Intent;
 
-public class NoteDetailActivity extends Activity{
+public class NoteDetailActivity extends Activity {
 	
 	private static final int DELETE_BUTTON = 3;
+	private static final int EDIT_BUTTON = 6;
 	private OneNote currentNote;
 	private HashMap hm;
+	private Boolean isClicked = false;
 	private static final String TAG = "IN_NoteDetailActivity";
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,9 @@ public class NoteDetailActivity extends Activity{
         
 	}
 	
-	public void BeginEditMode(View v){
-		((EditText)findViewById(R.id.bodyView)).setEnabled(true);
+	public void onClick(View v){
+//		Log.d(TAG,"In onClick");
+		this.isClicked = true;
 	}
 	
 	private void ResetColors(){
@@ -50,19 +54,27 @@ public class NoteDetailActivity extends Activity{
     /***************************************************/
     public boolean onCreateOptionsMenu(Menu menu){
         menu.add(0, NoteDetailActivity.DELETE_BUTTON, 0, "Delete");
-
+      	menu.add(0, NoteDetailActivity.EDIT_BUTTON, 0, "Save");
         return true;
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
+        Intent intent=new Intent();  
         switch (item.getItemId()){
-                case NoteDetailActivity.DELETE_BUTTON:
-		Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
-		Intent intent=new Intent();  
-		intent.putExtra("DELETE_ITEM",this.currentNote.get("number"));  
-		setResult(NoteDetailActivity.DELETE_BUTTON, intent);
-		finish();//finishing activity  
-		return true;
+        case NoteDetailActivity.DELETE_BUTTON:
+//        	Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
+        	intent.putExtra("DELETE_ITEM",this.currentNote.get("number"));  
+        	setResult(NoteDetailActivity.DELETE_BUTTON, intent);
+        	finish();//finishing activity  
+        	return true;
+        case NoteDetailActivity.EDIT_BUTTON:
+//        	Log.d(TAG,"We ask to modify Message #"+this.currentNote.get("number"));
+        	intent.putExtra("EDIT_ITEM_NUM",this.currentNote.get("number"));
+		intent.putExtra("EDIT_ITEM_TXT",
+			Html.toHtml(((EditText)findViewById(R.id.bodyView)).getText()));
+        	setResult(NoteDetailActivity.EDIT_BUTTON, intent);
+        	finish();//finishing activity  
+        	return true;
         }
 	return false;
     }

@@ -16,11 +16,12 @@ example.
 Main changes are:
 - app can be used with other servers, not only gmail
 - it's possible to open notes
-- number of permissions asked by the app is reduced to minimum
+- no permissions are needed by the app
 - it works in landscape and portrait modes. Landscape is useful with some devices
 - it's possible to delete notes (menu option on detail screen)
-- it's now possible to create new notes (menu option on list screen)
+- it's possible to create new notes (menu option on list screen)
+- it's possible to modify notes (menu option on detail screen)
 
 It is still possible to sync one way from server to device only
 
-This app is available at Google Play under the name "ImapNote2". But for people who have not access to this market, it will be possible to compile source code. Furthermore, an apk will be available in bin directory.
+This app is available at Google Play under the name "ImapNote2". But for people who don't have access to this market, it will be possible to compile source code. Furthermore, an apk is available in bin directory.
