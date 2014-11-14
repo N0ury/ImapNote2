@@ -155,7 +155,7 @@ public class Listactivity extends Activity {
         try {
                 String[] tok = snote.split("(?i)<br>", 2);
                 String title = Html.fromHtml(tok[0]).toString();
-                String body = snote;
+                String body = "<html><head></head><body>" + snote.substring(3, snote.length()-5) + "</body></html>";
                 this.currentNote = new OneNote(title,body,"","");
                 // Here we ask to add the new note to the "Notes" folder
                 ((ImapNotes2)this.getApplicationContext()).GetImaper().AddNote(this.currentNote);

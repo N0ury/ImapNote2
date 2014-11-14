@@ -10,7 +10,7 @@ Original app is named "imapnote", and is available at https://code.google.com/p/
 So I decided to name this one "imapnote2". It is under the GPL v3 License, as is "imapnote"
 
 It is based on Apple way to manage notes. They are stored in an imap folder named "Notes".
-imapnote uses Gmail for syncing. As I use my own imap server, I have modified it to be used with any imap server that respects Apple method. It has been tested with Gmail, iCloud (imap.mail.me.com), and of course my server. Even if not still tested, it should work with others like Yahoo for
+imapnote uses Gmail for syncing. As I use my own imap server, I have modified it to be used with any imap server that respects Apple method. It has been tested with Gmail, iCloud (imap.mail.me.com), Yahoo! (imap.mail.yahoo.com) and of course my server. Even if not still tested, it should work with others like AOL.
 example.
 
 Main changes are:

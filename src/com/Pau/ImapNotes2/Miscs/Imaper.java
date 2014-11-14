@@ -3,6 +3,7 @@ package com.Pau.ImapNotes2.Miscs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Date;
 import android.util.Log;
 
 import javax.mail.internet.MimeMessage;
@@ -74,7 +75,8 @@ public class Imaper {
 		UUID uuid = UUID.randomUUID();
 		message.setHeader("X-Universally-Unique-Identifier", uuid.toString());
 		message.setSubject(note.GetTitle());
-		message.setText(note.GetBody());
+		message.setText(note.GetBody(), "utf-8", "html");
+		message.setSentDate(new Date());
 		final MimeMessage[] msgs = {message};
 		notesFolder.appendMessages(msgs);
 	}
