@@ -63,13 +63,13 @@ public class NoteDetailActivity extends Activity {
         switch (item.getItemId()){
         case NoteDetailActivity.DELETE_BUTTON:
 //        	Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
-        	intent.putExtra("DELETE_ITEM",this.currentNote.get("number"));  
+        	intent.putExtra("DELETE_ITEM_NUM_IMAP",this.currentNote.get("number"));  
         	setResult(NoteDetailActivity.DELETE_BUTTON, intent);
         	finish();//finishing activity  
         	return true;
         case NoteDetailActivity.EDIT_BUTTON:
 //        	Log.d(TAG,"We ask to modify Message #"+this.currentNote.get("number"));
-        	intent.putExtra("EDIT_ITEM_NUM",this.currentNote.get("number"));
+        	intent.putExtra("EDIT_ITEM_NUM_IMAP",this.currentNote.get("number"));
 		intent.putExtra("EDIT_ITEM_TXT",
 			Html.toHtml(((EditText)findViewById(R.id.bodyView)).getText()));
         	setResult(NoteDetailActivity.EDIT_BUTTON, intent);

@@ -1,6 +1,8 @@
 package com.Pau.ImapNotes2;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import com.Pau.ImapNotes2.R;
 import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.NotesDb;
@@ -140,11 +142,24 @@ public class Listactivity extends Activity {
 	startActivityForResult(editNew, NEW_BUTTON);
     }
 
-    public void DeleteMessage(String res){
-//	Log.d(TAG,"Received request to delete message #"+res);
-	Integer resi = new Integer(res);
+    public int getIndexByNumber(String pNumber)
+    {
+        for(OneNote _item : this.noteList)
+        {
+            if(_item.GetNumber().equals(pNumber))
+                return this.noteList.indexOf(_item);
+        }
+        return -1;
+    }
+
+    public void DeleteMessage(String numInImap){
+//	Log.d(TAG,"Received request to delete message #"+numInImap);
+	Integer numInImapInt = new Integer(numInImap);
 	try {
-		this.imapFolder.DeleteNote(resi);
+		this.imapFolder.DeleteNote(numInImapInt);
+                // Here we delete the note from the local notes list
+                this.noteList.remove(getIndexByNumber(numInImap));
+                this.listToView.notifyDataSetChanged();
 	} catch (Exception ex) {
 		Log.d(TAG,"Exception catched: " + ex.getMessage());
 	}
@@ -156,9 +171,12 @@ public class Listactivity extends Activity {
                 String[] tok = snote.split("(?i)<br>", 2);
                 String title = Html.fromHtml(tok[0]).toString();
                 String body = "<html><head></head><body>" + snote.substring(3, snote.length()-5) + "</body></html>";
-                this.currentNote = new OneNote(title,body,"","");
+                this.currentNote = new OneNote(title,body,new Date().toLocaleString(),"");
                 // Here we ask to add the new note to the "Notes" folder
                 ((ImapNotes2)this.getApplicationContext()).GetImaper().AddNote(this.currentNote);
+                // Here we add the new note to the local notes list
+                this.noteList.add(0,this.currentNote);
+                this.listToView.notifyDataSetChanged();
         } catch (Exception ex) {
                 Log.d(TAG,"Exception catched: " + ex.getMessage());
         }
@@ -206,19 +224,17 @@ public class Listactivity extends Activity {
 			// Returning from NoteDetailActivity
 			if (resultCode == this.DELETE_BUTTON) {
 				// Delete Message asked for
-				// String res will contain the Message Number to delete
-				String res = data.getStringExtra("DELETE_ITEM");
-				DeleteMessage(res);
-				this.RefreshList();
+				// String numInImap will contain the Message Imap Number to delete
+				String numInImap = data.getStringExtra("DELETE_ITEM_NUM_IMAP");
+				DeleteMessage(numInImap);
 			}
 			if (resultCode == this.EDIT_BUTTON) {
 				String txt = data.getStringExtra("EDIT_ITEM_TXT");
-				String num = data.getStringExtra("EDIT_ITEM_NUM");
-//				Log.d(TAG,"Received request to delete message:"+num);
+				String numInImap = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
+//				Log.d(TAG,"Received request to delete message:"+numInImap);
 //				Log.d(TAG,"Received request to replace message with:"+txt);
-				DeleteMessage(num);
+				DeleteMessage(numInImap);
 				this.AddMessage(txt);
-				this.RefreshList();
 			}
     		case Listactivity.NEW_BUTTON:
 			// Returning from NewNoteActivity
@@ -226,7 +242,6 @@ public class Listactivity extends Activity {
 				String res = data.getStringExtra("SAVE_ITEM");
 //				Log.d(TAG,"Received request to save message:"+res);
 				this.AddMessage(res);
-				this.RefreshList();
 			}
     	}
     }
