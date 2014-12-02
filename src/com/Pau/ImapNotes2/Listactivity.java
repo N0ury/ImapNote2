@@ -75,6 +75,7 @@ public class Listactivity extends Activity {
 		this.storedNotes.GetStoredNotes(this.noteList);
 		this.listToView.notifyDataSetChanged();
 		this.storedNotes.CloseDb();
+		this.RefreshList();
 	}
 	
 	// When item is clicked, we go to NoteDetailActivity

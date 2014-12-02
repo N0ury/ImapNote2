@@ -21,7 +21,7 @@ public class Imaper {
 	private Session session;
 	private static final String TAG = "IN_Imaper";
 	
-	public void ConnectToProvider(String username, String password, String server) throws MessagingException{
+	public int ConnectToProvider(String username, String password, String server) throws MessagingException{
 		if (this.IsConnected())
 			this.store.close();
 		
@@ -30,7 +30,12 @@ public class Imaper {
 		props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		this.session = Session.getDefaultInstance(props, null);
 		this.store = this.session.getStore("imaps");
-		this.store.connect(server, username, password);
+		try {
+			this.store.connect(server, username, password);
+			return 0;
+		} catch (Exception e) {
+			return -1;
+		}
 
 	}
 	

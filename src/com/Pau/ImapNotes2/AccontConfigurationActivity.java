@@ -1,6 +1,7 @@
 package com.Pau.ImapNotes2;
 
 import com.Pau.ImapNotes2.R;
+
 import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 
@@ -11,7 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.EditText;
+import android.widget.Toast;
 
 public class AccontConfigurationActivity extends Activity {
 	public static final int TO_REFRESH = 999;
@@ -53,22 +54,35 @@ public class AccontConfigurationActivity extends Activity {
 	
 	class LoginThread extends AsyncTask<Object, Void, Boolean>{
 		
-		protected Boolean doInBackground(Object... stuffs) {			
+		protected Boolean doInBackground(Object... stuffs) {
+			int i=0;
 			try {
-				((Imaper)stuffs[0]).ConnectToProvider(((ConfigurationFile)stuffs[1]).GetUsername(), ((ConfigurationFile)stuffs[1]).GetPassword(), ((ConfigurationFile)stuffs[1]).GetServer());
-				((ConfigurationFile)stuffs[1]).SaveConfigurationToXML();
-				((AccontConfigurationActivity)stuffs[3]).setResult(AccontConfigurationActivity.TO_REFRESH);
-				((AccontConfigurationActivity)stuffs[3]).finish();
-				return true;
+				i=((Imaper)stuffs[0]).ConnectToProvider(((ConfigurationFile)stuffs[1]).GetUsername(), ((ConfigurationFile)stuffs[1]).GetPassword(), ((ConfigurationFile)stuffs[1]).GetServer());
+				if (i==0) {
+					((ConfigurationFile)stuffs[1]).SaveConfigurationToXML();
+					((AccontConfigurationActivity)stuffs[3]).setResult(AccontConfigurationActivity.TO_REFRESH);
+					((AccontConfigurationActivity)stuffs[3]).finish();
+					return true;
+				} else {
+					return false;
+				}
 	        } catch (Exception e) {
 				Log.v("ImapNotes2", e.getMessage());
 			} finally {
 				((ProgressDialog)stuffs[2]).dismiss();
 			}
-			
 			return false;
 		}
 		
+		protected void onPostExecute(Boolean result){
+			if(result){
+				Toast.makeText(getApplicationContext(), "Connection Established",
+					Toast.LENGTH_SHORT).show();
+			}else {
+				Toast.makeText(getApplicationContext(), "Connection Error",
+					Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 	
 }
