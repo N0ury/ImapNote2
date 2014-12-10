@@ -99,6 +99,7 @@ public class Listactivity extends Activity {
     	SimpleAdapter adapter;
     	ArrayList<OneNote> notesList;
     	NotesDb storedNotes;
+	boolean bool_to_return;
     	
 		@Override
 		protected Boolean doInBackground(Object... stuffs) {
@@ -113,15 +114,14 @@ public class Listactivity extends Activity {
 						((ConfigurationFile)stuffs[1]).GetPassword(),
 						((ConfigurationFile)stuffs[1]).GetServer());
 				((Imaper)stuffs[0]).GetNotes(this.notesList);
-		    	return true;
+				this.bool_to_return=true;
 			} catch (Exception e) {
 				Log.v("ImapNotes2", e.getMessage());
+				this.bool_to_return=false;
 			} finally {
 				((ProgressDialog)stuffs[4]).dismiss();
-				
 			}
-			
-			return false;
+			return this.bool_to_return;
 		}
 		
 		protected void onPostExecute(Boolean result){
@@ -135,9 +135,92 @@ public class Listactivity extends Activity {
 				this.adapter.notifyDataSetChanged();
 			}
 		}
-    	
     }
     
+//=================================================================================
+    public void UpdateList(String numInImap, String snote){
+		ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2" , "Updating notes list... ", true);
+
+		new UpdateThread().execute(this.imapFolder, this.settings, this.noteList, this.listToView, loadingDialog, numInImap, snote);
+
+    }
+    
+    class UpdateThread extends AsyncTask<Object, Void, Boolean>{
+    	SimpleAdapter adapter;
+    	ArrayList<OneNote> notesList;
+	String numInImap;
+	String snote;
+	Imaper imapFolder;
+	boolean bool_to_return;
+	OneNote currentNote = null;
+    	
+		@Override
+		protected Boolean doInBackground(Object... stuffs) {
+			this.adapter = ((SimpleAdapter)stuffs[3]);
+			this.notesList = ((ArrayList<OneNote>)stuffs[2]);
+			this.numInImap = ((String)stuffs[5]);
+			this.snote = ((String)stuffs[6]);
+			this.imapFolder = ((Imaper)stuffs[0]);
+	
+			try {
+				if(!((Imaper)stuffs[0]).IsConnected())
+					((Imaper)stuffs[0]).ConnectToProvider(
+						((ConfigurationFile)stuffs[1]).GetUsername(),
+						((ConfigurationFile)stuffs[1]).GetPassword(),
+						((ConfigurationFile)stuffs[1]).GetServer());
+
+				// Do we have a note to remove?
+				if (this.numInImap != null) {
+					Log.d(TAG,"Received request to delete message #"+numInImap);
+					Integer numInImapInt = new Integer(this.numInImap);
+					try {
+						this.imapFolder.DeleteNote(numInImapInt);
+						this.bool_to_return=true;
+					} catch (Exception ex) {
+                				Log.d(TAG,"Exception catched: " + ex.getMessage());
+						this.bool_to_return=false;
+        				}
+				}
+				// Do we have a note to add?
+				if (this.snote != null) {
+				        	//Log.d(TAG,"Received request to add new message");
+                			String[] tok = this.snote.split("(?i)<br>", 2);
+                			String title = Html.fromHtml(tok[0]).toString();
+                			String body = "<html><head></head><body>" + this.snote.substring(3, snote.length()-5) + "</body></html>";
+                			this.currentNote = new OneNote(title,body,new Date().toLocaleString(),"");
+                			// Here we ask to add the new note to the "Notes" folder
+					try {
+                				this.imapFolder.AddNote(currentNote);
+                				this.bool_to_return=true;
+					} catch (Exception ex) {
+                				Log.d(TAG,"Exception catched: " + ex.getMessage());
+                				this.bool_to_return=false;
+        			}
+				}
+			} catch (Exception e) {
+				Log.v(TAG, e.getMessage());
+				this.bool_to_return=false;
+			} finally {
+				((ProgressDialog)stuffs[4]).dismiss();
+			}
+			return this.bool_to_return;
+		}
+		
+		protected void onPostExecute(Boolean result){
+			if (result) {
+				if (this.numInImap != null) /* remove note */{
+                			// Here we delete the note from the local notes list
+                			this.notesList.remove(getIndexByNumber(this.numInImap));
+				} else /* add note */ {
+                			// Here we add the new note to the local notes list
+                			this.notesList.add(0,this.currentNote);
+				}
+				this.adapter.notifyDataSetChanged();
+			}
+		}
+    }
+//=================================================================================
+
     public void NewMessage(){
 	Intent editNew = new Intent(this, NewNoteActivity.class);
 	startActivityForResult(editNew, NEW_BUTTON);
@@ -151,36 +234,6 @@ public class Listactivity extends Activity {
                 return this.noteList.indexOf(_item);
         }
         return -1;
-    }
-
-    public void DeleteMessage(String numInImap){
-//	Log.d(TAG,"Received request to delete message #"+numInImap);
-	Integer numInImapInt = new Integer(numInImap);
-	try {
-		this.imapFolder.DeleteNote(numInImapInt);
-                // Here we delete the note from the local notes list
-                this.noteList.remove(getIndexByNumber(numInImap));
-                this.listToView.notifyDataSetChanged();
-	} catch (Exception ex) {
-		Log.d(TAG,"Exception catched: " + ex.getMessage());
-	}
-    }
-
-    public void AddMessage(String snote){
-//        Log.d(TAG,"Received request to add new message");
-        try {
-                String[] tok = snote.split("(?i)<br>", 2);
-                String title = Html.fromHtml(tok[0]).toString();
-                String body = "<html><head></head><body>" + snote.substring(3, snote.length()-5) + "</body></html>";
-                this.currentNote = new OneNote(title,body,new Date().toLocaleString(),"");
-                // Here we ask to add the new note to the "Notes" folder
-                ((ImapNotes2)this.getApplicationContext()).GetImaper().AddNote(this.currentNote);
-                // Here we add the new note to the local notes list
-                this.noteList.add(0,this.currentNote);
-                this.listToView.notifyDataSetChanged();
-        } catch (Exception ex) {
-                Log.d(TAG,"Exception catched: " + ex.getMessage());
-        }
     }
 
     /***************************************************/
@@ -227,22 +280,21 @@ public class Listactivity extends Activity {
 				// Delete Message asked for
 				// String numInImap will contain the Message Imap Number to delete
 				String numInImap = data.getStringExtra("DELETE_ITEM_NUM_IMAP");
-				DeleteMessage(numInImap);
+				this.UpdateList(numInImap, null);
 			}
 			if (resultCode == this.EDIT_BUTTON) {
 				String txt = data.getStringExtra("EDIT_ITEM_TXT");
 				String numInImap = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
 //				Log.d(TAG,"Received request to delete message:"+numInImap);
 //				Log.d(TAG,"Received request to replace message with:"+txt);
-				DeleteMessage(numInImap);
-				this.AddMessage(txt);
+				this.UpdateList(numInImap, txt);
 			}
     		case Listactivity.NEW_BUTTON:
 			// Returning from NewNoteActivity
 			if (resultCode == this.SAVE_BUTTON) {
 				String res = data.getStringExtra("SAVE_ITEM");
-//				Log.d(TAG,"Received request to save message:"+res);
-				this.AddMessage(res);
+				Log.d(TAG,"Received request to save message:"+res);
+				this.UpdateList(null, res);
 			}
     	}
     }
