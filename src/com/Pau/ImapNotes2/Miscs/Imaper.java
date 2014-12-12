@@ -14,6 +14,7 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Flags;
 import java.util.UUID;
+import com.sun.mail.imap.IMAPFolder;
 
 public class Imaper {
 	
@@ -101,7 +102,12 @@ public class Imaper {
 		message.setText(note.GetBody(), "utf-8", "html");
 		message.setSentDate(new Date());
 		final MimeMessage[] msgs = {message};
-		notesFolder.appendMessages(msgs);
-	Log.d(TAG,"NUM:"+msgs[0].getMessageNumber()+"==="+notesFolder.getMessageCount()+"===");
+		final Message[] msgs2;
+		//notesFolder.appendMessages(msgs);
+		msgs2 = ((IMAPFolder)notesFolder).addMessages(msgs);
+		// message was inserted in folder but note still doesn't have number
+		// put in it the one of message just inserted
+		note.SetNumber(String.valueOf(msgs2[0].getMessageNumber()));
+Log.d(TAG,"NUM:"+msgs[0].getMessageNumber()+"==="+notesFolder.getMessageCount()+"==="+msgs2.length+"===="+msgs2[0].getMessageNumber());
 	}
 }

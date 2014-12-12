@@ -43,4 +43,8 @@ public class OneNote extends HashMap<String,String>{
 		return this.get("number");
 	}
 	
+	public String SetNumber(String number){
+		return this.put("number", number);
+	}
+		
 }
