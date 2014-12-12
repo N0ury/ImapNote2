@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.Pau.ImapNotes2"
-      android:versionCode="8"
-      android:versionName="2.7">
-    <uses-sdk android:minSdkVersion="7" />
+	package="com.Pau.ImapNotes2"
+	android:versionCode="9"
+	android:versionName="2.8">
+	<uses-sdk android:minSdkVersion="14" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <application android:icon="@drawable/icon" android:name="@string/app_name" android:label="@string/app_name" android:theme="@style/ImapNotesTheme">
-        <activity android:name=".Listactivity" android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".AccontConfigurationActivity"></activity>
-        
-        <activity android:name=".NoteDetailActivity"></activity>
+	<application
+		android:icon="@drawable/icon"
+		android:name="@string/app_name"
+		android:label="@string/app_name"
+		android:theme="@style/ImapNotesTheme">
 
-        <activity android:name=".NewNoteActivity"></activity>
-        
-        <service android:name="ImapNotesAuthenticationService" android:exported="true">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
-        </service>
-        
-    </application>
+		<activity android:name=".Listactivity"
+		    android:label="@string/app_name"
+		    android:launchMode="singleTop">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".AccontConfigurationActivity">
+		    android:parentActivityName="com.Pau.ImapNotes2.ListActivity">
+			<meta-data android:name="android.support.PARENT_ACTIVITY"
+				android:value="com.Pau.ImapNotes2.Listactivity" />
+		</activity>
+
+		<activity android:name=".NoteDetailActivity"
+		    android:parentActivityName="com.Pau.ImapNotes2.ListActivity">
+			<meta-data android:name="android.support.PARENT_ACTIVITY"
+				android:value="com.Pau.ImapNotes2.Listactivity" />
+		</activity>
+
+		<activity android:name=".NewNoteActivity">
+		    android:parentActivityName="com.Pau.ImapNotes2.ListActivity">
+			<meta-data android:name="android.support.PARENT_ACTIVITY"
+				android:value="com.Pau.ImapNotes2.Listactivity" />
+		</activity>
+
+		<service android:name="ImapNotesAuthenticationService" android:exported="true">
+			<intent-filter>
+				<action android:name="android.accounts.AccountAuthenticator" />
+			</intent-filter>
+			<meta-data android:name="android.accounts.AccountAuthenticator"
+				android:resource="@xml/authenticator" />
+		</service>
+	</application>
 </manifest>

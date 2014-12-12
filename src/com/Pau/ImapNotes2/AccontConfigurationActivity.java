@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.support.v4.app.NavUtils;
 
 public class AccontConfigurationActivity extends Activity {
 	public static final int TO_REFRESH = 999;
@@ -28,6 +31,7 @@ public class AccontConfigurationActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_selection);
+	getActionBar().setDisplayHomeAsUpEnabled(true);
         this.usernameTextView = (TextView)findViewById(R.id.usernameEdit);
         this.passwordTextView = (TextView)findViewById(R.id.passwordEdit);
         this.serverTextView = (TextView)findViewById(R.id.serverEdit);
@@ -85,5 +89,18 @@ public class AccontConfigurationActivity extends Activity {
 		}
 	}
 	
-}
+	  public boolean onCreateOptionsMenu(Menu menu){
+	          return true;
+	  }
 
+	  public boolean onOptionsItemSelected (MenuItem item){
+	          switch (item.getItemId()){
+	          case android.R.id.home:
+	                  NavUtils.navigateUpFromSameTask(this);
+	                  return true;
+	          default:
+	                  return super.onOptionsItemSelected(item);
+	          }
+	  }
+
+}

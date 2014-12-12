@@ -86,7 +86,7 @@ public class Listactivity extends Activity {
 			startActivityForResult(toDetail,SEE_DETAIL); 
 		}
 	  });
-    }
+	}
 
     public void RefreshList(){
 		ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2" , "Refreshing notes list... ", true);
@@ -183,7 +183,7 @@ public class Listactivity extends Activity {
 				}
 				// Do we have a note to add?
 				if (this.snote != null) {
-				        	//Log.d(TAG,"Received request to add new message");
+				        	Log.d(TAG,"Received request to add new message");
                 			String[] tok = this.snote.split("(?i)<br>", 2);
                 			String title = Html.fromHtml(tok[0]).toString();
                 			String body = "<html><head></head><body>" + this.snote.substring(3, snote.length()-5) + "</body></html>";
@@ -208,22 +208,20 @@ public class Listactivity extends Activity {
 		
 		protected void onPostExecute(Boolean result){
 			if (result) {
-				if (this.numInImap != null) /* remove note */{
-                			// Here we delete the note from the local notes list
-                			this.notesList.remove(getIndexByNumber(this.numInImap));
-				} else /* add note */ {
-                			// Here we add the new note to the local notes list
-                			this.notesList.add(0,this.currentNote);
+				if (this.numInImap != null) /* remove note */ {
+                		// Here we delete the note from the local notes list
+						Log.d(TAG,"Delete note in Listview");
+						this.notesList.remove(getIndexByNumber(this.numInImap));
 				}
-				this.adapter.notifyDataSetChanged();
+				if (this.snote != null) /* add note */ {
+                		// Here we add the new note to the local notes list
+						Log.d(TAG,"Add note in Listview");
+						this.notesList.add(0,this.currentNote);
+				}
+				if (this.bool_to_return) /* note added or removed */
+					this.adapter.notifyDataSetChanged();
 			}
 		}
-    }
-//=================================================================================
-
-    public void NewMessage(){
-	Intent editNew = new Intent(this, NewNoteActivity.class);
-	startActivityForResult(editNew, NEW_BUTTON);
     }
 
     public int getIndexByNumber(String pNumber)
@@ -236,12 +234,8 @@ public class Listactivity extends Activity {
         return -1;
     }
 
-    /***************************************************/
     public boolean onCreateOptionsMenu(Menu menu){
-	menu.add(0, Listactivity.LOGIN_BUTTON, 0, "Account");
-	//.setIcon(R.drawable.ic_menu_barcode);
-	menu.add(0, Listactivity.REFRESH_BUTTON, 0, "Refresh");
-	menu.add(0, Listactivity.NEW_BUTTON, 0, "New");
+	getMenuInflater().inflate(R.menu.list, menu);
 	
 	return true;
 
@@ -249,26 +243,23 @@ public class Listactivity extends Activity {
     
     public boolean onOptionsItemSelected (MenuItem item){
 	switch (item.getItemId()){
-		case Listactivity.LOGIN_BUTTON:
-		startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
-		return true;
-		case Listactivity.REFRESH_BUTTON:
+		case R.id.login:
+			startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
+			return true;
+		case R.id.refresh:
 			if(this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null)
 				startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
 			else
 				this.RefreshList();
 			return true;
-		case Listactivity.NEW_BUTTON:
-			this.NewMessage();
+		case R.id.newnote:
+			startActivityForResult(new Intent(this, NewNoteActivity.class), Listactivity.NEW_BUTTON);
 			return true;
-		    
+		default:
+			return super.onOptionsItemSelected(item);
 	}
-	
-	return false;
-	
     }
     
-    /***************************************************/
     protected void onActivityResult(int requestCode, int resultCode, Intent data){ 
     	switch(requestCode) {
     		case Listactivity.LOGIN_BUTTON:
@@ -293,7 +284,7 @@ public class Listactivity extends Activity {
 			// Returning from NewNoteActivity
 			if (resultCode == this.SAVE_BUTTON) {
 				String res = data.getStringExtra("SAVE_ITEM");
-				Log.d(TAG,"Received request to save message:"+res);
+				//Log.d(TAG,"Received request to save message:"+res);
 				this.UpdateList(null, res);
 			}
     	}

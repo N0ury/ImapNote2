@@ -29,7 +29,7 @@ public class Imaper {
 		props.setProperty("mail.store.protocol", "imaps");
 		props.setProperty("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		this.session = Session.getDefaultInstance(props, null);
-this.session.setDebug(true);
+//this.session.setDebug(true);
 		this.store = this.session.getStore("imaps");
 		try {
 			this.store.connect(server, username, password);
@@ -77,7 +77,7 @@ this.session.setDebug(true);
 		} else {
 			notesFolder.open(Folder.READ_WRITE);
 		}
-		Log.d(TAG,"Mark as deleted message #"+numMessage);
+		//Log.d(TAG,"Mark as deleted message #"+numMessage);
 		final int[] msgs = {numMessage};
 		notesFolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
 		notesFolder.expunge();
@@ -92,7 +92,7 @@ this.session.setDebug(true);
 		} else {
 			notesFolder.open(Folder.READ_WRITE);
 		}
-		Log.d(TAG,"Add new note");
+		//Log.d(TAG,"Add new note");
 		MimeMessage message = new MimeMessage(this.session);
 		message.setHeader("X-Uniform-Type-Identifier","com.apple.mail-note");
 		UUID uuid = UUID.randomUUID();
@@ -102,5 +102,6 @@ this.session.setDebug(true);
 		message.setSentDate(new Date());
 		final MimeMessage[] msgs = {message};
 		notesFolder.appendMessages(msgs);
+	Log.d(TAG,"NUM:"+msgs[0].getMessageNumber()+"==="+notesFolder.getMessageCount()+"===");
 	}
 }

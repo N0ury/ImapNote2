@@ -6,9 +6,9 @@
   
   <color name="ListColor">#e8d731</color>
   
-  <style name="ImapNotesTheme" parent="android:Theme">
-  	<item name="android:windowTitleSize">60dip</item>
-  	<item name="android:windowTitleBackgroundStyle">@style/TitleColor</item>
+ <style name="ImapNotesTheme" parent="android:Theme">
+      <item name="android:windowTitleSize">60dip</item>
+      <item name="android:windowTitleBackgroundStyle">@style/TitleColor</item>
     <item name="android:windowBackground">@color/ListColor</item>
     <item name="android:colorBackground">@color/ListColor</item>
   </style>

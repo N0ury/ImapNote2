@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 
 public class NoteDetailActivity extends Activity {
 	
@@ -27,6 +28,7 @@ public class NoteDetailActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.note_detail);
+	getActionBar().setDisplayHomeAsUpEnabled(true);
         
         this.hm = (HashMap)getIntent().getExtras().get("selectedNote");
 	currentNote=new OneNote(this.hm.get("title").toString(),
@@ -51,31 +53,33 @@ public class NoteDetailActivity extends Activity {
 	    ((EditText)findViewById(R.id.bodyView)).setTextColor(Color.BLACK);
 	}
 
-    /***************************************************/
     public boolean onCreateOptionsMenu(Menu menu){
-        menu.add(0, NoteDetailActivity.DELETE_BUTTON, 0, "Delete");
-      	menu.add(0, NoteDetailActivity.EDIT_BUTTON, 0, "Save");
+	getMenuInflater().inflate(R.menu.detail, menu);
         return true;
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
         Intent intent=new Intent();  
         switch (item.getItemId()){
-        case NoteDetailActivity.DELETE_BUTTON:
+	case R.id.delete:
 //        	Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
         	intent.putExtra("DELETE_ITEM_NUM_IMAP",this.currentNote.get("number"));  
         	setResult(NoteDetailActivity.DELETE_BUTTON, intent);
         	finish();//finishing activity  
         	return true;
-        case NoteDetailActivity.EDIT_BUTTON:
+	case R.id.save:
 //        	Log.d(TAG,"We ask to modify Message #"+this.currentNote.get("number"));
         	intent.putExtra("EDIT_ITEM_NUM_IMAP",this.currentNote.get("number"));
-		intent.putExtra("EDIT_ITEM_TXT",
+        	intent.putExtra("EDIT_ITEM_TXT",
 			Html.toHtml(((EditText)findViewById(R.id.bodyView)).getText()));
         	setResult(NoteDetailActivity.EDIT_BUTTON, intent);
         	finish();//finishing activity  
         	return true;
+	case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+        	return true;
+	default:
+		return super.onOptionsItemSelected(item);
         }
-	return false;
     }
 }
