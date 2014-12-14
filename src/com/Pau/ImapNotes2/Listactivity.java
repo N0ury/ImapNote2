@@ -183,11 +183,14 @@ public class Listactivity extends Activity {
 				}
 				// Do we have a note to add?
 				if (this.snote != null) {
-				        	Log.d(TAG,"Received request to add new message");
-                			String[] tok = this.snote.split("(?i)<br>", 2);
-                			String title = Html.fromHtml(tok[0]).toString();
-                			String body = "<html><head></head><body>" + this.snote.substring(3, snote.length()-5) + "</body></html>";
+				        	Log.d(TAG,"Received request to add new message"+snote);
+				        	String noteTxt = Html.fromHtml(snote).toString();
+				        	Log.d(TAG,"fromHtml="+noteTxt);
+                			String[] tok = noteTxt.split("\n", 2);
+                			String title = tok[0];
+                			String body = "<html><head></head><body>" + snote + "</body></html>";
                 			this.currentNote = new OneNote(title,body,new Date().toLocaleString(),"");
+                			Log.d(TAG,"newbody="+body);
                 			// Here we ask to add the new note to the "Notes" folder
 					try {
                 				this.imapFolder.AddNote(currentNote);

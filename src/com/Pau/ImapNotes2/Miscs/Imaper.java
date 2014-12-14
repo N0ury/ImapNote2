@@ -60,6 +60,8 @@ public class Imaper {
 			notesMessages[index].getReceivedDate().toLocaleString(),
 			new Integer (notesMessages[index].getMessageNumber()).toString());
 			notesList.add(aNote);
+			Log.d(TAG,"title:"+(String)notesMessages[index].getSubject());
+			Log.d(TAG,"content:"+(String)notesMessages[index].getContent());
 		}
 		//Log.d(TAG,"number of messages read="+notesList.size());
 		

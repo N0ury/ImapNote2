@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.Pau.ImapNotes2"
-	android:versionCode="9"
-	android:versionName="2.8">
-	<uses-sdk android:minSdkVersion="14" />
+	android:versionCode="11"
+	android:versionName="2.10">
+	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -22,20 +22,20 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".AccontConfigurationActivity">
-		    android:parentActivityName="com.Pau.ImapNotes2.ListActivity">
+		<activity android:name=".AccontConfigurationActivity"
+		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
 			<meta-data android:name="android.support.PARENT_ACTIVITY"
 				android:value="com.Pau.ImapNotes2.Listactivity" />
 		</activity>
 
 		<activity android:name=".NoteDetailActivity"
-		    android:parentActivityName="com.Pau.ImapNotes2.ListActivity">
+		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
 			<meta-data android:name="android.support.PARENT_ACTIVITY"
 				android:value="com.Pau.ImapNotes2.Listactivity" />
 		</activity>
 
-		<activity android:name=".NewNoteActivity">
-		    android:parentActivityName="com.Pau.ImapNotes2.ListActivity">
+		<activity android:name=".NewNoteActivity"
+		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
 			<meta-data android:name="android.support.PARENT_ACTIVITY"
 				android:value="com.Pau.ImapNotes2.Listactivity" />
 		</activity>

@@ -3,6 +3,7 @@ package com.Pau.ImapNotes2;
 import android.app.Activity;
 import android.graphics.Color;
 import android.text.Html;
+import android.text.SpannableString;
 import android.view.View;
 import android.widget.EditText;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class NewNoteActivity extends Activity{
         switch (item.getItemId()){
 		case R.id.save:
                 	Intent intent=new Intent();
+                	Log.d(TAG,"XXX:"+Html.toHtml(new SpannableString(((EditText)findViewById(R.id.editNote)).getText())));
 			intent.putExtra("SAVE_ITEM",Html.toHtml(((EditText)findViewById(R.id.editNote)).getText()));
                 	setResult(SAVE_BUTTON, intent);
                 	finish();//finishing activity
