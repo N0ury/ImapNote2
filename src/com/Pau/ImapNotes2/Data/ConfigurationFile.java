@@ -20,6 +20,8 @@ public class ConfigurationFile {
 	private String username;
 	private String password;
 	private String server;
+	private String acceptcrt;
+	private String usesticky;
 	
 	
 	public ConfigurationFile(Context myContext){
@@ -31,13 +33,25 @@ public class ConfigurationFile {
 			this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
             		this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
             		this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
-            
+			if (this.LoadItemFromXML(fileToLoad, "acceptcrt").getLength() == 0)
+				// acceptcrt option doesn't exist, say no
+				this.acceptcrt = "false";
+			else
+				this.acceptcrt = this.LoadItemFromXML(fileToLoad, "acceptcrt").item(0).getChildNodes().item(0).getNodeValue();
+
+			if (this.LoadItemFromXML(fileToLoad, "usesticky").getLength() == 0)
+				// usesticky option doesn't exist, say no
+				this.usesticky = "false";
+			else
+            			this.usesticky = this.LoadItemFromXML(fileToLoad, "usesticky").item(0).getChildNodes().item(0).getNodeValue();
 			
 		} catch (Exception e) {
 			Log.v("ImapNotes2", e.getMessage());
 			this.username = null;
             		this.password = null;
             		this.server = null;
+            		this.acceptcrt = null;
+            		this.usesticky = null;
             
 		}
 		
@@ -73,11 +87,33 @@ public class ConfigurationFile {
          
 	}
 	
+	public String GetAcceptcrt(){
+		return this.acceptcrt;
+         
+	}
+ 
+	public void SetAcceptcrt(String Acceptcrt){
+		this.acceptcrt = Acceptcrt;
+         
+	}
+	
+	public String GetUsesticky(){
+		return this.usesticky;
+         
+	}
+ 
+	public void SetUsesticky(String Usesticky){
+		this.usesticky = Usesticky;
+         
+	}
+	
 	public void Clear(){
         new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf").delete();
         this.username=null;
         this.password=null;
         this.server=null;
+        this.acceptcrt=null;
+        this.usesticky=null;
         
 	}
 	
@@ -96,6 +132,12 @@ public class ConfigurationFile {
                 serializer.startTag(null, "server");
                 serializer.text(this.server);
                 serializer.endTag(null, "server");
+                serializer.startTag(null, "acceptcrt");
+                serializer.text(this.acceptcrt);
+                serializer.endTag(null, "acceptcrt");
+                serializer.startTag(null, "usesticky");
+                serializer.text(this.usesticky);
+                serializer.endTag(null, "usesticky");
         serializer.endTag(null, "Configuration"); 
         serializer.endDocument();
         serializer.flush();

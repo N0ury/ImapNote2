@@ -14,6 +14,20 @@
     <TextView android:text="server" android:textColor="#000000" android:id="@+id/textView3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
     <EditText android:hint="imap notes server" android:id="@+id/serverEdit" android:layout_width="fill_parent" android:layout_height="wrap_content" android:inputType="text" android:layout_marginBottom="5dip">
     </EditText>
+
+    <CheckBox
+        android:id="@+id/acceptcrtCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="Accept Untrusted Certificate for this server" />
+
+    <CheckBox
+        android:id="@+id/stickyCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Use Sticky Notes" />
+
     <Button android:layout_height="wrap_content" android:text="Login" android:id="@+id/loginButton" android:layout_marginTop="10dip" android:layout_width="fill_parent" android:onClick="DoLogin"></Button>
     
 </LinearLayout>

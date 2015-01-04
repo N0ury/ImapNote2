@@ -21,5 +21,7 @@ Main changes are:
 - it's possible to create new notes ("new note" option on list screen)
 - it's possible to modify notes (change note on detail screen, then save it with disk icon)
 - navigation uses ActionBar (minSdkVersion=14)
+- app has been modified to handle sticky notes used by Kerio Connect servers
+- even if not recommended, untrusted certificates can be used. A new option permits it
 
 This app is available at Google Play under the name "ImapNote2". But for people who don't have access to this market, it will be possible to compile source code. Furthermore, an apk is available in bin directory.

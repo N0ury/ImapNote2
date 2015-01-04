@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.Menu;
@@ -26,6 +27,8 @@ public class AccontConfigurationActivity extends Activity {
 	private TextView usernameTextView;
 	private TextView passwordTextView;
 	private TextView serverTextView;
+	private CheckBox acceptcrtCheckBox;
+	private CheckBox stickyCheckBox;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,8 @@ public class AccontConfigurationActivity extends Activity {
         this.usernameTextView = (TextView)findViewById(R.id.usernameEdit);
         this.passwordTextView = (TextView)findViewById(R.id.passwordEdit);
         this.serverTextView = (TextView)findViewById(R.id.serverEdit);
+        this.acceptcrtCheckBox = (CheckBox)findViewById(R.id.acceptcrtCheckBox);
+        this.stickyCheckBox = (CheckBox)findViewById(R.id.stickyCheckBox);
         
         this.settings = ((ImapNotes2)getApplicationContext()).GetConfigurationFile();
         this.imapFolder = ((ImapNotes2)getApplicationContext()).GetImaper();
@@ -42,7 +47,8 @@ public class AccontConfigurationActivity extends Activity {
         this.usernameTextView.setText(this.settings.GetUsername());
         this.passwordTextView.setText(this.settings.GetPassword());
         this.serverTextView.setText(this.settings.GetServer());
-        
+        this.acceptcrtCheckBox.setChecked(Boolean.parseBoolean(this.settings.GetAcceptcrt()));
+        this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.settings.GetUsesticky()));
 	
 	}
 	
@@ -51,6 +57,8 @@ public class AccontConfigurationActivity extends Activity {
 		this.settings.SetUsername(this.usernameTextView.getText().toString());
 		this.settings.SetPassword(this.passwordTextView.getText().toString());
 		this.settings.SetServer(this.serverTextView.getText().toString());
+		this.settings.SetAcceptcrt(String.valueOf(this.acceptcrtCheckBox.isChecked()));
+		this.settings.SetUsesticky(String.valueOf(this.stickyCheckBox.isChecked()));
 		
 		new LoginThread().execute(this.imapFolder, this.settings, loadingDialog, this);
 		
@@ -61,7 +69,7 @@ public class AccontConfigurationActivity extends Activity {
 		protected Boolean doInBackground(Object... stuffs) {
 			int i=0;
 			try {
-				i=((Imaper)stuffs[0]).ConnectToProvider(((ConfigurationFile)stuffs[1]).GetUsername(), ((ConfigurationFile)stuffs[1]).GetPassword(), ((ConfigurationFile)stuffs[1]).GetServer());
+				i=((Imaper)stuffs[0]).ConnectToProvider(((ConfigurationFile)stuffs[1]).GetUsername(), ((ConfigurationFile)stuffs[1]).GetPassword(), ((ConfigurationFile)stuffs[1]).GetServer(), ((ConfigurationFile)stuffs[1]).GetAcceptcrt(), ((ConfigurationFile)stuffs[1]).GetUsesticky());
 				if (i==0) {
 					((ConfigurationFile)stuffs[1]).SaveConfigurationToXML();
 					((AccontConfigurationActivity)stuffs[3]).setResult(AccontConfigurationActivity.TO_REFRESH);

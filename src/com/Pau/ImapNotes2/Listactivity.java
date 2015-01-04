@@ -112,7 +112,9 @@ public class Listactivity extends Activity {
 					((Imaper)stuffs[0]).ConnectToProvider(
 						((ConfigurationFile)stuffs[1]).GetUsername(),
 						((ConfigurationFile)stuffs[1]).GetPassword(),
-						((ConfigurationFile)stuffs[1]).GetServer());
+						((ConfigurationFile)stuffs[1]).GetServer(),
+						((ConfigurationFile)stuffs[1]).GetAcceptcrt(),
+						((ConfigurationFile)stuffs[1]).GetUsesticky());
 				((Imaper)stuffs[0]).GetNotes(this.notesList);
 				this.bool_to_return=true;
 			} catch (Exception e) {
@@ -153,6 +155,7 @@ public class Listactivity extends Activity {
 	Imaper imapFolder;
 	boolean bool_to_return;
 	OneNote currentNote = null;
+	String body = null;
     	
 		@Override
 		protected Boolean doInBackground(Object... stuffs) {
@@ -167,11 +170,13 @@ public class Listactivity extends Activity {
 					((Imaper)stuffs[0]).ConnectToProvider(
 						((ConfigurationFile)stuffs[1]).GetUsername(),
 						((ConfigurationFile)stuffs[1]).GetPassword(),
-						((ConfigurationFile)stuffs[1]).GetServer());
+						((ConfigurationFile)stuffs[1]).GetServer(),
+						((ConfigurationFile)stuffs[1]).GetAcceptcrt(),
+						((ConfigurationFile)stuffs[1]).GetUsesticky());
 
 				// Do we have a note to remove?
 				if (this.numInImap != null) {
-					Log.d(TAG,"Received request to delete message #"+numInImap);
+					//Log.d(TAG,"Received request to delete message #"+numInImap);
 					Integer numInImapInt = new Integer(this.numInImap);
 					try {
 						this.imapFolder.DeleteNote(numInImapInt);
@@ -183,17 +188,22 @@ public class Listactivity extends Activity {
 				}
 				// Do we have a note to add?
 				if (this.snote != null) {
-				        	Log.d(TAG,"Received request to add new message"+snote);
-				        	String noteTxt = Html.fromHtml(snote).toString();
-				        	Log.d(TAG,"fromHtml="+noteTxt);
-                			String[] tok = noteTxt.split("\n", 2);
-                			String title = tok[0];
-                			String body = "<html><head></head><body>" + snote + "</body></html>";
-                			this.currentNote = new OneNote(title,body,new Date().toLocaleString(),"");
-                			Log.d(TAG,"newbody="+body);
+					if (snote.endsWith("</p>\n")) snote = snote.substring(0, snote.length() - 5);
+				        //Log.d(TAG,"Received request to add new message"+snote+"===");
+				        String noteTxt = Html.fromHtml(snote).toString();
+					if (noteTxt.endsWith("\n\n")) noteTxt = noteTxt.substring(0, noteTxt.length() - 2);
+				        //Log.d(TAG,"fromHtml="+noteTxt);
+                		String[] tok = noteTxt.split("\n", 2);
+                		String title = tok[0];
+					if (((ConfigurationFile)stuffs[1]).GetUsesticky().equals("true"))
+                				body = noteTxt.replaceAll("\n", "\\\\n");
+					else
+                				body = "<html><head></head><body>" + snote + "</body></html>";
+                			this.currentNote = new OneNote(title, body, new Date().toLocaleString(), "");
+                			//Log.d(TAG,"newbody="+body);
                 			// Here we ask to add the new note to the "Notes" folder
 					try {
-                				this.imapFolder.AddNote(currentNote);
+                				this.imapFolder.AddNote(currentNote, ((ConfigurationFile)stuffs[1]).GetUsesticky());
                 				this.bool_to_return=true;
 					} catch (Exception ex) {
                 				Log.d(TAG,"Exception catched: " + ex.getMessage());
@@ -213,12 +223,12 @@ public class Listactivity extends Activity {
 			if (result) {
 				if (this.numInImap != null) /* remove note */ {
                 		// Here we delete the note from the local notes list
-						Log.d(TAG,"Delete note in Listview");
+						//Log.d(TAG,"Delete note in Listview");
 						this.notesList.remove(getIndexByNumber(this.numInImap));
 				}
 				if (this.snote != null) /* add note */ {
                 		// Here we add the new note to the local notes list
-						Log.d(TAG,"Add note in Listview");
+						//Log.d(TAG,"Add note in Listview");
 						this.notesList.add(0,this.currentNote);
 				}
 				if (this.bool_to_return) /* note added or removed */

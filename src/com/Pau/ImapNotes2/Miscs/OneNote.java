@@ -35,6 +35,10 @@ public class OneNote extends HashMap<String,String>{
 		return this.get("body");
 	}
 	
+	public void SetBody(String body){
+		this.put("body", body);
+	}
+	
 	public String GetDate(){
 		return this.get("date");
 	}
