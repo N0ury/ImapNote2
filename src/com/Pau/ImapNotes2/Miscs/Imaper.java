@@ -90,6 +90,10 @@ public class Imaper {
 			    Matcher m = p.matcher(stringres);
 			    if (m.find()) {
 			    	stringres = m.group(1);
+			    	// Kerio Connect puts CR+LF+space every 78 characters from line 2
+			    	// first line seem to be smaller. We remove these characters
+			    	stringres = stringres.replaceAll("\r\n ", "");
+			    	// newline in Kerio is the string (not the character) "\n"
 			    	stringres = stringres.replaceAll("\\\\n", "<br>");
 			    }
 			}
