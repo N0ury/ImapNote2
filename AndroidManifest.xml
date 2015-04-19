@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.Pau.ImapNotes2"
-	android:versionCode="12"
-	android:versionName="2.11">
+	android:versionCode="13"
+	android:versionName="2.20">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -40,7 +40,7 @@
 				android:value="com.Pau.ImapNotes2.Listactivity" />
 		</activity>
 
-		<service android:name="ImapNotesAuthenticationService" android:exported="true">
+		<service android:name="ImapNotesAuthenticatorService" android:exported="true">
 			<intent-filter>
 				<action android:name="android.accounts.AccountAuthenticator" />
 			</intent-filter>

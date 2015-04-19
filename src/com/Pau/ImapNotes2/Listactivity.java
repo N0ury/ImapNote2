@@ -10,7 +10,9 @@ import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -66,8 +68,8 @@ public class Listactivity extends Activity {
 	((ImapNotes2)this.getApplicationContext()).SetImaper(this.imapFolder);
 	
 	this.storedNotes = new NotesDb(this.getApplicationContext());
-	
-	if (this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null){
+
+	if ((this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null) || (this.settings.GetPortnum()=="")) {
 	    startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
 	
 	} else {
@@ -113,7 +115,8 @@ public class Listactivity extends Activity {
 						((ConfigurationFile)stuffs[1]).GetUsername(),
 						((ConfigurationFile)stuffs[1]).GetPassword(),
 						((ConfigurationFile)stuffs[1]).GetServer(),
-						((ConfigurationFile)stuffs[1]).GetAcceptcrt(),
+						((ConfigurationFile)stuffs[1]).GetPortnum(),
+						((ConfigurationFile)stuffs[1]).GetSecurity(),
 						((ConfigurationFile)stuffs[1]).GetUsesticky());
 				((Imaper)stuffs[0]).GetNotes(this.notesList);
 				this.bool_to_return=true;
@@ -171,7 +174,8 @@ public class Listactivity extends Activity {
 						((ConfigurationFile)stuffs[1]).GetUsername(),
 						((ConfigurationFile)stuffs[1]).GetPassword(),
 						((ConfigurationFile)stuffs[1]).GetServer(),
-						((ConfigurationFile)stuffs[1]).GetAcceptcrt(),
+						((ConfigurationFile)stuffs[1]).GetPortnum(),
+						((ConfigurationFile)stuffs[1]).GetSecurity(),
 						((ConfigurationFile)stuffs[1]).GetUsesticky());
 
 				// Do we have a note to remove?
@@ -276,8 +280,9 @@ public class Listactivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){ 
     	switch(requestCode) {
     		case Listactivity.LOGIN_BUTTON:
-    			if(resultCode==AccontConfigurationActivity.TO_REFRESH)
+    			if(resultCode==AccontConfigurationActivity.TO_REFRESH) {
     				this.RefreshList();
+			}
     		case Listactivity.SEE_DETAIL:
 			// Returning from NoteDetailActivity
 			if (resultCode == this.DELETE_BUTTON) {

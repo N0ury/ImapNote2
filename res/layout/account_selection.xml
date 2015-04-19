@@ -5,22 +5,42 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
     <TextView android:text="Account Configuration" android:textColor="#000000" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginBottom="10dip"></TextView>
-    <TextView android:text="username" android:textColor="#000000" android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+    <TextView android:text="Username" android:textColor="#000000" android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
     <EditText android:hint="your login" android:id="@+id/usernameEdit" android:layout_width="fill_parent" android:layout_height="wrap_content" android:inputType="textEmailAddress" android:layout_marginBottom="5dip">
         <requestFocus></requestFocus>
     </EditText>
-    <TextView android:text="password" android:textColor="#000000" android:id="@+id/passwordText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+
+    <TextView android:text="Password" android:textColor="#000000" android:id="@+id/passwordText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+
     <EditText android:hint="your password" android:id="@+id/passwordEdit" android:layout_width="fill_parent" android:layout_height="wrap_content" android:inputType="textPassword"></EditText>
-    <TextView android:text="server" android:textColor="#000000" android:id="@+id/textView3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+
+    <TextView android:text="Server" android:textColor="#000000" android:id="@+id/textView3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+
     <EditText android:hint="imap notes server" android:id="@+id/serverEdit" android:layout_width="fill_parent" android:layout_height="wrap_content" android:inputType="text" android:layout_marginBottom="5dip">
     </EditText>
 
-    <CheckBox
-        android:id="@+id/acceptcrtCheckBox"
+    <TextView android:text="Port Number" android:textColor="#000000" android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+
+    <EditText
+        android:id="@+id/portnumEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checked="false"
-        android:text="Accept Untrusted Certificate for this server" />
+        android:layout_marginBottom="5dip"
+        android:ems="10"
+        android:hint="server port number to use"
+        android:inputType="number"
+        android:textColor="#000000" >
+
+    </EditText>
+
+    <TextView android:text="Security" android:textColor="#000000" android:id="@+id/textView5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium"></TextView>
+
+    <Spinner
+        android:id="@+id/securitySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/spinner_prompt" >
+    </Spinner>
 
     <CheckBox
         android:id="@+id/stickyCheckBox"

@@ -20,7 +20,8 @@ public class ConfigurationFile {
 	private String username;
 	private String password;
 	private String server;
-	private String acceptcrt;
+	private String portnum;
+	private String security;
 	private String usesticky;
 	
 	
@@ -33,12 +34,16 @@ public class ConfigurationFile {
 			this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
             		this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
             		this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
-			if (this.LoadItemFromXML(fileToLoad, "acceptcrt").getLength() == 0)
-				// acceptcrt option doesn't exist, say no
-				this.acceptcrt = "false";
+			if (this.LoadItemFromXML(fileToLoad, "portnum").getLength() == 0)
+				// portnum option doesn't exist
+				this.portnum = "";
 			else
-				this.acceptcrt = this.LoadItemFromXML(fileToLoad, "acceptcrt").item(0).getChildNodes().item(0).getNodeValue();
-
+				this.portnum = this.LoadItemFromXML(fileToLoad, "portnum").item(0).getChildNodes().item(0).getNodeValue();
+			if (this.LoadItemFromXML(fileToLoad, "security").getLength() == 0)
+				// security option doesn't exist, say "0"
+				this.security = "0";
+			else
+				this.security = this.LoadItemFromXML(fileToLoad, "security").item(0).getChildNodes().item(0).getNodeValue();
 			if (this.LoadItemFromXML(fileToLoad, "usesticky").getLength() == 0)
 				// usesticky option doesn't exist, say no
 				this.usesticky = "false";
@@ -50,7 +55,8 @@ public class ConfigurationFile {
 			this.username = null;
             		this.password = null;
             		this.server = null;
-            		this.acceptcrt = null;
+            		this.portnum = null;
+            		this.security = null;
             		this.usesticky = null;
             
 		}
@@ -87,13 +93,23 @@ public class ConfigurationFile {
          
 	}
 	
-	public String GetAcceptcrt(){
-		return this.acceptcrt;
+	public String GetPortnum(){
+		return this.portnum;
          
 	}
  
-	public void SetAcceptcrt(String Acceptcrt){
-		this.acceptcrt = Acceptcrt;
+	public void SetPortnum(String Portnum){
+		this.portnum = Portnum;
+         
+	}
+	
+	public String GetSecurity(){
+		return this.security;
+         
+	}
+ 
+	public void SetSecurity(String Security){
+		this.security = Security;
          
 	}
 	
@@ -112,7 +128,8 @@ public class ConfigurationFile {
         this.username=null;
         this.password=null;
         this.server=null;
-        this.acceptcrt=null;
+        this.portnum=null;
+        this.security=null;
         this.usesticky=null;
         
 	}
@@ -132,9 +149,12 @@ public class ConfigurationFile {
                 serializer.startTag(null, "server");
                 serializer.text(this.server);
                 serializer.endTag(null, "server");
-                serializer.startTag(null, "acceptcrt");
-                serializer.text(this.acceptcrt);
-                serializer.endTag(null, "acceptcrt");
+                serializer.startTag(null, "portnum");
+                serializer.text(this.portnum);
+                serializer.endTag(null, "portnum");
+                serializer.startTag(null, "security");
+                serializer.text(this.security);
+                serializer.endTag(null, "security");
                 serializer.startTag(null, "usesticky");
                 serializer.text(this.usesticky);
                 serializer.endTag(null, "usesticky");
