@@ -6,6 +6,9 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Date;
+
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 
 import javax.mail.internet.ContentType;
@@ -20,7 +23,6 @@ import java.util.UUID;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.util.MailSSLSocketFactory;
 import java.util.regex.*;
-
 import org.apache.commons.io.IOUtils;
 
 public class Imaper {
@@ -89,7 +91,6 @@ public class Imaper {
       }
     } else if (this.acceptcrt.equals("false")) {
       props.put(String.format("mail.%s.ssl.checkserveridentity", this.proto), "true");
-//      props.setProperty(String.format("mail.%s.socketFactory.class", this.proto), "javax.net.ssl.SSLSocketFactory");
       if (this.proto.equals("imap")) {
         props.put("mail.imap.starttls.enable", "true");
       }
@@ -144,6 +145,15 @@ public class Imaper {
           // newline in Kerio is the string (not the character) "\n"
           stringres = stringres.replaceAll("\\\\n", "<br>");
         }
+      } else if (contentType.getSubType().equalsIgnoreCase("html")) {
+          //Log.d(TAG,"From server:"+stringres);
+          Spanned spanres = Html.fromHtml(stringres);
+          stringres = Html.toHtml(spanres);
+          stringres = stringres.replaceFirst("<p dir=ltr>", "");
+          stringres = stringres.replaceFirst("<p dir=\"ltr\">", "");
+          stringres = stringres.replaceAll("<p dir=ltr>", "<br>");
+          stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
+          stringres = stringres.replaceAll("</p>", "");
       }
       OneNote aNote = new OneNote(
       notesMessages[index].getSubject(),
@@ -151,8 +161,8 @@ public class Imaper {
       notesMessages[index].getReceivedDate().toLocaleString(),
       new Integer (notesMessages[index].getMessageNumber()).toString());
       notesList.add(aNote);
-      //Log.d(TAG,"title:"+(String)notesMessages[index].getSubject());
-      //Log.d(TAG,"content:"+stringres);
+      //Log.d(TAG,"Got title:"+(String)notesMessages[index].getSubject());
+      //Log.d(TAG,"Got content:"+stringres);
     }
     //Log.d(TAG,"number of messages read="+notesList.size());
     
@@ -200,6 +210,12 @@ public class Imaper {
       UUID uuid = UUID.randomUUID();
       message.setHeader("X-Universally-Unique-Identifier", uuid.toString());
       body = note.GetBody();
+      body = body.replaceFirst("<p dir=ltr>", "<div>");
+      body = body.replaceFirst("<p dir=\"ltr\">", "<div>");
+      body = body.replaceAll("<p dir=ltr>", "<div><br></div><div>");
+      body = body.replaceAll("<p dir=\"ltr\">", "<div><br></div><div>");
+      body = body.replaceAll("</p>", "</div>");
+      body = body.replaceAll("<br>\n", "</div><div>");
       message.setText(body, "utf-8", "html");
     }
     message.setSubject(note.GetTitle());
@@ -212,5 +228,7 @@ public class Imaper {
     // put in it the one of message just inserted
     note.SetNumber(String.valueOf(msgs2[0].getMessageNumber()));
     //Log.d(TAG,"NUM:"+msgs[0].getMessageNumber()+"==="+notesFolder.getMessageCount()+"==="+msgs2.length+"===="+msgs2[0].getMessageNumber());
+    Log.d(TAG,"Title sent to server:"+message.getSubject());
+    Log.d(TAG,"Content sent to server:"+body);
   }
 }

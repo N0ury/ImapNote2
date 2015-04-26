@@ -6,6 +6,7 @@ import com.Pau.ImapNotes2.Miscs.OneNote;
 import android.app.Activity;
 import android.graphics.Color;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.EditText;
 import android.os.Bundle;
@@ -36,8 +37,8 @@ public class NoteDetailActivity extends Activity {
 				this.hm.get("date").toString(),
 				(this.hm.get("number").toString()));
 
-        String plainText = Html.fromHtml(this.currentNote.GetBody()).toString();
-       ((EditText)findViewById(R.id.bodyView)).setText(plainText);
+    	Spanned plainText = Html.fromHtml(this.currentNote.GetBody());
+        ((EditText)findViewById(R.id.bodyView)).setText(plainText);
        this.ResetColors();
        
         

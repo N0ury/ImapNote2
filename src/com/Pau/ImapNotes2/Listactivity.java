@@ -10,9 +10,7 @@ import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 import android.widget.ListView;
-import android.widget.EditText;
 import android.text.Html;
 
 public class Listactivity extends Activity {
@@ -192,19 +189,15 @@ public class Listactivity extends Activity {
 				}
 				// Do we have a note to add?
 				if (this.snote != null) {
-					if (snote.endsWith("</p>\n")) snote = snote.substring(0, snote.length() - 5);
-				        //Log.d(TAG,"Received request to add new message"+snote+"===");
-				        String noteTxt = Html.fromHtml(snote).toString();
-					if (noteTxt.endsWith("\n\n")) noteTxt = noteTxt.substring(0, noteTxt.length() - 2);
-				        //Log.d(TAG,"fromHtml="+noteTxt);
-                		String[] tok = noteTxt.split("\n", 2);
-                		String title = tok[0];
+				        //Log.d(TAG,"Received request to add new message"+this.snote+"===");
+				        String noteTxt = Html.fromHtml(this.snote).toString();
+                			String[] tok = noteTxt.split("\n", 2);
+                			String title = tok[0];
 					if (((ConfigurationFile)stuffs[1]).GetUsesticky().equals("true"))
                 				body = noteTxt.replaceAll("\n", "\\\\n");
 					else
-                				body = "<html><head></head><body>" + snote + "</body></html>";
+                				body = "<html><head></head><body>" + this.snote + "</body></html>";
                 			this.currentNote = new OneNote(title, body, new Date().toLocaleString(), "");
-                			//Log.d(TAG,"newbody="+body);
                 			// Here we ask to add the new note to the "Notes" folder
 					try {
                 				this.imapFolder.AddNote(currentNote, ((ConfigurationFile)stuffs[1]).GetUsesticky());
@@ -294,8 +287,8 @@ public class Listactivity extends Activity {
 			if (resultCode == this.EDIT_BUTTON) {
 				String txt = data.getStringExtra("EDIT_ITEM_TXT");
 				String numInImap = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
-//				Log.d(TAG,"Received request to delete message:"+numInImap);
-//				Log.d(TAG,"Received request to replace message with:"+txt);
+				//Log.d(TAG,"Received request to delete message:"+numInImap);
+				//Log.d(TAG,"Received request to replace message with:"+txt);
 				this.UpdateList(numInImap, txt);
 			}
     		case Listactivity.NEW_BUTTON:

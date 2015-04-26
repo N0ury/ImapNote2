@@ -1,10 +1,7 @@
 package com.Pau.ImapNotes2;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.text.Html;
-import android.text.SpannableString;
-import android.view.View;
 import android.widget.EditText;
 import android.os.Bundle;
 import android.view.Menu;
