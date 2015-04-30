@@ -51,7 +51,6 @@ public class ConfigurationFile {
             			this.usesticky = this.LoadItemFromXML(fileToLoad, "usesticky").item(0).getChildNodes().item(0).getNodeValue();
 			
 		} catch (Exception e) {
-			Log.v("ImapNotes2", e.getMessage());
 			this.username = null;
             		this.password = null;
             		this.server = null;

@@ -8,13 +8,14 @@ import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Application;
 
+import android.util.Log;
+
 public class ImapNotes2 extends Application {
 	
 	private ConfigurationFile thisSessionConfigurationFile;
 	private Imaper thisSessionImapFolder;
 	private ArrayList<OneNote> noteList;
 
-	
 	public void SetConfigurationFile(ConfigurationFile currentSettings){
 		this.thisSessionConfigurationFile = currentSettings;
 		

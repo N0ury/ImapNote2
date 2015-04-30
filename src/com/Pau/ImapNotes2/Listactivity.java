@@ -10,8 +10,12 @@ import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.text.Html;
 
 public class Listactivity extends Activity {
@@ -68,13 +73,12 @@ public class Listactivity extends Activity {
 
 	if ((this.settings.GetUsername()==null && this.settings.GetPassword()==null && this.settings.GetServer()==null) || (this.settings.GetPortnum()=="")) {
 	    startActivityForResult(new Intent(this, AccontConfigurationActivity.class), Listactivity.LOGIN_BUTTON);
-	
 	} else {
-		this.storedNotes.OpenDb();
-		this.storedNotes.GetStoredNotes(this.noteList);
-		this.listToView.notifyDataSetChanged();
-		this.storedNotes.CloseDb();
-		this.RefreshList();
+	    this.storedNotes.OpenDb();
+	    this.storedNotes.GetStoredNotes(this.noteList);
+	    this.listToView.notifyDataSetChanged();
+	    this.storedNotes.CloseDb();
+	    if (savedInstanceState==null) this.RefreshList();
 	}
 	
 	// When item is clicked, we go to NoteDetailActivity
@@ -264,6 +268,25 @@ public class Listactivity extends Activity {
 			return true;
 		case R.id.newnote:
 			startActivityForResult(new Intent(this, NewNoteActivity.class), Listactivity.NEW_BUTTON);
+			return true;
+		case R.id.about:
+			try {
+				ComponentName comp = new ComponentName(this.getApplicationContext(), Listactivity.class);
+				PackageInfo pinfo = this.getApplicationContext().getPackageManager().getPackageInfo(comp.getPackageName(), 0);
+				String version = "Version: " + pinfo.versionName;
+
+				new AlertDialog.Builder(this)
+					.setTitle("About ImapNotes2")
+					.setMessage("Version: " + pinfo.versionName)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        					public void onClick(DialogInterface dialog, int which) { 
+            					// Do nothing
+        					}
+     					})
+					.show();
+			} catch (android.content.pm.PackageManager.NameNotFoundException e) {
+				Log.d("XXXXX","except");
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
