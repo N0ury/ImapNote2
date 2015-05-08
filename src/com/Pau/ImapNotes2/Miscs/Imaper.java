@@ -20,6 +20,8 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Flags;
 import java.util.UUID;
+
+import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.util.MailSSLSocketFactory;
 import java.util.regex.*;
@@ -32,6 +34,8 @@ public class Imaper {
   private static final String TAG = "IN_Imaper";
   private String proto;
   private String acceptcrt;
+  private static String sfolder = "Notes";
+  private Folder notesFolder = null;
   
   public int ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky) throws MessagingException{
     if (this.IsConnected())
@@ -106,6 +110,21 @@ public class Imaper {
     this.store = this.session.getStore(this.proto);
     try {
       this.store.connect(server, username, password);
+      Folder[] folders = store.getPersonalNamespaces();
+      for (Folder folder : folders) {
+        if (folder.getFullName().length() == 0) {
+                this.sfolder = "Notes";
+                break;
+        }
+        Folder[] fls = folder.list();
+        for (javax.mail.Folder fl : fls) {
+          try {
+            this.sfolder = fl.getFullName();
+          } catch (Exception e) {
+            System.out.println("Exception");
+          }
+        }
+      }
       return 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -118,14 +137,15 @@ public class Imaper {
   public void GetNotes(ArrayList<OneNote> notesList) throws MessagingException, IOException{
     String stringres = new String();
     String charset = new String();
-    Folder notesFolder = this.store.getFolder("Notes");
-    if (notesFolder.isOpen()) {
-      if ((notesFolder.getMode() & Folder.READ_ONLY) != 0)
-        notesFolder.open(Folder.READ_ONLY);
+System.out.println("Get:"+this.sfolder);
+    this.notesFolder = this.store.getFolder(this.sfolder);
+    if (this.notesFolder.isOpen()) {
+      if ((this.notesFolder.getMode() & Folder.READ_ONLY) != 0)
+        this.notesFolder.open(Folder.READ_ONLY);
     } else {
-      notesFolder.open(Folder.READ_ONLY);
+      this.notesFolder.open(Folder.READ_ONLY);
     }
-    Message[] notesMessages = notesFolder.getMessages();
+    Message[] notesMessages = this.notesFolder.getMessages();
     //Log.d(TAG,"number of messages in folder="+(notesMessages.length));
     notesList.clear();
     for(int index=notesMessages.length-1; index>=0; index--){
@@ -155,11 +175,13 @@ public class Imaper {
           stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
           stringres = stringres.replaceAll("</p>", "");
       }
+      Log.d(TAG,"UID read:"+((IMAPFolder)this.notesFolder).getUID(notesMessages[index]));
       OneNote aNote = new OneNote(
       notesMessages[index].getSubject(),
       stringres,
       notesMessages[index].getReceivedDate().toLocaleString(),
-      new Integer (notesMessages[index].getMessageNumber()).toString());
+      Long.toString(((IMAPFolder)this.notesFolder).getUID(notesMessages[index])));
+//    new Integer (notesMessages[index].getMessageNumber()).toString());
       notesList.add(aNote);
       //Log.d(TAG,"Got title:"+(String)notesMessages[index].getSubject());
       //Log.d(TAG,"Got content:"+stringres);
@@ -173,29 +195,34 @@ public class Imaper {
   }
 
   public void DeleteNote(int numMessage) throws MessagingException, IOException {
-    Folder notesFolder = this.store.getFolder("Notes");
-    if (notesFolder.isOpen()) {
-      if ((notesFolder.getMode() & Folder.READ_WRITE) != 0)
-        notesFolder.open(Folder.READ_WRITE);
+System.out.println("Del:"+this.sfolder);
+    this.notesFolder = this.store.getFolder(this.sfolder);
+    if (this.notesFolder.isOpen()) {
+      if ((this.notesFolder.getMode() & Folder.READ_WRITE) != 0)
+        this.notesFolder.open(Folder.READ_WRITE);
     } else {
-      notesFolder.open(Folder.READ_WRITE);
+      this.notesFolder.open(Folder.READ_WRITE);
     }
     //Log.d(TAG,"Mark as deleted message #"+numMessage);
-    final int[] msgs = {numMessage};
-    notesFolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
-    notesFolder.expunge();
+ //   final int[] msgs = {numMessage};
+ //   this.notesFolder.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
+    //Log.d(TAG,"UID to remove:"+numMessage);
+    Message[] msgs = {((IMAPFolder)this.notesFolder).getMessageByUID(numMessage)};
+    ((IMAPFolder)this.notesFolder).setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
+    this.notesFolder.expunge();
   }
 
   public void AddNote(OneNote note, String usesticky) throws MessagingException, IOException {
     String body = null;
 
     // Here we add the new note to the "Notes" folder
-    Folder notesFolder = this.store.getFolder("Notes");
-    if (notesFolder.isOpen()) {
-      if ((notesFolder.getMode() & Folder.READ_WRITE) != 0)
-        notesFolder.open(Folder.READ_WRITE);
+System.out.println("Add:"+this.sfolder);
+    this.notesFolder = this.store.getFolder(this.sfolder);
+    if (this.notesFolder.isOpen()) {
+      if ((this.notesFolder.getMode() & Folder.READ_WRITE) != 0)
+        this.notesFolder.open(Folder.READ_WRITE);
     } else {
-      notesFolder.open(Folder.READ_WRITE);
+      this.notesFolder.open(Folder.READ_WRITE);
     }
     //Log.d(TAG,"Add new note");
     MimeMessage message = new MimeMessage(this.session);
@@ -222,13 +249,19 @@ public class Imaper {
     message.setSentDate(new Date());
     final MimeMessage[] msgs = {message};
     final Message[] msgs2;
-    //notesFolder.appendMessages(msgs);
-    msgs2 = ((IMAPFolder)notesFolder).addMessages(msgs);
+//this.notesFolder.appendMessages(msgs);
+//    String uid = Long.toString(((IMAPFolder)this.notesFolder).getUIDNext());
+//msgs2 = ((IMAPFolder)this.notesFolder).addMessages(msgs);
+    AppendUID[] uids = ((IMAPFolder)this.notesFolder).appendUIDMessages(msgs);
+    //String uid = Long.toString(((IMAPFolder)this.notesFolder).getUID(msgs2[0]));
+    String uid = Long.toString(uids[0].uid);
+    Log.d(TAG,"UID to add:"+uid);
     // message was inserted in folder but note still doesn't have number
     // put in it the one of message just inserted
-    note.SetNumber(String.valueOf(msgs2[0].getMessageNumber()));
-    //Log.d(TAG,"NUM:"+msgs[0].getMessageNumber()+"==="+notesFolder.getMessageCount()+"==="+msgs2.length+"===="+msgs2[0].getMessageNumber());
-    Log.d(TAG,"Title sent to server:"+message.getSubject());
-    Log.d(TAG,"Content sent to server:"+body);
+    //note.SetNumber(String.valueOf(msgs2[0].getMessageNumber()));
+	note.SetNumber(uid);
+    //Log.d(TAG,"NUM:"+uid);
+    //Log.d(TAG,"Title sent to server:"+message.getSubject());
+    //Log.d(TAG,"Content sent to server:"+body);
   }
 }

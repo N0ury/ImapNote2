@@ -187,7 +187,7 @@ public class Listactivity extends Activity {
 						this.imapFolder.DeleteNote(numInImapInt);
 						this.bool_to_return=true;
 					} catch (Exception ex) {
-                				Log.d(TAG,"Exception catched: " + ex.getMessage());
+                				Log.d(TAG,"Exception catched (remove): " + ex.getMessage());
 						this.bool_to_return=false;
         				}
 				}
@@ -207,7 +207,8 @@ public class Listactivity extends Activity {
                 				this.imapFolder.AddNote(currentNote, ((ConfigurationFile)stuffs[1]).GetUsesticky());
                 				this.bool_to_return=true;
 					} catch (Exception ex) {
-                				Log.d(TAG,"Exception catched: " + ex.getMessage());
+								ex.printStackTrace();
+                				Log.d(TAG,"Exception catched (add): " + ex.getMessage());
                 				this.bool_to_return=false;
         			}
 				}

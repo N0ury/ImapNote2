@@ -12,7 +12,7 @@
             android:id="@+id/editNote"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textNoSuggestions"
             android:ems="10" >
 
             <requestFocus></requestFocus>
