@@ -137,7 +137,6 @@ public class Imaper {
   public void GetNotes(ArrayList<OneNote> notesList) throws MessagingException, IOException{
     String stringres = new String();
     String charset = new String();
-System.out.println("Get:"+this.sfolder);
     this.notesFolder = this.store.getFolder(this.sfolder);
     if (this.notesFolder.isOpen()) {
       if ((this.notesFolder.getMode() & Folder.READ_ONLY) != 0)
@@ -195,7 +194,6 @@ System.out.println("Get:"+this.sfolder);
   }
 
   public void DeleteNote(int numMessage) throws MessagingException, IOException {
-System.out.println("Del:"+this.sfolder);
     this.notesFolder = this.store.getFolder(this.sfolder);
     if (this.notesFolder.isOpen()) {
       if ((this.notesFolder.getMode() & Folder.READ_WRITE) != 0)
@@ -216,7 +214,6 @@ System.out.println("Del:"+this.sfolder);
     String body = null;
 
     // Here we add the new note to the "Notes" folder
-System.out.println("Add:"+this.sfolder);
     this.notesFolder = this.store.getFolder(this.sfolder);
     if (this.notesFolder.isOpen()) {
       if ((this.notesFolder.getMode() & Folder.READ_WRITE) != 0)
