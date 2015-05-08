@@ -175,7 +175,7 @@ System.out.println("Get:"+this.sfolder);
           stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
           stringres = stringres.replaceAll("</p>", "");
       }
-      Log.d(TAG,"UID read:"+((IMAPFolder)this.notesFolder).getUID(notesMessages[index]));
+      //Log.d(TAG,"UID read:"+((IMAPFolder)this.notesFolder).getUID(notesMessages[index]));
       OneNote aNote = new OneNote(
       notesMessages[index].getSubject(),
       stringres,
@@ -255,7 +255,7 @@ System.out.println("Add:"+this.sfolder);
     AppendUID[] uids = ((IMAPFolder)this.notesFolder).appendUIDMessages(msgs);
     //String uid = Long.toString(((IMAPFolder)this.notesFolder).getUID(msgs2[0]));
     String uid = Long.toString(uids[0].uid);
-    Log.d(TAG,"UID to add:"+uid);
+    //Log.d(TAG,"UID to add:"+uid);
     // message was inserted in folder but note still doesn't have number
     // put in it the one of message just inserted
     //note.SetNumber(String.valueOf(msgs2[0].getMessageNumber()));
