@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.Pau.ImapNotes2"
-	android:versionCode="19"
-	android:versionName="2.24" xmlns:android="http://schemas.android.com/apk/res/android">
+	android:versionCode="20"
+	android:versionName="2.25" xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

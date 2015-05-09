@@ -21,7 +21,7 @@ Main changes are:
 - it's possible to create new notes ("new note" option on list screen)
 - it's possible to modify notes (change note on detail screen, then save it with disk icon)
 - navigation uses ActionBar (minSdkVersion=14)
-- app has been modified to handle sticky notes used by Kerio Connect servers
+- app has been modified to handle sticky notes used by Kerio Connect servers and Courier IMAP servers
 - even if not recommended, untrusted certificates can be used.
 - imap port number can be choosed. 993 is no more the only one accepted
 - security can be plain text, SSL/TLS or STARTTLS
