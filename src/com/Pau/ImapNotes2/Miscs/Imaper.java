@@ -119,7 +119,10 @@ public class Imaper {
         Folder[] fls = folder.list();
         for (javax.mail.Folder fl : fls) {
           try {
-            this.sfolder = fl.getFullName();
+        	  char separator = ((IMAPFolder)fl).getSeparator();
+        	  this.sfolder = fl.getFullName();
+Log.d("XXXXXXXXXXXXX",this.sfolder);
+			if (this.sfolder.endsWith(separator+"Notes")) break;
           } catch (Exception e) {
             System.out.println("Exception");
           }
