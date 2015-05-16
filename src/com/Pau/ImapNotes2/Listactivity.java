@@ -41,7 +41,7 @@ public class Listactivity extends Activity {
 	private ArrayList<OneNote> noteList;
 	private SimpleAdapter listToView;
 	
-	private ConfigurationFile settings;
+	private static ConfigurationFile settings;
 	private Imaper imapFolder;
 	private NotesDb storedNotes;
 	private OneNote currentNote;
@@ -86,6 +86,7 @@ public class Listactivity extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
 			Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
 			toDetail.putExtra("selectedNote", (OneNote)noteList.get(selectedNote));
+			toDetail.putExtra("usesSticky", Listactivity.settings.GetUsesticky());
 			startActivityForResult(toDetail,SEE_DETAIL); 
 		}
 	  });
@@ -144,10 +145,10 @@ public class Listactivity extends Activity {
     }
     
 //=================================================================================
-    public void UpdateList(String numInImap, String snote){
+    public void UpdateList(String numInImap, String snote, String color){
 		ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2" , "Updating notes list... ", true);
 
-		new UpdateThread().execute(this.imapFolder, this.settings, this.noteList, this.listToView, loadingDialog, numInImap, snote);
+		new UpdateThread().execute(this.imapFolder, this.settings, this.noteList, this.listToView, loadingDialog, numInImap, snote, color);
 
     }
     
@@ -156,6 +157,7 @@ public class Listactivity extends Activity {
     	ArrayList<OneNote> notesList;
 	String numInImap;
 	String snote;
+	String color;
 	Imaper imapFolder;
 	boolean bool_to_return;
 	OneNote currentNote = null;
@@ -167,6 +169,7 @@ public class Listactivity extends Activity {
 			this.notesList = ((ArrayList<OneNote>)stuffs[2]);
 			this.numInImap = ((String)stuffs[5]);
 			this.snote = ((String)stuffs[6]);
+			this.color = ((String)stuffs[7]);
 			this.imapFolder = ((Imaper)stuffs[0]);
 	
 			try {
@@ -197,11 +200,12 @@ public class Listactivity extends Activity {
 				        String noteTxt = Html.fromHtml(this.snote).toString();
                 			String[] tok = noteTxt.split("\n", 2);
                 			String title = tok[0];
+String position = "0 0 0 0";
 					if (((ConfigurationFile)stuffs[1]).GetUsesticky().equals("true"))
                 				body = noteTxt.replaceAll("\n", "\\\\n");
 					else
                 				body = "<html><head></head><body>" + this.snote + "</body></html>";
-                			this.currentNote = new OneNote(title, body, new Date().toLocaleString(), "");
+                			this.currentNote = new OneNote(title, body, new Date().toLocaleString(), "", position, this.color);
                 			// Here we ask to add the new note to the "Notes" folder
 					try {
                 				this.imapFolder.AddNote(currentNote, ((ConfigurationFile)stuffs[1]).GetUsesticky());
@@ -274,11 +278,12 @@ public class Listactivity extends Activity {
 			try {
 				ComponentName comp = new ComponentName(this.getApplicationContext(), Listactivity.class);
 				PackageInfo pinfo = this.getApplicationContext().getPackageManager().getPackageInfo(comp.getPackageName(), 0);
-				String version = "Version: " + pinfo.versionName;
+				String versionName = "Version: " + pinfo.versionName;
+				String versionCode = "Code: " + String.valueOf(pinfo.versionCode);
 
 				new AlertDialog.Builder(this)
 					.setTitle("About ImapNotes2")
-					.setMessage("Version: " + pinfo.versionName)
+					.setMessage(versionName + "\n" + versionCode)
 					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
         					public void onClick(DialogInterface dialog, int which) { 
             					// Do nothing
@@ -306,21 +311,22 @@ public class Listactivity extends Activity {
 				// Delete Message asked for
 				// String numInImap will contain the Message Imap Number to delete
 				String numInImap = data.getStringExtra("DELETE_ITEM_NUM_IMAP");
-				this.UpdateList(numInImap, null);
+				this.UpdateList(numInImap, null, null);
 			}
 			if (resultCode == this.EDIT_BUTTON) {
 				String txt = data.getStringExtra("EDIT_ITEM_TXT");
 				String numInImap = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
+				String color = data.getStringExtra("EDIT_ITEM_COLOR");
 				//Log.d(TAG,"Received request to delete message:"+numInImap);
 				//Log.d(TAG,"Received request to replace message with:"+txt);
-				this.UpdateList(numInImap, txt);
+				this.UpdateList(numInImap, txt, color);
 			}
     		case Listactivity.NEW_BUTTON:
 			// Returning from NewNoteActivity
 			if (resultCode == this.SAVE_BUTTON) {
 				String res = data.getStringExtra("SAVE_ITEM");
 				//Log.d(TAG,"Received request to save message:"+res);
-				this.UpdateList(null, res);
+				this.UpdateList(null, res, null);
 			}
     	}
     }

@@ -2,13 +2,13 @@
 <ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
-  android:id="@+id/toto"
+  android:id="@+id/scrollView"
   android:layout_width="fill_parent" android:layout_height="fill_parent">
   <LinearLayout
     android:orientation="vertical"
     android:layout_width="fill_parent" android:layout_height="fill_parent">
       <EditText android:layout_width="fill_parent" android:id="@+id/bodyView" 
-    	  android:inputType="textMultiLine" android:layout_height="fill_parent" 
+    	  android:inputType="textMultiLine|textNoSuggestions" android:layout_height="fill_parent" 
     	  android:gravity="top" android:onClick="onClick" android:clickable="true">
           <requestFocus></requestFocus>
       </EditText>

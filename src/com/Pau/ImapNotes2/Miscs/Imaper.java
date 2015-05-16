@@ -27,6 +27,8 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import java.util.regex.*;
 import org.apache.commons.io.IOUtils;
 
+import com.Pau.ImapNotes2.Miscs.Sticky;
+
 public class Imaper {
   
   private Store store;
@@ -71,7 +73,7 @@ public class Imaper {
       this.acceptcrt = "true";
       break;
 ////////////////////// Change this
-    default: this.proto = "Invalid month";
+    default: this.proto = "Invalid proto";
        break;
   }
     MailSSLSocketFactory sf = null;
@@ -119,10 +121,9 @@ public class Imaper {
         Folder[] fls = folder.list();
         for (javax.mail.Folder fl : fls) {
           try {
-        	  char separator = ((IMAPFolder)fl).getSeparator();
-        	  this.sfolder = fl.getFullName();
-Log.d("XXXXXXXXXXXXX",this.sfolder);
-			if (this.sfolder.endsWith(separator+"Notes")) break;
+            char separator = ((IMAPFolder)fl).getSeparator();
+            this.sfolder = fl.getFullName();
+            if (this.sfolder.endsWith(separator+"Notes")) break;
           } catch (Exception e) {
             System.out.println("Exception");
           }
@@ -139,6 +140,8 @@ Log.d("XXXXXXXXXXXXX",this.sfolder);
   
   public void GetNotes(ArrayList<OneNote> notesList) throws MessagingException, IOException{
     String stringres = new String();
+    String position = new String("0 0 0 0");
+    String color = new String("NONE");
     String charset = new String();
     this.notesFolder = this.store.getFolder(this.sfolder);
     if (this.notesFolder.isOpen()) {
@@ -157,16 +160,11 @@ Log.d("XXXXXXXXXXXXX",this.sfolder);
       stringres = IOUtils.toString(iis, charset);
       // if it's a stickynote than Content-Type is "text/x-stickynote"
       if (((String)notesMessages[index].getContentType()).startsWith("text/x-stickynote")) {
-        Pattern p = Pattern.compile("TEXT:(.*?)(END:|POSITION)",Pattern.DOTALL);
-        Matcher m = p.matcher(stringres);
-        if (m.find()) {
-          stringres = m.group(1);
-          // Kerio Connect puts CR+LF+space every 78 characters from line 2
-          // first line seem to be smaller. We remove these characters
-          stringres = stringres.replaceAll("\r\n ", "");
-          // newline in Kerio is the string (not the character) "\n"
-          stringres = stringres.replaceAll("\\\\n", "<br>");
-        }
+        Sticky sticky = new Sticky();
+        sticky = ReadStickynote(stringres);
+        stringres = sticky.GetText();
+        position = sticky.GetPosition();
+        color = sticky.GetColor();
       } else if (contentType.getSubType().equalsIgnoreCase("html")) {
           //Log.d(TAG,"From server:"+stringres);
           Spanned spanres = Html.fromHtml(stringres);
@@ -182,16 +180,47 @@ Log.d("XXXXXXXXXXXXX",this.sfolder);
       notesMessages[index].getSubject(),
       stringres,
       notesMessages[index].getReceivedDate().toLocaleString(),
-      Long.toString(((IMAPFolder)this.notesFolder).getUID(notesMessages[index])));
+      Long.toString(((IMAPFolder)this.notesFolder).getUID(notesMessages[index])),
+      position,
+      color);
 //    new Integer (notesMessages[index].getMessageNumber()).toString());
       notesList.add(aNote);
       //Log.d(TAG,"Got title:"+(String)notesMessages[index].getSubject());
       //Log.d(TAG,"Got content:"+stringres);
     }
     //Log.d(TAG,"number of messages read="+notesList.size());
-    
   }
-  
+
+  private Sticky ReadStickynote(String stringres) {
+    String color=new String("");
+    String position=new String("");
+    String text=new String("");
+    Pattern p = null;
+    Matcher m = null;
+
+    p = Pattern.compile("^COLOR:(.*?)$",Pattern.MULTILINE);
+    m = p.matcher(stringres);
+    if (m.find()) { color = m.group(1); }
+
+    p = Pattern.compile("^POSITION:(.*?)$",Pattern.MULTILINE);
+    m = p.matcher(stringres);
+    if (m.find()) { position = m.group(1); }
+
+    p = Pattern.compile("TEXT:(.*?)(END:|POSITION:)",Pattern.DOTALL);
+    m = p.matcher(stringres);
+    if (m.find()) {
+      text = m.group(1);
+      // Kerio Connect puts CR+LF+space every 78 characters from line 2
+      // first line seem to be smaller. We remove these characters
+      text = text.replaceAll("\r\n ", "");
+      // newline in Kerio is the string (not the character) "\n"
+      text = text.replaceAll("\\\\n", "<br>");
+    }
+    return new Sticky(text, position, color);
+  }
+/***************************************************
+***************************************************/
+
   public boolean IsConnected(){
     return this.store!=null && this.store.isConnected();
   }
@@ -227,7 +256,7 @@ Log.d("XXXXXXXXXXXXX",this.sfolder);
     //Log.d(TAG,"Add new note");
     MimeMessage message = new MimeMessage(this.session);
     if (usesticky.equals("true")) {
-      body = "BEGIN:STICKYNOTE\nCOLOR:YELLOW\nTEXT:" + note.GetBody() + "\nPOSITION:0 0 0 0\nEND:STICKYNOTE";
+      body = "BEGIN:STICKYNOTE\nCOLOR:" + note.GetColor() + "\nTEXT:" + note.GetBody() + "\nPOSITION:" + note.GetPosition() + "\nEND:STICKYNOTE";
       note.SetBody(note.GetBody().replaceAll("\\\\n", "<br>"));
       message.setText(body);
       message.setHeader("Content-Transfer-Encoding", "8bit");

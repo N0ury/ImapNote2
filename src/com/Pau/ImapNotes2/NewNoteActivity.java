@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 import android.content.Intent;
+import android.graphics.Color;
+
 import com.Pau.ImapNotes2.R;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 import android.support.v4.app.NavUtils;
@@ -15,17 +17,22 @@ import android.support.v4.app.NavUtils;
 public class NewNoteActivity extends Activity{
 	
     private static final int SAVE_BUTTON = 5;
-	private OneNote currentNote;
 	private static final String TAG = "IN_NewNoteActivity";
 	
 	public void onCreate(Bundle savedInstanceState) {
-        	super.onCreate(savedInstanceState);
-        	setContentView(R.layout.new_note);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.new_note);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		this.ResetColors();
+	}
+	
+	private void ResetColors(){
+		((EditText)findViewById(R.id.editNote)).setBackgroundColor(Color.TRANSPARENT);
+	    ((EditText)findViewById(R.id.editNote)).setTextColor(Color.BLACK);
 	}
 	
     public boolean onCreateOptionsMenu(Menu menu){
-	getMenuInflater().inflate(R.menu.newnote, menu);
+    	getMenuInflater().inflate(R.menu.newnote, menu);
         return true;
     }
 
@@ -42,6 +49,6 @@ public class NewNoteActivity extends Activity{
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-	}
+        }
     }
 }
