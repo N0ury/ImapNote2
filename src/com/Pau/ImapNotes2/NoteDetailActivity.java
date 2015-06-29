@@ -131,6 +131,9 @@ public class NoteDetailActivity extends Activity {
         	intent.putExtra("EDIT_ITEM_NUM_IMAP",this.currentNote.get("number"));
         	intent.putExtra("EDIT_ITEM_TXT",
 			Html.toHtml(((EditText)findViewById(R.id.bodyView)).getText()));
+        	if (!this.sticky.equals("true")) {
+        		this.color="NONE";
+        	}
         	intent.putExtra("EDIT_ITEM_COLOR",this.color);
         	setResult(NoteDetailActivity.EDIT_BUTTON, intent);
         	finish();//finishing activity  

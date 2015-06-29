@@ -272,7 +272,9 @@ String position = "0 0 0 0";
 				this.RefreshList();
 			return true;
 		case R.id.newnote:
-			startActivityForResult(new Intent(this, NewNoteActivity.class), Listactivity.NEW_BUTTON);
+			Intent toNew = new Intent(this, NewNoteActivity.class);
+			toNew.putExtra("usesSticky", Listactivity.settings.GetUsesticky());
+			startActivityForResult(toNew,Listactivity.NEW_BUTTON);
 			return true;
 		case R.id.about:
 			try {
@@ -326,7 +328,8 @@ String position = "0 0 0 0";
 			if (resultCode == this.SAVE_BUTTON) {
 				String res = data.getStringExtra("SAVE_ITEM");
 				//Log.d(TAG,"Received request to save message:"+res);
-				this.UpdateList(null, res, null);
+				String color = data.getStringExtra("SAVE_ITEM_COLOR");
+				this.UpdateList(null, res, color);
 			}
     	}
     }
