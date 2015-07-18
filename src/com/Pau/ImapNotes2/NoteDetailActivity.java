@@ -49,7 +49,8 @@ public class NoteDetailActivity extends Activity {
 	
         	this.hm = (HashMap)getIntent().getExtras().get("selectedNote");
         	this.sticky = (String)getIntent().getExtras().get("usesSticky");
-			currentNote=new OneNote(this.hm.get("title").toString(),
+			currentNote=new OneNote(
+				(this.hm.get("title") != null) ? this.hm.get("title").toString() : "",
 				this.hm.get("body").toString(),
 				this.hm.get("date").toString(),
 				this.hm.get("number").toString(),

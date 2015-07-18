@@ -58,7 +58,7 @@ public class NotesDb {
 	
     public void InsertANote(OneNote noteElement){ 
         ContentValues tableRow = new ContentValues();
-        tableRow.put(NotesDb.TITLE_LABEL, noteElement.GetTitle());
+        tableRow.put(NotesDb.TITLE_LABEL, (noteElement.GetTitle() != null) ? noteElement.GetTitle() : "");
         tableRow.put(NotesDb.BODY_LABEL, noteElement.GetBody());
         tableRow.put(NotesDb.DATE_LABEL, noteElement.GetDate());
         tableRow.put(NotesDb.NUMBER_LABEL, noteElement.GetNumber());

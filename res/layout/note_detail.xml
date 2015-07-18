@@ -7,9 +7,13 @@
   <LinearLayout
     android:orientation="vertical"
     android:layout_width="fill_parent" android:layout_height="fill_parent">
-      <EditText android:layout_width="fill_parent" android:id="@+id/bodyView" 
-    	  android:inputType="textMultiLine|textNoSuggestions" android:layout_height="fill_parent" 
-    	  android:gravity="top" android:onClick="onClick" android:clickable="true">
+      <EditText android:layout_width="fill_parent"
+		android:id="@+id/bodyView" 
+		android:inputType="textNoSuggestions|textMultiLine|textVisiblePassword"
+		android:layout_height="fill_parent" 
+		android:gravity="top"
+		android:onClick="onClick"
+		android:clickable="true">
           <requestFocus></requestFocus>
       </EditText>
   </LinearLayout>

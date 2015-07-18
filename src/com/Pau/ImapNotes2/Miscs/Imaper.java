@@ -28,6 +28,7 @@ import java.util.regex.*;
 import org.apache.commons.io.IOUtils;
 
 import com.Pau.ImapNotes2.Miscs.Sticky;
+import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 
 public class Imaper {
   
@@ -38,11 +39,13 @@ public class Imaper {
   private String acceptcrt;
   private static String sfolder = "Notes";
   private Folder notesFolder = null;
+  private ImapNotes2Result res;
   
-  public int ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky) throws MessagingException{
+  public ImapNotes2Result ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky) throws MessagingException{
     if (this.IsConnected())
       this.store.close();
     
+  res = new ImapNotes2Result();
   this.proto = "";
   this.acceptcrt = "";
   int security_i = Integer.parseInt(security);
@@ -129,11 +132,15 @@ public class Imaper {
           }
         }
       }
-      return 0;
+      this.res.errorMessage = "";
+      this.res.returnCode = 0;
+      return res;
     } catch (Exception e) {
       e.printStackTrace();
       Log.v(TAG, e.getMessage());
-      return -1;
+      this.res.errorMessage = e.getMessage();
+      this.res.returnCode = -1;
+      return res;
     }
 
   }
@@ -159,6 +166,7 @@ public class Imaper {
       charset = contentType.getParameter("charset");
       stringres = IOUtils.toString(iis, charset);
       // if it's a stickynote than Content-Type is "text/x-stickynote"
+Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
       if (((String)notesMessages[index].getContentType()).startsWith("text/x-stickynote")) {
         Sticky sticky = new Sticky();
         sticky = ReadStickynote(stringres);
@@ -166,7 +174,7 @@ public class Imaper {
         position = sticky.GetPosition();
         color = sticky.GetColor();
       } else if (contentType.getSubType().equalsIgnoreCase("html")) {
-          //Log.d(TAG,"From server:"+stringres);
+          //Log.d(TAG,"From server (html):"+stringres);
           Spanned spanres = Html.fromHtml(stringres);
           stringres = Html.toHtml(spanres);
           stringres = stringres.replaceFirst("<p dir=ltr>", "");
@@ -174,6 +182,9 @@ public class Imaper {
           stringres = stringres.replaceAll("<p dir=ltr>", "<br>");
           stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
           stringres = stringres.replaceAll("</p>", "");
+      } else if (contentType.getSubType().equalsIgnoreCase("plain")) {
+    	  Log.d(TAG,"From server (plain):"+stringres);
+          stringres = stringres.replaceAll("\n", "<br>");
       }
       //Log.d(TAG,"UID read:"+((IMAPFolder)this.notesFolder).getUID(notesMessages[index]));
       OneNote aNote = new OneNote(

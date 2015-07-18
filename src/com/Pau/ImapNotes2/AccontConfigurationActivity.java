@@ -7,11 +7,13 @@ import com.Pau.ImapNotes2.R;
 
 import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,7 +42,8 @@ public class AccontConfigurationActivity extends Activity implements OnItemSelec
   private Spinner securitySpinner;
   private String security;
   private int security_i;
-  
+//  private ImapNotes2Result res;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -51,7 +54,7 @@ public class AccontConfigurationActivity extends Activity implements OnItemSelec
     this.serverTextView = (TextView)findViewById(R.id.serverEdit);
     this.portnumTextView = (TextView)findViewById(R.id.portnumEdit);
     this.stickyCheckBox = (CheckBox)findViewById(R.id.stickyCheckBox);
-  
+
     securitySpinner = (Spinner) findViewById(R.id.securitySpinner);
     List<String> list = new ArrayList<String>();
     list.add("None");
@@ -83,10 +86,10 @@ public class AccontConfigurationActivity extends Activity implements OnItemSelec
   
   // DoLogin method is defined in account_selection.xml (account_selection layout)
   public void DoLogin(View v) {
-    ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2" , "Logging in to your account... ", true);
-    this.settings.SetUsername(this.usernameTextView.getText().toString());
-    this.settings.SetPassword(this.passwordTextView.getText().toString());
-    this.settings.SetServer(this.serverTextView.getText().toString());
+    ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2" , "Logging into your account... ", true);
+    this.settings.SetUsername(this.usernameTextView.getText().toString().trim());
+    this.settings.SetPassword(this.passwordTextView.getText().toString().trim());
+    this.settings.SetServer(this.serverTextView.getText().toString().trim());
     this.settings.SetPortnum(this.portnumTextView.getText().toString());
     this.settings.SetSecurity(this.security);
     this.settings.SetUsesticky(String.valueOf(this.stickyCheckBox.isChecked()));
@@ -97,24 +100,24 @@ public class AccontConfigurationActivity extends Activity implements OnItemSelec
   
   class LoginThread extends AsyncTask<Object, Void, Boolean>{
     
-    protected Boolean doInBackground(Object... stuffs) {
-      int i=0;
+      private ImapNotes2Result res = new ImapNotes2Result();
+      protected Boolean doInBackground(Object... stuffs) {
       try {
-        i=((Imaper)stuffs[0]).ConnectToProvider(
+        this.res=((Imaper)stuffs[0]).ConnectToProvider(
             ((ConfigurationFile)stuffs[1]).GetUsername(),
             ((ConfigurationFile)stuffs[1]).GetPassword(),
             ((ConfigurationFile)stuffs[1]).GetServer(),
             ((ConfigurationFile)stuffs[1]).GetPortnum(),
             ((ConfigurationFile)stuffs[1]).GetSecurity(),
             ((ConfigurationFile)stuffs[1]).GetUsesticky());
-        if (i==0) {
+        if (this.res.returnCode==0) {
           ((ConfigurationFile)stuffs[1]).SaveConfigurationToXML();
           ((AccontConfigurationActivity)stuffs[3]).setResult(AccontConfigurationActivity.TO_REFRESH);
-          ((AccontConfigurationActivity)stuffs[3]).finish();
-          return true;
-        } else {
-          return false;
-        }
+	  ((AccontConfigurationActivity)stuffs[3]).finish();
+		return true;
+	} else {
+		return false;
+	}
       } catch (Exception e) {
         Log.v("ImapNotes2", e.getMessage());
       } finally {
@@ -126,15 +129,19 @@ public class AccontConfigurationActivity extends Activity implements OnItemSelec
     protected void onPostExecute(Boolean result){
       if(result){
         Toast.makeText(getApplicationContext(), "Connection Established",
-          Toast.LENGTH_SHORT).show();
+          Toast.LENGTH_LONG).show();
       }else {
-        Toast.makeText(getApplicationContext(), "Connection Error",
-          Toast.LENGTH_SHORT).show();
+    	final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage,Toast.LENGTH_LONG);
+        tag.show();
+        new CountDownTimer(5000, 1000) {
+            public void onTick(long millisUntilFinished) {tag.show();}
+            public void onFinish() {tag.show();}
+        }.start();
       }
     }
   }
   
-  public boolean onCreateOptionsMenu(Menu menu){
+  public boolean onCreateOptionsMenu(Menu menu) {
     return true;
   }
 
