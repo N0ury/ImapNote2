@@ -13,30 +13,29 @@ import android.util.Log;
 
 public class NotesDb {
 
-	private static final String NOTES_TABLE_NAME = "notesTable";
 	private static final int NOTES_VERSION = 2;
-	private static final String TITLE_LABEL = "title";
-	private static final String BODY_LABEL = "body";
-	private static final String DATE_LABEL = "date";
-	private static final String NUMBER_LABEL = "number";
-	private static final String POSITION_LABEL = "position";
-	private static final String COLOR_LABEL = "color";
 	private static final String TAG = "IN_NotesDb";
 	
 	private static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
-            + NotesDb.NOTES_TABLE_NAME + " (" 
+            + "notesTable (" 
             + "pk integer primary key autoincrement, "
-            + NotesDb.TITLE_LABEL + " text not null, "
-            + NotesDb.BODY_LABEL + " text not null, "
-            + NotesDb.DATE_LABEL + " text not null, "
-            + NotesDb.NUMBER_LABEL + " text not null, "
-            + NotesDb.POSITION_LABEL + " text not null, "
-            + NotesDb.COLOR_LABEL + " text not null);";
-	
-	private static final String UPGRADE_NOTES_DB_1 = "alter table "
-	    + NotesDb.NOTES_TABLE_NAME + " ADD COLUMN " + NotesDb.POSITION_LABEL + " text not null DEFAULT '0 0 0 0';";
-	private static final String UPGRADE_NOTES_DB_2 = "alter table "
-	    + NotesDb.NOTES_TABLE_NAME + " ADD COLUMN " + NotesDb.COLOR_LABEL + " text not null DEFAULT 'YELLOW';";
+            + "title text not null, "
+            + "body text not null, "
+            + "date text not null, "
+            + "number text not null, "
+            + "position text not null, "
+            + "color text not null);";
+
+/*
+	private static final String CREATE_LOGINS = "CREATE TABLE IF NOT EXISTS "
+            + "loginsTable (" 
+            + "username text not null, "
+            + "password text not null, "
+            + "server text not null, "
+            + "portnum text not null, "
+            + "security text not null, "
+            + "usesticky text not null);";
+*/
 
 	private SQLiteDatabase notesDb;
 	private NotesDbHelper defaultHelper;
@@ -58,60 +57,78 @@ public class NotesDb {
 	
     public void InsertANote(OneNote noteElement){ 
         ContentValues tableRow = new ContentValues();
-        tableRow.put(NotesDb.TITLE_LABEL, (noteElement.GetTitle() != null) ? noteElement.GetTitle() : "");
-        tableRow.put(NotesDb.BODY_LABEL, noteElement.GetBody());
-        tableRow.put(NotesDb.DATE_LABEL, noteElement.GetDate());
-        tableRow.put(NotesDb.NUMBER_LABEL, noteElement.GetNumber());
-        tableRow.put(NotesDb.POSITION_LABEL, noteElement.GetPosition());
-        tableRow.put(NotesDb.COLOR_LABEL, noteElement.GetColor());
-        this.notesDb.insert(NotesDb.NOTES_TABLE_NAME, null, tableRow);
+        tableRow.put("title", (noteElement.GetTitle() != null) ? noteElement.GetTitle() : "");
+        tableRow.put("body", noteElement.GetBody());
+        tableRow.put("date", noteElement.GetDate());
+        tableRow.put("number", noteElement.GetNumber());
+        tableRow.put("position", noteElement.GetPosition());
+        tableRow.put("color", noteElement.GetColor());
+        this.notesDb.insert("notesTable", null, tableRow);
     
     }
 
     public void GetStoredNotes(ArrayList<OneNote> noteList){
     	noteList.clear();
-        Cursor resultPointer = this.notesDb.query(NotesDb.NOTES_TABLE_NAME, null,null,null,null,null,null);
+        Cursor resultPointer = this.notesDb.query("notesTable", null,null,null,null,null,null);
         
         if(resultPointer.moveToFirst()){
-        	int titleIndex = resultPointer.getColumnIndex(NotesDb.TITLE_LABEL);
-        	int bodyIndex = resultPointer.getColumnIndex(NotesDb.BODY_LABEL);
-        	int dateIndex = resultPointer.getColumnIndex(NotesDb.DATE_LABEL);
-        	int numberIndex = resultPointer.getColumnIndex(NotesDb.NUMBER_LABEL);
-        	int positionIndex = resultPointer.getColumnIndex(NotesDb.POSITION_LABEL);
-        	int colorIndex = resultPointer.getColumnIndex(NotesDb.COLOR_LABEL);
+        	int titleIndex = resultPointer.getColumnIndex("title");
+        	int bodyIndex = resultPointer.getColumnIndex("body");
+        	int dateIndex = resultPointer.getColumnIndex("date");
+        	int numberIndex = resultPointer.getColumnIndex("number");
+        	int positionIndex = resultPointer.getColumnIndex("position");
+        	int colorIndex = resultPointer.getColumnIndex("color");
             do {
             	noteList.add(new OneNote(resultPointer.getString(titleIndex),
-            							 resultPointer.getString(bodyIndex),
-            							 resultPointer.getString(dateIndex),
-            							 resultPointer.getString(numberIndex),
-            							 resultPointer.getString(positionIndex),
-            							 resultPointer.getString(colorIndex)));
+            		 resultPointer.getString(bodyIndex),
+            		 resultPointer.getString(dateIndex),
+            		 resultPointer.getString(numberIndex),
+            		 resultPointer.getString(positionIndex),
+            		 resultPointer.getString(colorIndex)));
                 } while (resultPointer.moveToNext());
         }
     
     }
 	
     public void ClearDb(){
-    	this.notesDb.execSQL("delete from " + NotesDb.NOTES_TABLE_NAME);
+    	this.notesDb.execSQL("delete from notesTable");
     	
     }
     
-	private class NotesDbHelper extends SQLiteOpenHelper {
+    /**
+     * Database helper that creates and maintains the SQLite database.
+     */
 
-        	public NotesDbHelper(Context currentApplicationContext, String dbName, int dbVersion) {
-                	super(currentApplicationContext, dbName, null, dbVersion);
-        	}
+    private static class NotesDbHelper extends SQLiteOpenHelper {
 
-        	@Override
-        	public void onCreate(SQLiteDatabase _db) {
-                	_db.execSQL(NotesDb.CREATE_NOTES_DB);
-        	}
+       	public NotesDbHelper(Context currentApplicationContext, String dbName, int dbVersion) {
+               	super(currentApplicationContext, dbName, null, dbVersion);
+       	}
 
-        	@Override
-        	public void onUpgrade(SQLiteDatabase _db, int oldVersion, int newVersion) {
-        		//Log.d(TAG,"onUpgrade from:"+oldVersion+" to:"+newVersion);
-        		_db.execSQL(NotesDb.UPGRADE_NOTES_DB_1);
-        		_db.execSQL(NotesDb.UPGRADE_NOTES_DB_2);
-        	}
-	}
+       	@Override
+       	public void onCreate(SQLiteDatabase _db) {
+               	_db.execSQL(NotesDb.CREATE_NOTES_DB);
+       	}
+
+        @Override
+        public void onUpgrade(SQLiteDatabase _db, int oldVersion, int newVersion) {
+          Log.d(TAG,"onUpgrade from:"+oldVersion+" to:"+newVersion);
+          for (int i=oldVersion; i<newVersion; i++) {
+            PATCHES[i-2].apply(_db);
+          }
+        }
+
+        private static class Patch {
+          public void apply(SQLiteDatabase _db) {}
+        }
+
+        private static final Patch[] PATCHES = new Patch[] {
+           new Patch() {
+              public void apply(SQLiteDatabase _db) {
+                //Log.d(TAG,"upgrade: v2 to v3");
+//                _db.execSQL(NotesDb.CREATE_LOGINS);
+              }
+           }
+        };
+    }
 }

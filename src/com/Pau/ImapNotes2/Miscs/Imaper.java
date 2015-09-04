@@ -40,6 +40,7 @@ public class Imaper {
   private static String sfolder = "Notes";
   private Folder notesFolder = null;
   private ImapNotes2Result res;
+private Boolean useProxy = false;
   
   public ImapNotes2Result ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky) throws MessagingException{
     if (this.IsConnected())
@@ -84,6 +85,9 @@ public class Imaper {
       sf = new MailSSLSocketFactory();
     } catch (GeneralSecurityException e) {
       e.printStackTrace();
+      this.res.errorMessage = "Can't connect to server";
+      this.res.returnCode = -1;
+      return this.res;
     }
 
     Properties props = new Properties();
@@ -110,6 +114,17 @@ public class Imaper {
     }
 
     props.setProperty("mail.imap.connectiontimeout","1000");
+    if (this.useProxy) {
+        props.put("mail.imap.socks.host","10.0.2.2");
+        props.put("mail.imap.socks.port","1080");
+/*
+        props.put("proxySet","true");
+        props.put("socksProxyHost","10.0.2.2");
+        props.put("socksProxyPort","1080");
+        props.put("sun.net.spi.nameservice.provider.1", "dns,sun");
+        props.put("sun.net.spi.nameservice.nameservers", "192.168.0.99");
+*/
+    }
     this.session = Session.getInstance(props, null);
 //this.session.setDebug(true);
     this.store = this.session.getStore(this.proto);
@@ -118,29 +133,32 @@ public class Imaper {
       Folder[] folders = store.getPersonalNamespaces();
       for (Folder folder : folders) {
         if (folder.getFullName().length() == 0) {
-                this.sfolder = "Notes";
+                Imaper.sfolder = "Notes";
                 break;
         }
         Folder[] fls = folder.list();
         for (javax.mail.Folder fl : fls) {
           try {
             char separator = ((IMAPFolder)fl).getSeparator();
-            this.sfolder = fl.getFullName();
-            if (this.sfolder.endsWith(separator+"Notes")) break;
+            Imaper.sfolder = fl.getFullName();
+            if (Imaper.sfolder.endsWith(separator+"Notes")) break;
           } catch (Exception e) {
             System.out.println("Exception");
+            this.res.errorMessage = "Can't connect to server";
+            this.res.returnCode = -3;
+            return this.res;
           }
         }
       }
       this.res.errorMessage = "";
       this.res.returnCode = 0;
-      return res;
+      return this.res;
     } catch (Exception e) {
       e.printStackTrace();
-      Log.v(TAG, e.getMessage());
+      Log.d(TAG, e.getMessage());
       this.res.errorMessage = e.getMessage();
-      this.res.returnCode = -1;
-      return res;
+      this.res.returnCode = -2;
+      return this.res;
     }
 
   }
@@ -150,7 +168,7 @@ public class Imaper {
     String position = new String("0 0 0 0");
     String color = new String("NONE");
     String charset = new String();
-    this.notesFolder = this.store.getFolder(this.sfolder);
+    this.notesFolder = this.store.getFolder(Imaper.sfolder);
     if (this.notesFolder.isOpen()) {
       if ((this.notesFolder.getMode() & Folder.READ_ONLY) != 0)
         this.notesFolder.open(Folder.READ_ONLY);
@@ -194,7 +212,6 @@ Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
       Long.toString(((IMAPFolder)this.notesFolder).getUID(notesMessages[index])),
       position,
       color);
-//    new Integer (notesMessages[index].getMessageNumber()).toString());
       notesList.add(aNote);
       //Log.d(TAG,"Got title:"+(String)notesMessages[index].getSubject());
       //Log.d(TAG,"Got content:"+stringres);
@@ -237,7 +254,7 @@ Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
   }
 
   public void DeleteNote(int numMessage) throws MessagingException, IOException {
-    this.notesFolder = this.store.getFolder(this.sfolder);
+    this.notesFolder = this.store.getFolder(Imaper.sfolder);
     if (this.notesFolder.isOpen()) {
       if ((this.notesFolder.getMode() & Folder.READ_WRITE) != 0)
         this.notesFolder.open(Folder.READ_WRITE);
@@ -257,7 +274,7 @@ Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
     String body = null;
 
     // Here we add the new note to the "Notes" folder
-    this.notesFolder = this.store.getFolder(this.sfolder);
+    this.notesFolder = this.store.getFolder(Imaper.sfolder);
     if (this.notesFolder.isOpen()) {
       if ((this.notesFolder.getMode() & Folder.READ_WRITE) != 0)
         this.notesFolder.open(Folder.READ_WRITE);
@@ -288,8 +305,7 @@ Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
     message.setSubject(note.GetTitle());
     message.setSentDate(new Date());
     final MimeMessage[] msgs = {message};
-    final Message[] msgs2;
-//this.notesFolder.appendMessages(msgs);
+    //this.notesFolder.appendMessages(msgs);
 //    String uid = Long.toString(((IMAPFolder)this.notesFolder).getUIDNext());
 //msgs2 = ((IMAPFolder)this.notesFolder).addMessages(msgs);
     AppendUID[] uids = ((IMAPFolder)this.notesFolder).appendUIDMessages(msgs);

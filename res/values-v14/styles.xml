@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   
+  <!-- <color name="ListColor">#404040</color> -->
   <color name="ListColor">#e8d731</color>
   
  <style name="ImapNotesTheme" parent="@android:style/Theme.Holo.Light">

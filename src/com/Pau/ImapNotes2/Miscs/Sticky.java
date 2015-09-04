@@ -7,38 +7,38 @@ public class Sticky {
 	private static String color;
 
 	public Sticky() {
-		this.text = "";
-		this.position = "0 0 0 0";
-		this.color = "YELLOW";
+		Sticky.text = "";
+		Sticky.position = "0 0 0 0";
+		Sticky.color = "YELLOW";
 	}
 	
 	public Sticky(String text, String position, String color) {
-		this.text = text;
-		this.position = position;
-		this.color = color;
+		Sticky.text = text;
+		Sticky.position = position;
+		Sticky.color = color;
 	}
 	
 	public String GetPosition(){
-		return this.position;
+		return Sticky.position;
 	}
 	
 	public String GetText(){
-		return this.text;
+		return Sticky.text;
 	}
 		
 	public String GetColor(){
-		return this.color;
+		return Sticky.color;
 	}
 	
 	public void SetText(String text){
-		this.text = text;
+		Sticky.text = text;
 	}
 	
 	public void SetPosition(String position){
-		this.position = position;
+		Sticky.position = position;
 	}
 
 	public void SetColor(String color){
-		this.color = color;
+		Sticky.color = color;
 	}
 }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.Pau.ImapNotes2"
-	android:versionCode="27"
-	android:versionName="2.29" xmlns:android="http://schemas.android.com/apk/res/android">
+	android:versionCode="29"
+	android:versionName="3.0" xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 	
 	<application
 		android:icon="@drawable/ic_launcher"
@@ -21,7 +23,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".AccontConfigurationActivity"
+		<activity android:name=".AccontConfigurationActivity" android:exported="true"
 		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
 			<meta-data android:name="android.support.PARENT_ACTIVITY"
 				android:value="com.Pau.ImapNotes2.Listactivity" />
@@ -39,7 +41,7 @@
 				android:value="com.Pau.ImapNotes2.Listactivity" />
 		</activity>
 
-		<service android:name="ImapNotesAuthenticatorService" android:exported="true">
+		<service android:name="com.Pau.ImapNotes2.Miscs.ImapNotesAuthenticatorService" android:exported="true">
 			<intent-filter>
 				<action android:name="android.accounts.AccountAuthenticator" />
 			</intent-filter>

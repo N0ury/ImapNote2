@@ -3,6 +3,24 @@
     android:orientation="vertical"
     android:layout_width="fill_parent" android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/accountlabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ListColor"
+        android:text="Select account"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#000000" >
+
+    </TextView>
+
+    <Spinner
+        android:id="@+id/accountSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+    </Spinner>
+
     <ListView
         android:id="@+id/notesList"
         android:layout_width="fill_parent"

@@ -1,25 +1,21 @@
 package com.Pau.ImapNotes2;
 
-import com.Pau.ImapNotes2.R;
+import java.util.HashMap;
+
 import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.text.Spanned;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ScrollView;
-import android.widget.Toast;
-import android.os.Bundle;
-import java.util.HashMap;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
-import android.util.Log;
-import android.content.Intent;
-import android.support.v4.app.NavUtils;
+import android.widget.EditText;
 
 public class NoteDetailActivity extends Activity {
 	

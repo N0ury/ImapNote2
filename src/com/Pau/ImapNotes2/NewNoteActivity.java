@@ -1,19 +1,14 @@
 package com.Pau.ImapNotes2;
 
 import android.app.Activity;
-import android.text.Html;
-import android.widget.EditText;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.util.Log;
 import android.content.Intent;
 import android.graphics.Color;
-
-import com.Pau.ImapNotes2.R;
-import com.Pau.ImapNotes2.Miscs.OneNote;
-
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
 
 public class NewNoteActivity extends Activity{
 	
