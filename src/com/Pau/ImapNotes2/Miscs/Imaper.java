@@ -131,24 +131,13 @@ private Boolean useProxy = false;
     try {
       this.store.connect(server, username, password);
       Folder[] folders = store.getPersonalNamespaces();
-      for (Folder folder : folders) {
-        if (folder.getFullName().length() == 0) {
-                Imaper.sfolder = "Notes";
-                break;
-        }
-        Folder[] fls = folder.list();
-        for (javax.mail.Folder fl : fls) {
-          try {
-            char separator = ((IMAPFolder)fl).getSeparator();
-            Imaper.sfolder = fl.getFullName();
-            if (Imaper.sfolder.endsWith(separator+"Notes")) break;
-          } catch (Exception e) {
-            System.out.println("Exception");
-            this.res.errorMessage = "Can't connect to server";
-            this.res.returnCode = -3;
-            return this.res;
-          }
-        }
+      Folder folder = folders[0];
+Log.d(TAG,"FULLNAME="+folder.getFullName());
+      if (folder.getFullName().length() == 0) {
+          Imaper.sfolder = "Notes";
+      } else {
+	      char separator = folder.getSeparator();
+	      Imaper.sfolder = folder.getFullName() + separator + "Notes";            	
       }
       this.res.errorMessage = "";
       this.res.returnCode = 0;
@@ -184,7 +173,7 @@ private Boolean useProxy = false;
       charset = contentType.getParameter("charset");
       stringres = IOUtils.toString(iis, charset);
       // if it's a stickynote than Content-Type is "text/x-stickynote"
-Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
+//Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
       if (((String)notesMessages[index].getContentType()).startsWith("text/x-stickynote")) {
         Sticky sticky = new Sticky();
         sticky = ReadStickynote(stringres);
@@ -201,7 +190,7 @@ Log.d(TAG,"contentType.getSubType():"+contentType.getSubType());
           stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
           stringres = stringres.replaceAll("</p>", "");
       } else if (contentType.getSubType().equalsIgnoreCase("plain")) {
-    	  Log.d(TAG,"From server (plain):"+stringres);
+//    	  Log.d(TAG,"From server (plain):"+stringres);
           stringres = stringres.replaceAll("\n", "<br>");
       }
       //Log.d(TAG,"UID read:"+((IMAPFolder)this.notesFolder).getUID(notesMessages[index]));
