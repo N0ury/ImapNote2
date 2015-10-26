@@ -1,6 +1,7 @@
 package com.Pau.ImapNotes2.Miscs;
 
 import com.Pau.ImapNotes2.AccontConfigurationActivity;
+import com.Pau.ImapNotes2.Sync.SyncUtils;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -51,6 +52,19 @@ public class ImapNotesAuthenticatorService extends Service{
 
 		}
 
+	@Override
+	public Bundle getAccountRemovalAllowed(
+			AccountAuthenticatorResponse response, Account account)
+			throws NetworkErrorException {
+		Bundle ret = super.getAccountRemovalAllowed(response, account);
+		if (ret.getBoolean(AccountManager.KEY_BOOLEAN_RESULT))
+SyncUtils.RemoveAccount(this.mContext, account);
+/*
+			mContext.getContentResolver().delete(ListProvider.getClearUri(),
+					null, null);
+*/
+		return ret;
+	}
 		@Override
 		public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
 			

@@ -2,6 +2,7 @@ package com.Pau.ImapNotes2.Miscs;
 
 import java.util.ArrayList;
 
+import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
 
@@ -40,35 +41,17 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
         security = ((ImapNotes2Account)stuffs[1]).GetSecurity();
         usesticky = ((ImapNotes2Account)stuffs[1]).GetUsesticky();
 
-        try {
-            if(((ImapNotes2Account)stuffs[1]).GetaccountHasChanged()) {
-                this.res = ((Imaper)stuffs[0]).ConnectToProvider(
-                    username, password, server, portnum, security, usesticky);
-                if (this.res.returnCode != 0) {
-                    Toast.makeText(this.ctx, this.res.errorMessage,
-                        Toast.LENGTH_LONG).show();
-                }
-            }
-		((ImapNotes2Account)stuffs[1]).SetaccountHasNotChanged();
-            ((Imaper)stuffs[0]).GetNotes(this.notesList);
-            this.bool_to_return=true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.bool_to_return=false;
-        } finally {
-            ((ProgressDialog)stuffs[4]).dismiss();
-        }
-        return this.bool_to_return;
+        
+        if (this.storedNotes == null) this.storedNotes = new NotesDb(this.ctx);
+        this.storedNotes.OpenDb();
+        this.storedNotes.GetStoredNotes(this.notesList, Listactivity.imapNotes2Account.GetAccountname());
+        this.storedNotes.CloseDb();
+        ((ProgressDialog)stuffs[4]).dismiss();
+        return true;
     }
     
     protected void onPostExecute(Boolean result){
         if(result){
-            this.storedNotes.OpenDb();
-            this.storedNotes.ClearDb();
-            for(OneNote n : this.notesList)
-                this.storedNotes.InsertANote(n);
-            this.storedNotes.CloseDb();
-                    
             this.adapter.notifyDataSetChanged();
         }
     }

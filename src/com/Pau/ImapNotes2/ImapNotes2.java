@@ -7,12 +7,23 @@ import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Application;
+import android.content.Context;
 
 public class ImapNotes2 extends Application {
 	
 	private ConfigurationFile thisSessionConfigurationFile;
 	private Imaper thisSessionImapFolder;
 	private ArrayList<OneNote> noteList;
+        private static Context context;
+
+        public void onCreate(){
+            super.onCreate();
+            ImapNotes2.context = getApplicationContext();
+        }
+
+        public static Context getAppContext() {
+            return ImapNotes2.context;
+        }
 
 	public void SetConfigurationFile(ConfigurationFile currentSettings){
 		this.thisSessionConfigurationFile = currentSettings;

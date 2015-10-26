@@ -12,6 +12,7 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 public class AccontConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener{
   public static final int TO_REFRESH = 999;
+  public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
   private static final String TAG = "AccontConfigurationActivity";
   
   private Imaper imapFolder;
@@ -39,6 +41,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   private TextView passwordTextView;
   private TextView serverTextView;
   private TextView portnumTextView;
+  private TextView syncintervalTextView;
   private CheckBox stickyCheckBox;
   private Spinner securitySpinner;
   private ImapNotes2Account imapNotes2Account;
@@ -49,6 +52,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+//addPreferencesFromResource(R.xml.account_preferences);
     setContentView(R.layout.account_selection);
     getActionBar().setDisplayHomeAsUpEnabled(true);
     this.accountnameTextView = (TextView)(findViewById(R.id.accountnameEdit));
@@ -56,6 +60,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     this.passwordTextView = (TextView)findViewById(R.id.passwordEdit);
     this.serverTextView = (TextView)findViewById(R.id.serverEdit);
     this.portnumTextView = (TextView)findViewById(R.id.portnumEdit);
+    this.syncintervalTextView = (TextView)findViewById(R.id.syncintervalEdit);
     this.stickyCheckBox = (CheckBox)findViewById(R.id.stickyCheckBox);
 
     securitySpinner = (Spinner) findViewById(R.id.securitySpinner);
@@ -126,6 +131,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
           accontConfigurationActivity.setResult(AccontConfigurationActivity.TO_REFRESH);
           Bundle result = null;
           Account account = new Account(((ImapNotes2Account)stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
+          long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
           AccountManager am = AccountManager.get(((AccontConfigurationActivity)stuffs[3]));
           if (am.addAccountExplicitly(account, ((ImapNotes2Account)stuffs[1]).GetPassword(), null)) {
               result = new Bundle();
@@ -135,8 +141,13 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
               am.setUserData(account, "username", ((ImapNotes2Account)stuffs[1]).GetUsername());
               am.setUserData(account, "server", ((ImapNotes2Account)stuffs[1]).GetServer());
               am.setUserData(account, "portnum", ((ImapNotes2Account)stuffs[1]).GetPortnum());
+              am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetPortnum());
               am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
               am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
+              // Run the Sync Adapter Periodically
+              ContentResolver.setIsSyncable(account, AUTHORITY, 1);
+              ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+              ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
               return true;
           } else {
               this.res.errorMessage = "Account already exists or is null";
@@ -161,6 +172,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
         this.accontConfigurationActivity.passwordTextView.setText("");
         this.accontConfigurationActivity.serverTextView.setText("");
         this.accontConfigurationActivity.portnumTextView.setText("");
+        this.accontConfigurationActivity.syncintervalTextView.setText("15");
         this.accontConfigurationActivity.securitySpinner.setSelection(0);
         this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
       }else {
@@ -191,6 +203,10 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
     this.security = Integer.toString(position);
+    if ((position == 0) || (position == 3) || (position == 4))
+        this.portnumTextView.setText("143");
+    if ((position == 1) || (position == 2))
+        this.portnumTextView.setText("993");
   }
 
   @Override

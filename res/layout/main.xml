@@ -4,6 +4,17 @@
     android:layout_width="fill_parent" android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:gravity="center|center_horizontal"
+        android:maxLines="1"
+        android:text="Welcome"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#FFFFFF" />
+
+    <TextView
         android:id="@+id/accountlabel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

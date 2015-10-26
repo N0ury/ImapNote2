@@ -12,22 +12,16 @@ public class OneNote extends HashMap<String,String>{
 	public OneNote(){
 		super();
 		this.put("title", "No Title");
-		this.put("body", "No Body");
 		this.put("date", "No Date");
-		this.put("number", "0");
-		this.put("position", "0 0 0 0");
-		this.put("color", "YELLOW");
+		this.put("uid", "0");
 		
 	}
 	
-	public OneNote(String title, String body, String date, String number, String position, String color){
+	public OneNote(String title, String date, String uid){
 		super();
 		this.put("title", title);
-		this.put("body", body);
 		this.put("date", date);
-		this.put("number", number);
-		this.put("position", position);
-		this.put("color", color);
+		this.put("uid", uid);
 	
 	}
 	
@@ -35,47 +29,30 @@ public class OneNote extends HashMap<String,String>{
 		return this.get("title");
 	}
 	
-	public String GetBody(){
-		return this.get("body");
-	}
-	
 	public String GetDate(){
 		return this.get("date");
 	}
 	
-	public String GetNumber(){
-		return this.get("number");
-	}
-	
-	public String GetPosition(){
-		return this.get("position");
-	}
-	
-	public String GetColor(){
-		return this.get("color");
+	public String GetUid(){
+		return this.get("uid");
 	}
 	
 	public void SetTitle(String title){
 		this.put("title", title);
 	}
 	
-	public void SetBody(String body){
-		this.put("body", body);
-	}
-	
 	public void SetDate(String date){
 		this.put("date", date);
 	}
 	
-	public void SetNumber(String number){
-		this.put("number", number);
+	public void SetUid(String uid){
+		this.put("uid", uid);
 	}
-
-	public void SetPosition(String position){
-		this.put("position", position);
-	}
-
-	public void SetColor(String color){
-		this.put("color", color);
-	}
+	
+	   @Override
+	   public String toString() {
+	        return ("Title:"+this.GetTitle()+
+	                    " Date: "+ this.GetDate() +
+	                    " Uid: "+ this.GetUid());
+	   }
 }

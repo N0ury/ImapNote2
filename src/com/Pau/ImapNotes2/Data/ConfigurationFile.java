@@ -54,9 +54,9 @@ public class ConfigurationFile {
             else
                 this.usesticky = this.LoadItemFromXML(fileToLoad, "usesticky").item(0).getChildNodes().item(0).getNodeValue();
 
-Log.d(TAG, "conf file present, we read data");
+//Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
-Log.d(TAG, "Conf file absent, go to the exception that initializes variables");
+//Log.d(TAG, "Conf file absent, go to the exception that initializes variables");
             this.accountname = "";
             this.username = "";
             this.password = "";

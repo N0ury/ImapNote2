@@ -1,5 +1,7 @@
 package com.Pau.ImapNotes2.Data;
 
+import android.accounts.Account;
+
 public class ImapNotes2Account {
 
     private String accountname = "";
@@ -10,6 +12,7 @@ public class ImapNotes2Account {
     private String security = "";
     private String usesticky = "";
     private Boolean accountHasChanged = false;
+    private Account account = null;
     
     
     public ImapNotes2Account() {
@@ -23,6 +26,14 @@ public class ImapNotes2Account {
 
     public String GetAccountname() {
         return this.accountname;
+    }
+ 
+    public void SetAccount(Account account) {
+        this.account = account;
+    }
+ 
+    public Account GetAccount() {
+        return this.account;
     }
  
     public void SetAccountname(String Accountname) {

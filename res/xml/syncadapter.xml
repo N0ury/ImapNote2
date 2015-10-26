@@ -1,0 +1,8 @@
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="com.Pau.ImapNotes2"
+    android:contentAuthority="com.Pau.ImapNotes2.provider"
+    android:userVisible="true"
+    android:supportsUploading="true"
+    android:allowParallelSyncs="false"
+    android:isAlwaysSyncable="false"
+    />

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.Pau.ImapNotes2"
-	android:versionCode="30"
-	android:versionName="3.01" xmlns:android="http://schemas.android.com/apk/res/android">
+	android:versionCode="31"
+	android:versionName="4.0" xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+	<uses-permission android:name="android.permission.READ_SYNC_STATS"/>
 	
 	<application
 		android:icon="@drawable/ic_launcher"
@@ -48,5 +51,18 @@
 			<meta-data android:name="android.accounts.AccountAuthenticator"
 				android:resource="@xml/authenticator" />
 		</service>
+
+                <provider
+                        android:name="com.Pau.ImapNotes2.Sync.StubProvider"
+                        android:authorities="com.Pau.ImapNotes2.provider"
+                        android:exported="false" />
+
+                <service android:name="com.Pau.ImapNotes2.Sync.SyncService" android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.content.SyncAdapter" />
+                    </intent-filter>
+                    <meta-data android:name="android.content.SyncAdapter"
+                               android:resource="@xml/syncadapter" />
+                </service>
 	</application>
 </manifest>
