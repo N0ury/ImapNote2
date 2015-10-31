@@ -22,7 +22,6 @@ public class ImapNotesAuthenticatorService extends Service{
     @Override
     public void onCreate() {
         this.imapNotesAuthenticator = new Authenticator(this);
-        
     }
 
     public IBinder onBind(Intent intent) {
@@ -31,7 +30,6 @@ public class ImapNotesAuthenticatorService extends Service{
     		ret = getAuthenticator().getIBinder();
     	
     	return ret;
-    
     }
     
     private Authenticator getAuthenticator() {
@@ -39,7 +37,6 @@ public class ImapNotesAuthenticatorService extends Service{
     	   this.imapNotesAuthenticator = new Authenticator(this);
     	  
     	return this.imapNotesAuthenticator;
-    
     }
     
     private static class Authenticator extends AbstractAccountAuthenticator {
@@ -49,7 +46,6 @@ public class ImapNotesAuthenticatorService extends Service{
 		public Authenticator(Context context) {
 			super(context);
 			this.mContext = context;
-
 		}
 
 	@Override
@@ -58,7 +54,7 @@ public class ImapNotesAuthenticatorService extends Service{
 			throws NetworkErrorException {
 		Bundle ret = super.getAccountRemovalAllowed(response, account);
 		if (ret.getBoolean(AccountManager.KEY_BOOLEAN_RESULT))
-SyncUtils.RemoveAccount(this.mContext, account);
+                    SyncUtils.RemoveAccount(this.mContext, account);
 /*
 			mContext.getContentResolver().delete(ListProvider.getClearUri(),
 					null, null);

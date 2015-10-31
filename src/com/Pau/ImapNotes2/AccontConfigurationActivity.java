@@ -82,6 +82,12 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     this.imapFolder = ((ImapNotes2)getApplicationContext()).GetImaper();
     this.settings = new ConfigurationFile(this.getApplicationContext());
 
+Bundle bundle=getIntent().getExtras();
+for (String key : bundle.keySet()) {
+    Object value = bundle.get(key);
+    Log.d(TAG, String.format("%s %s (%s)", key,  
+        value.toString(), value.getClass().getName()));
+}
     if (this.settings != null) {
         this.accountnameTextView.setText(this.settings.GetAccountname());
         this.usernameTextView.setText(this.settings.GetUsername());
@@ -141,7 +147,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
               am.setUserData(account, "username", ((ImapNotes2Account)stuffs[1]).GetUsername());
               am.setUserData(account, "server", ((ImapNotes2Account)stuffs[1]).GetServer());
               am.setUserData(account, "portnum", ((ImapNotes2Account)stuffs[1]).GetPortnum());
-              am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetPortnum());
+              am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetSyncinterval());
               am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
               am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
               // Run the Sync Adapter Periodically

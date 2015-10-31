@@ -11,6 +11,7 @@ public class ImapNotes2Account {
     private String portnum = "";
     private String security = "";
     private String usesticky = "";
+    private String syncinterval = "15";
     private Boolean accountHasChanged = false;
     private Account account = null;
     
@@ -87,6 +88,14 @@ public class ImapNotes2Account {
  
     public void SetUsesticky(String Usesticky) {
         this.usesticky = Usesticky;
+    }
+    
+    public String GetSyncinterval() {
+        return this.syncinterval;
+    }
+ 
+    public void SetSyncinterval(String Syncinterval) {
+        this.syncinterval = Syncinterval;
     }
     
     public void SetaccountHasChanged() {

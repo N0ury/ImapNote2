@@ -131,7 +131,7 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sync Interval"
+        android:text="Sync Interval (in minutes)"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000000" >
     </TextView>
@@ -142,7 +142,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dip"
         android:ems="10"
-        android:hint="sync interval (in minutes)"
+        android:hint="sync interval for this account (in minutes)"
         android:inputType="number"
         android:text="15"
         android:textColor="#000000" >

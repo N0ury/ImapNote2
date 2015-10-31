@@ -71,6 +71,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener {
     private static Account[] accounts;
     private static List<String> currentList;
     private TextView status = null;
+    private static String OldStatus;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
     
@@ -160,17 +161,23 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
             String accountname = intent.getStringExtra("ACCOUNTNAME");
             Boolean isChanged = intent.getBooleanExtra("CHANGED", false);
             Boolean isSynced = intent.getBooleanExtra("SYNCED", false);
+            String syncInterval = intent.getStringExtra("SYNCINTERVAL");
             if (accountname.equals(Listactivity.imapNotes2Account.GetAccountname())) {
                 if (isSynced) {
                     // Display last sync date
                     DateFormat dateFormat =
                         android.text.format.DateFormat.getDateFormat(getApplicationContext());
                     Date date = new Date();
-                    String sdate = DateFormat.getDateTimeInstance().format(date);
-status.setText("Last sync: " + sdate);
+                    String sdate = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(date);
+                    String sinterval = " (interval:" + String.valueOf(syncInterval) + " min)";
+                    status.setText("Last sync: " + sdate + sinterval);
+                } else {
+                    status.setText(OldStatus);
                 }
+
                 if (isChanged) {
-                    if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationContext());
+                    if (Listactivity.storedNotes == null)
+                         storedNotes = new NotesDb(getApplicationContext());
                     storedNotes.OpenDb();
                     storedNotes.GetStoredNotes(noteList, accountname);
                     listToView.notifyDataSetChanged();
@@ -435,6 +442,7 @@ status.setText("Last sync: " + sdate);
     }
 
     public static void TriggerSync(TextView statusField) {
+        OldStatus=statusField.getText().toString();
         statusField.setText("Syncing...");
         Account mAccount = Listactivity.imapNotes2Account.GetAccount();
         Bundle settingsBundle = new Bundle();

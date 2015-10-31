@@ -59,11 +59,18 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         this.account = account;
         isChanged = false;
         isSynced = false;
+        String syncinterval;
         
         SyncUtils.CreateDirs (account.name, this.context);
 
         storedNotes = new NotesDb(this.context);
         storedNotes.OpenDb();
+
+        AccountManager am = AccountManager.get(this.context);
+        syncinterval = am.getUserData(account, "syncinterval");
+// Temporary workaround for a bug
+// Portnum was put into account manager sync interval (143 or 993 or ... minutes)
+if (syncinterval.equals("143") || syncinterval.equals("993")) am.setUserData(account, "syncinterval", "15");
 
         // Connect to remote and get UIDValidity
         this.res = ConnectToRemote();
@@ -77,6 +84,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             isSynced = false;
             i.putExtra("CHANGED", isChanged);
             i.putExtra("SYNCED", isSynced);
+            i.putExtra("SYNCINTERVAL", syncinterval);
             context.sendBroadcast(i);
             return;
         }
@@ -108,6 +116,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             isSynced = true;
             i.putExtra("CHANGED", isChanged);
             i.putExtra("SYNCED", isSynced);
+            i.putExtra("SYNCINTERVAL", syncinterval);
             context.sendBroadcast(i);
             return;
         }
@@ -123,7 +132,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // handle notes created or removed on remote
         boolean remoteNotesManaged = false;
-        AccountManager am = AccountManager.get(this.context);
         String usesticky = am.getUserData(account, "usesticky");
     try {
         remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
@@ -147,6 +155,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         i.putExtra("CHANGED", isChanged);
         isSynced = true;
         i.putExtra("SYNCED", isSynced);
+            i.putExtra("SYNCINTERVAL", syncinterval);
         context.sendBroadcast(i);
     }
 
