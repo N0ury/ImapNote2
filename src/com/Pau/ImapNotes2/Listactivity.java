@@ -42,10 +42,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SimpleAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -72,8 +74,24 @@ public class Listactivity extends Activity  implements OnItemSelectedListener {
     private static List<String> currentList;
     private TextView status = null;
     private static String OldStatus;
+    private Button editAccountButton=null;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
+    
+
+    private OnClickListener clickListenerEditAccount = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Clic on editAccount Button
+            Intent res = new Intent();
+            String mPackage = "com.Pau.ImapNotes2";
+            String mClass = ".AccontConfigurationActivity";
+            res.setComponent(new ComponentName(mPackage,mPackage+mClass));
+            res.putExtra("action", "EDIT_ACCOUNT");
+            res.putExtra("accountname", Listactivity.imapNotes2Account.GetAccountname());
+            startActivity(res);
+        }
+    };
     
     /** Called when the activity is first created. */
     @Override
@@ -126,6 +144,10 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
             startActivityForResult(toDetail,SEE_DETAIL); 
         }
       });
+
+      editAccountButton = (Button) findViewById(R.id.editAccountButton);
+      editAccountButton.setOnClickListener(clickListenerEditAccount);
+
     }
 
     public void onDestroy() {
@@ -215,6 +237,7 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
             String mPackage = "com.Pau.ImapNotes2";
             String mClass = ".AccontConfigurationActivity";
             res.setComponent(new ComponentName(mPackage,mPackage+mClass));
+            res.putExtra("action", "CREATE_ACCOUNT");
             startActivity(res);
             return true;
         case R.id.refresh:
@@ -306,6 +329,7 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
         Listactivity.imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData (account, "portnum"));
         Listactivity.imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData (account, "security"));
         Listactivity.imapNotes2Account.SetUsesticky(accountManager.getUserData (account, "usesticky"));
+        Listactivity.imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData (account, "syncinterval"));
         Listactivity.imapNotes2Account.SetaccountHasChanged();
         Listactivity.imapNotes2Account.SetAccount(account);
         this.RefreshList();
@@ -334,6 +358,7 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
             Listactivity.imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData (account, "portnum"));
             Listactivity.imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData (account, "security"));
             Listactivity.imapNotes2Account.SetUsesticky(accountManager.getUserData (account, "usesticky"));
+            Listactivity.imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData (account, "syncinterval"));
             Listactivity.imapNotes2Account.SetaccountHasChanged();
         }
     }

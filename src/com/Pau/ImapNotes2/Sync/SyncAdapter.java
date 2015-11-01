@@ -68,9 +68,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         AccountManager am = AccountManager.get(this.context);
         syncinterval = am.getUserData(account, "syncinterval");
+/*
 // Temporary workaround for a bug
 // Portnum was put into account manager sync interval (143 or 993 or ... minutes)
+if (syncinterval != null)
 if (syncinterval.equals("143") || syncinterval.equals("993")) am.setUserData(account, "syncinterval", "15");
+else am.setUserData(account, "syncinterval", "15");
+*/
 
         // Connect to remote and get UIDValidity
         this.res = ConnectToRemote();

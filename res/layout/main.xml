@@ -25,12 +25,24 @@
 
     </TextView>
 
-    <Spinner
-        android:id="@+id/accountSpinner"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    </Spinner>
+        <Spinner
+            android:id="@+id/accountSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2" />
+
+        <Button
+            android:id="@+id/editAccountButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/ic_action_user_edit" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/notesList"

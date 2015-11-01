@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.Pau.ImapNotes2"
-	android:versionCode="31"
+	android:versionCode="32"
 	android:versionName="4.1" xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -10,6 +10,7 @@
 	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
 	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 	<uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
 	
 	<application
 		android:icon="@drawable/ic_launcher"

@@ -21,10 +21,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +51,38 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   private ImapNotes2Account imapNotes2Account;
   private String security;
   private int security_i;
+  private String action;
+  private String accountname;
   private ConfigurationFile settings;
+  private static Account myAccount;
+  private static AccountManager accountManager;
+
+  private OnClickListener clickListenerLogin = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          // Clic on Login Button
+          DoLogin(v);
+      }
+  };
+
+  private OnClickListener clickListenerEdit = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          // Clic on Edit Button
+          DoLogin(v);
+      }
+  };
+
+  private OnClickListener clickListenerRemove = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          // Clic on Remove Button
+          accountManager.removeAccount(myAccount, null, null);
+          Toast.makeText(getApplicationContext(), "Account has been removed",
+                Toast.LENGTH_LONG).show();
+          finish();//finishing activity
+      }
+  };
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -82,12 +117,16 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     this.imapFolder = ((ImapNotes2)getApplicationContext()).GetImaper();
     this.settings = new ConfigurationFile(this.getApplicationContext());
 
-Bundle bundle=getIntent().getExtras();
-for (String key : bundle.keySet()) {
-    Object value = bundle.get(key);
-    Log.d(TAG, String.format("%s %s (%s)", key,  
-        value.toString(), value.getClass().getName()));
-}
+    Bundle extras = getIntent().getExtras();
+    if (extras != null) {
+        if (extras.containsKey("action")) {
+            action = extras.getString("action");
+        }
+        if (extras.containsKey("accountname")) {
+            accountname = extras.getString("accountname");
+        }
+    }
+
     if (this.settings != null) {
         this.accountnameTextView.setText(this.settings.GetAccountname());
         this.usernameTextView.setText(this.settings.GetUsername());
@@ -99,8 +138,51 @@ for (String key : bundle.keySet()) {
         this.security_i = Integer.parseInt(this.security);
         this.securitySpinner.setSelection(this.security_i);
         this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.settings.GetUsesticky()));
+        this.syncintervalTextView.setText("15");
     }
 
+    LinearLayout layout = (LinearLayout) findViewById(R.id.bttonsLayout);
+    if (this.action.equals("EDIT_ACCOUNT")) {
+        // Here we have to edit an existing account
+        accountManager = AccountManager.get(getApplicationContext());
+        Account[] accounts = accountManager.getAccountsByType("com.Pau.ImapNotes2");
+        for (Account account : accounts) {
+            if (account.name.equals(accountname)) {
+                myAccount = account;
+                break;
+            }
+        }
+        this.accountnameTextView.setText(this.accountname);
+        this.usernameTextView.setText(this.accountManager.getUserData (myAccount, "username"));
+        this.passwordTextView.setText(this.accountManager.getPassword(myAccount));
+        this.serverTextView.setText(this.accountManager.getUserData(myAccount, "server"));
+        this.portnumTextView.setText(this.accountManager.getUserData(myAccount, "portnum"));
+        this.security = this.accountManager.getUserData (myAccount, "security");
+        if (this.security == null) this.security = "0";
+        this.security_i = Integer.parseInt(this.security);
+        this.securitySpinner.setSelection(this.security_i);
+        this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.accountManager.getUserData(myAccount,"usesticky")));
+        syncintervalTextView.setText(this.accountManager.getUserData(myAccount, "syncinterval"));
+        Button buttonEdit = new Button(this);
+        buttonEdit.setText("Save");
+        buttonEdit.setOnClickListener(clickListenerEdit);
+        layout.addView(buttonEdit);
+        Button buttonRemove = new Button(this);
+        buttonRemove.setText("Remove");
+        buttonRemove.setOnClickListener(clickListenerRemove);
+        layout.addView(buttonRemove);
+    } else {
+        // Here we have to create a new account
+        Button buttonView = new Button(this);
+        buttonView.setText("Check & Create Account");
+        buttonView.setOnClickListener(clickListenerLogin);
+        layout.addView(buttonView);
+    }
+
+        // Don't display keyboard when on note detail, only if user touches the screen
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
   }
 
   // DoLogin method is defined in account_selection.xml (account_selection layout)
@@ -113,8 +195,9 @@ for (String key : bundle.keySet()) {
     this.imapNotes2Account.SetPortnum(this.portnumTextView.getText().toString());
     this.imapNotes2Account.SetSecurity(this.security);
     this.imapNotes2Account.SetUsesticky(String.valueOf(this.stickyCheckBox.isChecked()));
+    this.imapNotes2Account.SetSyncinterval(this.syncintervalTextView.getText().toString());
     
-    new LoginThread().execute(this.imapFolder, this.imapNotes2Account, loadingDialog, this);
+    new LoginThread().execute(this.imapFolder, this.imapNotes2Account, loadingDialog, this, this.action);
     
   }
   
@@ -122,43 +205,65 @@ for (String key : bundle.keySet()) {
     
       private AccontConfigurationActivity accontConfigurationActivity;
       private ImapNotes2Result res = new ImapNotes2Result();
+      String action;
 
       protected Boolean doInBackground(Object... stuffs) {
-      try {
-        this.res=((Imaper)stuffs[0]).ConnectToProvider(
+        this.action = (String)stuffs[4];
+        try {
+          this.res=((Imaper)stuffs[0]).ConnectToProvider(
             ((ImapNotes2Account)stuffs[1]).GetUsername(),
             ((ImapNotes2Account)stuffs[1]).GetPassword(),
             ((ImapNotes2Account)stuffs[1]).GetServer(),
             ((ImapNotes2Account)stuffs[1]).GetPortnum(),
             ((ImapNotes2Account)stuffs[1]).GetSecurity(),
             ((ImapNotes2Account)stuffs[1]).GetUsesticky());
-        accontConfigurationActivity = (AccontConfigurationActivity)stuffs[3];
-        if (this.res.returnCode==0) {
-          accontConfigurationActivity.setResult(AccontConfigurationActivity.TO_REFRESH);
-          Bundle result = null;
-          Account account = new Account(((ImapNotes2Account)stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
-          long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
-          AccountManager am = AccountManager.get(((AccontConfigurationActivity)stuffs[3]));
-          if (am.addAccountExplicitly(account, ((ImapNotes2Account)stuffs[1]).GetPassword(), null)) {
-              result = new Bundle();
-              result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-              result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-              setAccountAuthenticatorResult(result);
-              am.setUserData(account, "username", ((ImapNotes2Account)stuffs[1]).GetUsername());
-              am.setUserData(account, "server", ((ImapNotes2Account)stuffs[1]).GetServer());
-              am.setUserData(account, "portnum", ((ImapNotes2Account)stuffs[1]).GetPortnum());
-              am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetSyncinterval());
-              am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
-              am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
-              // Run the Sync Adapter Periodically
-              ContentResolver.setIsSyncable(account, AUTHORITY, 1);
-              ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-              ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-              return true;
-          } else {
-              this.res.errorMessage = "Account already exists or is null";
-              return false;
-          }
+          accontConfigurationActivity = (AccontConfigurationActivity)stuffs[3];
+          if (this.res.returnCode==0) {
+            Account account = new Account(((ImapNotes2Account)stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
+            long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
+            AccountManager am = AccountManager.get(((AccontConfigurationActivity)stuffs[3]));
+            accontConfigurationActivity.setResult(AccontConfigurationActivity.TO_REFRESH);
+            Bundle result = null;
+            if (this.action.equals("EDIT_ACCOUNT")) {
+                  result = new Bundle();
+                  result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+                  result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+                  setAccountAuthenticatorResult(result);
+                  am.setUserData(account, "username", ((ImapNotes2Account)stuffs[1]).GetUsername());
+                  am.setUserData(account, "server", ((ImapNotes2Account)stuffs[1]).GetServer());
+                  am.setUserData(account, "portnum", ((ImapNotes2Account)stuffs[1]).GetPortnum());
+                  am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetSyncinterval());
+                  am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
+                  am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
+                  // Run the Sync Adapter Periodically
+                  ContentResolver.setIsSyncable(account, AUTHORITY, 1);
+                  ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+                  ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
+                  this.res.errorMessage = "Account has been modified";
+                  return true;
+            } else {
+              if (am.addAccountExplicitly(account, ((ImapNotes2Account)stuffs[1]).GetPassword(), null)) {
+                  result = new Bundle();
+                  result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+                  result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+                  setAccountAuthenticatorResult(result);
+                  am.setUserData(account, "username", ((ImapNotes2Account)stuffs[1]).GetUsername());
+                  am.setUserData(account, "server", ((ImapNotes2Account)stuffs[1]).GetServer());
+                  am.setUserData(account, "portnum", ((ImapNotes2Account)stuffs[1]).GetPortnum());
+                  am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetSyncinterval());
+                  am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
+                  am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
+                  // Run the Sync Adapter Periodically
+                  ContentResolver.setIsSyncable(account, AUTHORITY, 1);
+                  ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+                  ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
+                  this.res.errorMessage = "Account has been added";
+                  return true;
+              } else {
+                  this.res.errorMessage = "Account already exists or is null";
+                  return false;
+              }
+            }
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -170,25 +275,24 @@ for (String key : bundle.keySet()) {
     
     protected void onPostExecute(Boolean result){
         if(result){
-            Toast.makeText(getApplicationContext(), "Account has been added",
-                Toast.LENGTH_LONG).show();
-        accontConfigurationActivity.settings.Clear();
-        this.accontConfigurationActivity.accountnameTextView.setText("");
-        this.accontConfigurationActivity.usernameTextView.setText("");
-        this.accontConfigurationActivity.passwordTextView.setText("");
-        this.accontConfigurationActivity.serverTextView.setText("");
-        this.accontConfigurationActivity.portnumTextView.setText("");
-        this.accontConfigurationActivity.syncintervalTextView.setText("15");
-        this.accontConfigurationActivity.securitySpinner.setSelection(0);
-        this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
-      }else {
-    	final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage,Toast.LENGTH_LONG);
-        tag.show();
-        new CountDownTimer(5000, 1000) {
+          accontConfigurationActivity.settings.Clear();
+          if (this.action.equals("EDIT_ACCOUNT")) finish();
+          this.accontConfigurationActivity.accountnameTextView.setText("");
+          this.accontConfigurationActivity.usernameTextView.setText("");
+          this.accontConfigurationActivity.passwordTextView.setText("");
+          this.accontConfigurationActivity.serverTextView.setText("");
+          this.accontConfigurationActivity.portnumTextView.setText("");
+          this.accontConfigurationActivity.syncintervalTextView.setText("15");
+          this.accontConfigurationActivity.securitySpinner.setSelection(0);
+          this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
+        }else {
+    	  final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage,Toast.LENGTH_LONG);
+          tag.show();
+          new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {tag.show();}
             public void onFinish() {tag.show();}
-        }.start();
-      }
+          }.start();
+        }
     }
   }
   
