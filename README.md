@@ -4,10 +4,10 @@ imapnote2
 Sync your notes between Android, iOs devices and different accounts like Gmail, iCloud and others
 
 This project is a fork of "imapnote" one created by boemianrapsodi (boemianrapsody@gmail.com). Probably Pasquale Boemio.
-Some things don't work correctly but it was impossible to contact him to correct these bugs.
+Some things didn't work correctly but it was impossible to contact him to correct these bugs.
 
 Original app is named "imapnote", and is available at https://code.google.com/p/imapnote/,
-So I decided to name this one "imapnote2". It is under the GPL v3 License, as is "imapnote"
+So I decided to name this one "imapnote2". It is under the GPL v3 License, same as "imapnote"
 
 It is based on Apple way to manage notes. They are stored in an imap folder named "Notes".
 imapnote uses Gmail for syncing. As I use my own imap server, I have modified it to be used with any imap server that respects Apple method. It has been tested with Gmail, iCloud (imap.mail.me.com), Yahoo! (imap.mail.yahoo.com), AOL (imap.aol.com) and of course my server. Even if not still tested, it should work with others.
@@ -25,5 +25,7 @@ Main changes are:
 - even if not recommended, untrusted certificates can be used.
 - imap port number can be choosed. 993 is no more the only one accepted
 - security can be plain text, SSL/TLS or STARTTLS
+- multiple accounts can be used. Android account manager is used
+- works offline and sync is done in the background. Sync interval can be different for each account
 
 This app is available at Google Play under the name "ImapNote2". But for people who don't have access to this market, it will be possible to compile source code. Furthermore, an apk is available in bin directory.
