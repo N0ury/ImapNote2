@@ -87,7 +87,6 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-//addPreferencesFromResource(R.xml.account_preferences);
     setContentView(R.layout.account_selection);
     getActionBar().setDisplayHomeAsUpEnabled(true);
     this.accountnameTextView = (TextView)(findViewById(R.id.accountnameEdit));
@@ -142,6 +141,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     }
 
     LinearLayout layout = (LinearLayout) findViewById(R.id.bttonsLayout);
+    if (this.action == null) { this.action = "CREATE_ACCOUNT"; }
     if (this.action.equals("EDIT_ACCOUNT")) {
         // Here we have to edit an existing account
         accountManager = AccountManager.get(getApplicationContext());
@@ -276,7 +276,6 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     protected void onPostExecute(Boolean result){
         if(result){
           accontConfigurationActivity.settings.Clear();
-          if (this.action.equals("EDIT_ACCOUNT")) finish();
           this.accontConfigurationActivity.accountnameTextView.setText("");
           this.accontConfigurationActivity.usernameTextView.setText("");
           this.accontConfigurationActivity.passwordTextView.setText("");
@@ -285,14 +284,14 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
           this.accontConfigurationActivity.syncintervalTextView.setText("15");
           this.accontConfigurationActivity.securitySpinner.setSelection(0);
           this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
-        }else {
-    	  final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage,Toast.LENGTH_LONG);
-          tag.show();
-          new CountDownTimer(5000, 1000) {
-            public void onTick(long millisUntilFinished) {tag.show();}
-            public void onFinish() {tag.show();}
-          }.start();
         }
+    	final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage,Toast.LENGTH_LONG);
+        tag.show();
+        new CountDownTimer(5000, 1000) {
+          public void onTick(long millisUntilFinished) {tag.show();}
+          public void onFinish() {tag.show();}
+        }.start();
+        if (this.action.equals("EDIT_ACCOUNT")) finish();
     }
   }
   

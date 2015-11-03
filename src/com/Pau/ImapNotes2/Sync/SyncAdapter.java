@@ -236,14 +236,7 @@ else am.setUserData(account, "syncinterval", "15");
         for (String fileDeleted : listOfDeleted) {
             try {
                 SyncUtils.DeleteNote(this.res.notesFolder, Integer.parseInt(fileDeleted));
-            } catch (NumberFormatException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (MessagingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
