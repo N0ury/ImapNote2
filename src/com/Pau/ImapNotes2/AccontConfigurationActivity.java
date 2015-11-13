@@ -54,7 +54,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   private String action;
   private String accountname;
   private ConfigurationFile settings;
-  private static Account myAccount;
+  private static Account myAccount = null;
   private static AccountManager accountManager;
 
   private OnClickListener clickListenerLogin = new View.OnClickListener() {
@@ -141,28 +141,30 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     }
 
     LinearLayout layout = (LinearLayout) findViewById(R.id.bttonsLayout);
-    if (this.action == null) { this.action = "CREATE_ACCOUNT"; }
+    accountManager = AccountManager.get(getApplicationContext());
+    Account[] accounts = accountManager.getAccountsByType("com.Pau.ImapNotes2");
+    for (Account account : accounts) {
+        if (account.name.equals(accountname)) {
+            myAccount = account;
+            break;
+        }
+    }
+
+    if ((this.action == null) || (this.myAccount == null)) { this.action = "CREATE_ACCOUNT"; }
+
     if (this.action.equals("EDIT_ACCOUNT")) {
         // Here we have to edit an existing account
-        accountManager = AccountManager.get(getApplicationContext());
-        Account[] accounts = accountManager.getAccountsByType("com.Pau.ImapNotes2");
-        for (Account account : accounts) {
-            if (account.name.equals(accountname)) {
-                myAccount = account;
-                break;
-            }
-        }
         this.accountnameTextView.setText(this.accountname);
-        this.usernameTextView.setText(this.accountManager.getUserData (myAccount, "username"));
-        this.passwordTextView.setText(this.accountManager.getPassword(myAccount));
+       	this.usernameTextView.setText(this.accountManager.getUserData (myAccount, "username"));
+       	this.passwordTextView.setText(this.accountManager.getPassword(myAccount));
         this.serverTextView.setText(this.accountManager.getUserData(myAccount, "server"));
         this.portnumTextView.setText(this.accountManager.getUserData(myAccount, "portnum"));
         this.security = this.accountManager.getUserData (myAccount, "security");
+        this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.accountManager.getUserData(myAccount,"usesticky")));
+        syncintervalTextView.setText(this.accountManager.getUserData(myAccount, "syncinterval"));
         if (this.security == null) this.security = "0";
         this.security_i = Integer.parseInt(this.security);
         this.securitySpinner.setSelection(this.security_i);
-        this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.accountManager.getUserData(myAccount,"usesticky")));
-        syncintervalTextView.setText(this.accountManager.getUserData(myAccount, "syncinterval"));
         Button buttonEdit = new Button(this);
         buttonEdit.setText("Save");
         buttonEdit.setOnClickListener(clickListenerEdit);
@@ -180,8 +182,8 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     }
 
         // Don't display keyboard when on note detail, only if user touches the screen
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+    getWindow().setSoftInputMode(
+        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
   }
 

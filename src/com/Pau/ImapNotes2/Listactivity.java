@@ -28,6 +28,7 @@ import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -48,13 +49,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.SimpleAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Listactivity extends Activity  implements OnItemSelectedListener {
+public class Listactivity extends Activity  implements OnItemSelectedListener,Filterable {
     private static final int SEE_DETAIL = 2;
     private static final int DELETE_BUTTON = 3;
     private static final int NEW_BUTTON = 4;
@@ -75,6 +79,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener {
     private TextView status = null;
     private static String OldStatus;
     private Button editAccountButton=null;
+    private ListView listview;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
     
@@ -126,20 +131,22 @@ public class Listactivity extends Activity  implements OnItemSelectedListener {
         R.layout.note_element,
         new String[]{"title","date"},
         new int[]{R.id.noteTitle, R.id.noteInformation});
-    ((ListView)findViewById(R.id.notesList)).setAdapter(this.listToView);
+    listview = (ListView) findViewById(R.id.notesList);
+    listview.setAdapter(this.listToView);
+
+    listview.setTextFilterEnabled(true);
     
     this.imapFolder = new Imaper();
     ((ImapNotes2)this.getApplicationContext()).SetImaper(this.imapFolder);
-//    this.imapFolder.GetPrefs();
     
-if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationContext());
+    if (Listactivity.storedNotes == null)
+        storedNotes = new NotesDb(getApplicationContext());
     
     // When item is clicked, we go to NoteDetailActivity
-    ((ListView)findViewById(R.id.notesList)).setOnItemClickListener(new OnItemClickListener() {
+    listview.setOnItemClickListener(new OnItemClickListener() {
         public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
             Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
-            toDetail.putExtra("selectedNote", (OneNote)noteList.get(selectedNote));
-//Log.d(TAG,"Start NoteDetailActivity with sticky="+Listactivity.imapNotes2Account.GetUsesticky());
+            toDetail.putExtra("selectedNote", (OneNote)arg0.getItemAtPosition(selectedNote));
             toDetail.putExtra("useSticky", Listactivity.imapNotes2Account.GetUsesticky());
             startActivityForResult(toDetail,SEE_DETAIL); 
         }
@@ -226,8 +233,31 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
     public boolean onCreateOptionsMenu(Menu menu){
     getMenuInflater().inflate(R.menu.list, menu);
     
-    return true;
+    // Associate searchable configuration with the SearchView
+    SearchManager searchManager =
+           (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+    SearchView searchView =
+            (SearchView) menu.findItem(R.id.search).getActionView();
+    searchView.setSearchableInfo(
+            searchManager.getSearchableInfo(getComponentName()));
+     SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+         @Override
+         public boolean onQueryTextChange(String newText) {
+             // this is your adapter that will be filtered
+             listToView.getFilter().filter(newText);
+             return true;
+         }
 
+         @Override
+         public boolean onQueryTextSubmit(String query) {
+             // this is your adapter that will be filtered
+             listToView.getFilter().filter(query);
+             return true;
+         }
+     };
+     searchView.setOnQueryTextListener(textChangeListener);
+
+    return true;
     }
     
     public boolean onOptionsItemSelected (MenuItem item){
@@ -478,5 +508,10 @@ if (Listactivity.storedNotes == null)  storedNotes = new NotesDb(getApplicationC
         //Log.d(TAG,"Request a sync for:"+mAccount);
         ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
     }
-    
+
+	@Override
+	public Filter getFilter() {
+		return null;
+	}
 }
+     

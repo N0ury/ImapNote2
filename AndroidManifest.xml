@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.Pau.ImapNotes2"
-	android:versionCode="35"
-	android:versionName="4.4" xmlns:android="http://schemas.android.com/apk/res/android">
+	android:versionCode="36"
+	android:versionName="4.5" xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-sdk android:minSdkVersion="16" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -22,12 +22,18 @@
 		    android:label="@string/app_name"
 		    android:launchMode="singleTop">
 			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
+                            <action android:name="android.intent.action.MAIN" />
+                            <category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+                        <intent-filter>
+                            <action android:name="android.intent.action.SEARCH" />
+                        </intent-filter>
+                        <meta-data android:name="android.app.searchable"
+                                android:resource="@xml/searchable" />
 		</activity>
 
-		<activity android:name=".AccontConfigurationActivity" android:exported="true"
+		<activity android:name=".AccontConfigurationActivity"
+                    android:exported="true"
 		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
 			<meta-data android:name="android.support.PARENT_ACTIVITY"
 				android:value="com.Pau.ImapNotes2.Listactivity" />

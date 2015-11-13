@@ -5,7 +5,6 @@
         android:icon="@drawable/ic_action_login"
         android:title="Account"
         android:showAsAction="ifRoom">
-
     </item>
     
     <item
@@ -13,7 +12,6 @@
         android:icon="@drawable/ic_action_new"
         android:title="New"
         android:showAsAction="ifRoom">
-        
     </item>
     
     <item
@@ -21,7 +19,14 @@
         android:icon="@drawable/ic_action_refresh"
         android:title="Refresh"
         android:showAsAction="ifRoom">
-        
+    </item>
+    
+    <item
+        android:id="@+id/search"
+        android:title="search"
+        android:icon="@drawable/ic_action_search"
+        android:showAsAction="collapseActionView|ifRoom"
+        android:actionViewClass="android.widget.SearchView">
     </item>
     
     <item
@@ -29,7 +34,6 @@
         android:icon="@drawable/ic_action_about"
         android:title="About"
         android:showAsAction="ifRoom">
-        
     </item>
     
 </menu>
