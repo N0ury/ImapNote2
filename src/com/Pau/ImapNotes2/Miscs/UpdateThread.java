@@ -14,11 +14,12 @@ import java.util.UUID;
 import javax.mail.Flags;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MailDateFormat;
 
 import com.Pau.ImapNotes2.ImapNotes2;
 import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.NotesListAdapter;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
 
@@ -30,7 +31,7 @@ import android.util.Log;
 import android.widget.SimpleAdapter;
 
 public class UpdateThread extends AsyncTask<Object, Void, Boolean>{
-    SimpleAdapter adapter;
+    NotesListAdapter adapter;
     ArrayList<OneNote> notesList;
     String suid;
     String noteBody;
@@ -47,7 +48,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean>{
         
     @Override
     protected Boolean doInBackground(Object... stuffs) {
-        this.adapter = ((SimpleAdapter)stuffs[3]);
+        this.adapter = ((NotesListAdapter)stuffs[3]);
         this.notesList = ((ArrayList<OneNote>)stuffs[2]);
         this.suid = ((String)stuffs[5]);
         this.noteBody = ((String)stuffs[6]);
@@ -178,12 +179,16 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean>{
       message.setFlag(Flags.Flag.SEEN,true);
     }
     message.setSubject(note.GetTitle());
-    message.setSentDate(new Date());
+    MailDateFormat mailDateFormat = new MailDateFormat();
+    // Remove (CET) or (GMT+1) part as asked in github issue #13
+    String headerDate = (mailDateFormat.format(new Date())).replaceAll("\\(.*$", "");
+    message.addHeader("Date", headerDate);
     //déterminer l'uid temporaire
     String uid = Integer.toString(Math.abs(Integer.parseInt(note.GetUid())));
     File directory = new File ((ImapNotes2.getAppContext()).getFilesDir() + "/" +
             Listactivity.imapNotes2Account.GetAccountname() + "/new");
-    message.setFrom(new InternetAddress("ImapNotes2", Listactivity.imapNotes2Account.GetAccountname()));
+    //message.setFrom(new InternetAddress("ImapNotes2", Listactivity.imapNotes2Account.GetAccountname()));
+    message.setFrom(Listactivity.imapNotes2Account.GetAccountname());
     File outfile = new File (directory, uid);
     OutputStream str = new FileOutputStream(outfile);
     message.writeTo(str);

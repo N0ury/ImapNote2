@@ -66,7 +66,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener,Fi
     private static final int EDIT_BUTTON = 6;
         
     private ArrayList<OneNote> noteList;
-    private SimpleAdapter listToView;
+    private NotesListAdapter listToView;
     private ArrayAdapter<String> spinnerList;
     
     private Imaper imapFolder;
@@ -125,7 +125,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener,Fi
 
     this.noteList = new ArrayList<OneNote>();
     ((ImapNotes2)this.getApplicationContext()).SetNotesList(this.noteList);
-    this.listToView = new SimpleAdapter(
+    this.listToView = new NotesListAdapter(
         getApplicationContext(),
         this.noteList,
         R.layout.note_element,

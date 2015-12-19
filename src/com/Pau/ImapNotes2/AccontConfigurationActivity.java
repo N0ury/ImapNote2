@@ -60,16 +60,28 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   private OnClickListener clickListenerLogin = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-          // Clic on Login Button
-          DoLogin(v);
+          // Click on Login Button
+    	  if (((String) accountnameTextView.getText().toString()).contains("'")) {
+    	      // Single quotation marks are not allowed in accountname
+              Toast.makeText(getApplicationContext(), "Quotation marks are not allowed in accountname",
+                      Toast.LENGTH_LONG).show();
+    	  } else {
+              DoLogin(v);
+    	  }
       }
   };
 
   private OnClickListener clickListenerEdit = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-          // Clic on Edit Button
-          DoLogin(v);
+          // Click on Edit Button
+    	  if (((String) accountnameTextView.getText().toString()).contains("'")) {
+    	      // Single quotation marks are not allowed in accountname
+              Toast.makeText(getApplicationContext(), "Quotation marks are not allowed in accountname",
+                      Toast.LENGTH_LONG).show();
+    	  } else {
+              DoLogin(v);
+    	  }
       }
   };
 

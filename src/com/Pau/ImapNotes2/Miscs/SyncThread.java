@@ -3,6 +3,7 @@ package com.Pau.ImapNotes2.Miscs;
 import java.util.ArrayList;
 
 import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.NotesListAdapter;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
 
@@ -14,7 +15,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class SyncThread extends AsyncTask<Object, Void, Boolean> {
-    SimpleAdapter adapter;
+    NotesListAdapter adapter;
     ArrayList<OneNote> notesList;
     NotesDb storedNotes;
     boolean bool_to_return;
@@ -30,7 +31,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
         String portnum = null;
         String security = null;
         String usesticky = null;
-        this.adapter = ((SimpleAdapter)stuffs[3]);
+        this.adapter = ((NotesListAdapter)stuffs[3]);
         this.notesList = ((ArrayList<OneNote>)stuffs[2]);
         this.storedNotes = ((NotesDb)stuffs[5]);
         this.ctx = (Context)stuffs[6];
