@@ -367,11 +367,20 @@ private static Boolean useProxy = false;
       if (!(updateDb)) return;
 
       String title = null;
-      try {
-          title = notesMessage.getSubject();
-      } catch (MessagingException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+      String[] rawvalue = null;
+      // Some servers (such as posteo.de) don't encode non us-ascii characters in subject
+      // This is a workaround to handle them
+      // "lä ö ë" subject should be stored as =?charset?encoding?encoded-text?=
+      // either =?utf-8?B?bMOkIMO2IMOr?=  -> Quoted printable
+      // or =?utf-8?Q?l=C3=A4 =C3=B6 =C3=AB?=  -> Base64
+      try { rawvalue = notesMessage.getHeader("Subject"); } catch (Exception e) {e.printStackTrace(); };
+      try { title = notesMessage.getSubject(); } catch (Exception e) {e.printStackTrace();}
+      if (rawvalue[0].length() >= 2) {
+    	  if (!(rawvalue[0].substring(0,2).equals("=?"))) {
+    		  try { title = new String ( title.getBytes("ISO-8859-1")); } catch (Exception e) {e.printStackTrace();}
+    	  }
+      } else {
+          try { title = new String ( title.getBytes("ISO-8859-1")); } catch (Exception e) {e.printStackTrace();}
       }
 
       // Get INTERNALDATE
