@@ -9,7 +9,7 @@
     android:layout_width="fill_parent" android:layout_height="fill_parent">
       <EditText android:layout_width="fill_parent"
 		android:id="@+id/bodyView" 
-		android:inputType="textNoSuggestions|textMultiLine|textVisiblePassword"
+		android:inputType="textMultiLine"
 		android:layout_height="fill_parent" 
 		android:gravity="top"
 		android:onClick="onClick"
