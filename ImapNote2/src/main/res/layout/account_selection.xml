@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dip"
         android:hint="imap notes server"
-        android:inputType="text" >
+        android:inputType="extNoSuggestions|text|textVisiblePassword" >
     </EditText>
 
     <TextView
