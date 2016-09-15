@@ -50,6 +50,7 @@ public class SyncUtils {
   static String proto;
   static String acceptcrt;
   static String sfolder = "Notes";
+  static private String folderoverride;
   static Folder notesFolder = null;
   static ImapNotes2Result res;
   static Long UIDValidity;
@@ -58,11 +59,16 @@ public class SyncUtils {
   private final static int ROOT_AND_NEW = 3;
 private static Boolean useProxy = false;
   
-  public static ImapNotes2Result ConnectToRemote(String username, String password, String server, String portnum, String security, String usesticky) throws MessagingException{
+  public static ImapNotes2Result ConnectToRemote(String username, String password, String server, String portnum, String security, String usesticky, String override) throws MessagingException{
     if (IsConnected())
       store.close();
-    
+
   res = new ImapNotes2Result();
+  if (override==null) {
+    folderoverride = "";
+  } else {
+    folderoverride = override;
+  }
   proto = "";
   acceptcrt = "";
   int security_i = Integer.parseInt(security);
@@ -145,11 +151,13 @@ private static Boolean useProxy = false;
       Folder[] folders = store.getPersonalNamespaces();
       Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-      if (folder.getFullName().length() == 0) {
+      if (folderoverride.length() > 0) {
+          sfolder = folderoverride;
+      } else if (folder.getFullName().length() == 0) {
           sfolder = "Notes";
       } else {
           char separator = folder.getSeparator();
-          sfolder = folder.getFullName() + separator + "Notes";                
+          sfolder = folder.getFullName() + separator + "Notes";
       }
       // Get UIDValidity
       notesFolder = store.getFolder(sfolder);

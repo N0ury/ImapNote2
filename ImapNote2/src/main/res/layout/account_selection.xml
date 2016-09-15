@@ -149,6 +149,22 @@
 
     </EditText>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notes Folder (optional)"
+        android:id="@+id/folderText"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000000" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
+        android:id="@+id/folderEdit"
+        android:textColor="#000000"
+        android:hint="manually set full imap path to notes folder" />
+
     <CheckBox
         android:id="@+id/stickyCheckBox"
         android:layout_width="match_parent"

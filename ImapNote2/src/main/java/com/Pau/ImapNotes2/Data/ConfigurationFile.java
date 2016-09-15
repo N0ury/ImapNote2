@@ -26,6 +26,7 @@ public class ConfigurationFile {
     private String portnum;
     private String security;
     private String usesticky;
+    private String imapfolder;
     
     
     public ConfigurationFile(Context myContext){
@@ -37,6 +38,7 @@ public class ConfigurationFile {
             this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
             this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
             this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
+            this.imapfolder = this.LoadItemFromXML(fileToLoad, "imapfolder").item(0).getChildNodes().item(0).getNodeValue();
             this.accountname = this.username + "@" + this.server;
             if (this.LoadItemFromXML(fileToLoad, "portnum").getLength() == 0)
                 // portnum option doesn't exist
@@ -64,6 +66,7 @@ public class ConfigurationFile {
             this.portnum = "";
             this.security = "0";
             this.usesticky = "false";
+            this.imapfolder = "";
         }
     }
     
@@ -118,6 +121,10 @@ public class ConfigurationFile {
     public void SetUsesticky(String Usesticky){
         this.usesticky = Usesticky;
     }
+
+    public String GetFoldername(){
+        return this.imapfolder;
+    }
     
     public void Clear(){
         new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf").delete();
@@ -126,7 +133,8 @@ public class ConfigurationFile {
         this.server=null;
         this.portnum=null;
         this.security=null;
-        this.usesticky=null;   
+        this.usesticky=null;
+        this.imapfolder = null;
     }
     
     public void SaveConfigurationToXML() throws IllegalArgumentException, IllegalStateException, IOException{
@@ -150,6 +158,9 @@ public class ConfigurationFile {
         serializer.startTag(null, "security");
         serializer.text(this.security);
         serializer.endTag(null, "security");
+        serializer.startTag(null,"imapfolder");
+        serializer.text(this.imapfolder);
+        serializer.endTag(null, "imapfolder");
         serializer.startTag(null, "usesticky");
         serializer.text(this.usesticky);
         serializer.endTag(null, "usesticky");

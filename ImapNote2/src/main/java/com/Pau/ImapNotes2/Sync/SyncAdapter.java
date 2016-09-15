@@ -173,7 +173,8 @@ else am.setUserData(account, "syncinterval", "15");
               am.getUserData(account, "server"),
               am.getUserData(account, "portnum"),
               am.getUserData(account, "security"),
-              am.getUserData(account, "usesticky"));
+              am.getUserData(account, "usesticky"),
+              am.getUserData(account, "imapfolder"));
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

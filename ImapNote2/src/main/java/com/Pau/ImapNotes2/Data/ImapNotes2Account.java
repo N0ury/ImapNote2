@@ -12,6 +12,7 @@ public class ImapNotes2Account {
     private String security = "";
     private String usesticky = "";
     private String syncinterval = "15";
+    private String imapfolder = "";
     private Boolean accountHasChanged = false;
     private Account account = null;
     
@@ -22,7 +23,7 @@ public class ImapNotes2Account {
     public String toString() {
         return this.accountname + ":" + this.username + ":" + this.password + ":"
 	    + this.server + ":" + this.portnum + ":" + this.security + ":"
-            + this.usesticky + ":" + this.accountHasChanged.toString();
+            + this.usesticky + ":" + this.imapfolder + ":" + this.accountHasChanged.toString();
         }
 
     public String GetAccountname() {
@@ -109,6 +110,14 @@ public class ImapNotes2Account {
     public Boolean GetaccountHasChanged() {
         return this.accountHasChanged;
     }
+
+    public String GetFoldername(){
+        return this.imapfolder;
+    }
+
+    public void SetFoldername(String folder) {
+        this.imapfolder = folder;
+    }
     
     public void Clear() {
         this.username=null;
@@ -117,6 +126,7 @@ public class ImapNotes2Account {
         this.portnum=null;
         this.security=null;
         this.usesticky=null;
+        this.imapfolder=null;
         this.accountHasChanged=false;
     }
 }

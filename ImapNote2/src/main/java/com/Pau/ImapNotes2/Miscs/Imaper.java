@@ -34,17 +34,23 @@ public class Imaper {
   private String proto;
   private String acceptcrt;
   private static String sfolder = "Notes";
+  private String folderoverride;
   private Folder notesFolder = null;
   private ImapNotes2Result res;
   private Long UIDValidity;
 private Boolean useProxy = false;
 public static final String PREFS_NAME = "PrefsFile";
   
-  public ImapNotes2Result ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky) throws MessagingException{
+  public ImapNotes2Result ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky, String override) throws MessagingException{
     if (this.IsConnected())
       this.store.close();
     
   res = new ImapNotes2Result();
+    if (override==null) {
+      this.folderoverride = "";
+    } else {
+      this.folderoverride = override;
+    }
   this.proto = "";
   this.acceptcrt = "";
   int security_i = Integer.parseInt(security);
@@ -134,11 +140,13 @@ Boolean hasUIDPLUS = ((IMAPStore) this.store).hasCapability("UIDPLUS");
       Folder[] folders = store.getPersonalNamespaces();
       Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-      if (folder.getFullName().length() == 0) {
+      if (this.folderoverride.length() > 0) {
+          Imaper.sfolder = this.folderoverride;
+      } else if (folder.getFullName().length() == 0) {
           Imaper.sfolder = "Notes";
       } else {
-	      char separator = folder.getSeparator();
-	      Imaper.sfolder = folder.getFullName() + separator + "Notes";            	
+          char separator = folder.getSeparator();
+          Imaper.sfolder = folder.getFullName() + separator + "Notes";
       }
       this.res.errorMessage = "";
       this.res.returnCode = 0;

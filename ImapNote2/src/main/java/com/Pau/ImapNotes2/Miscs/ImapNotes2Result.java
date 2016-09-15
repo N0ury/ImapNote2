@@ -15,6 +15,6 @@ public class ImapNotes2Result {
 		errorMessage = "";
 		UIDValidity = (long) -1;
 		hasUIDPLUS = true;
-                notesFolder = null;
+		notesFolder = null;
 	}
 }

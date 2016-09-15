@@ -46,6 +46,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   private TextView serverTextView;
   private TextView portnumTextView;
   private TextView syncintervalTextView;
+  private TextView folderTextView;
   private CheckBox stickyCheckBox;
   private Spinner securitySpinner;
   private ImapNotes2Account imapNotes2Account;
@@ -107,6 +108,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     this.serverTextView = (TextView)findViewById(R.id.serverEdit);
     this.portnumTextView = (TextView)findViewById(R.id.portnumEdit);
     this.syncintervalTextView = (TextView)findViewById(R.id.syncintervalEdit);
+    this.folderTextView = (TextView)findViewById(R.id.folderEdit);
     this.stickyCheckBox = (CheckBox)findViewById(R.id.stickyCheckBox);
 
     securitySpinner = (Spinner) findViewById(R.id.securitySpinner);
@@ -150,6 +152,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
         this.securitySpinner.setSelection(this.security_i);
         this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.settings.GetUsesticky()));
         this.syncintervalTextView.setText("15");
+        this.folderTextView.setText(this.settings.GetFoldername());
     }
 
     LinearLayout layout = (LinearLayout) findViewById(R.id.bttonsLayout);
@@ -173,7 +176,8 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
         this.portnumTextView.setText(this.accountManager.getUserData(myAccount, "portnum"));
         this.security = this.accountManager.getUserData (myAccount, "security");
         this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.accountManager.getUserData(myAccount,"usesticky")));
-        syncintervalTextView.setText(this.accountManager.getUserData(myAccount, "syncinterval"));
+        this.syncintervalTextView.setText(this.accountManager.getUserData(myAccount, "syncinterval"));
+        this.folderTextView.setText(this.accountManager.getUserData (myAccount, "imapfolder"));
         if (this.security == null) this.security = "0";
         this.security_i = Integer.parseInt(this.security);
         this.securitySpinner.setSelection(this.security_i);
@@ -210,8 +214,9 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     this.imapNotes2Account.SetSecurity(this.security);
     this.imapNotes2Account.SetUsesticky(String.valueOf(this.stickyCheckBox.isChecked()));
     this.imapNotes2Account.SetSyncinterval(this.syncintervalTextView.getText().toString());
-    
-    new LoginThread().execute(this.imapFolder, this.imapNotes2Account, loadingDialog, this, this.action);
+    this.imapNotes2Account.SetFoldername(this.folderTextView.getText().toString());
+    long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
+    new LoginThread().execute(this.imapFolder, this.imapNotes2Account, loadingDialog, this, this.action, SYNC_FREQUENCY);
     
   }
   
@@ -230,11 +235,12 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
             ((ImapNotes2Account)stuffs[1]).GetServer(),
             ((ImapNotes2Account)stuffs[1]).GetPortnum(),
             ((ImapNotes2Account)stuffs[1]).GetSecurity(),
-            ((ImapNotes2Account)stuffs[1]).GetUsesticky());
+            ((ImapNotes2Account)stuffs[1]).GetUsesticky(),
+            ((ImapNotes2Account)stuffs[1]).GetFoldername());
           accontConfigurationActivity = (AccontConfigurationActivity)stuffs[3];
           if (this.res.returnCode==0) {
             Account account = new Account(((ImapNotes2Account)stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
-            long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
+            long SYNC_FREQUENCY = (long)stuffs[5];
             AccountManager am = AccountManager.get(((AccontConfigurationActivity)stuffs[3]));
             accontConfigurationActivity.setResult(AccontConfigurationActivity.TO_REFRESH);
             Bundle result = null;
@@ -249,6 +255,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
                   am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetSyncinterval());
                   am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
                   am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
+                  am.setUserData(account, "imapfolder", ((ImapNotes2Account)stuffs[1]).GetFoldername());
                   // Run the Sync Adapter Periodically
                   ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                   ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
@@ -267,6 +274,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
                   am.setUserData(account, "syncinterval", ((ImapNotes2Account)stuffs[1]).GetSyncinterval());
                   am.setUserData(account, "security", ((ImapNotes2Account)stuffs[1]).GetSecurity());
                   am.setUserData(account, "usesticky", ((ImapNotes2Account)stuffs[1]).GetUsesticky());
+                  am.setUserData(account, "imapfolder", ((ImapNotes2Account)stuffs[1]).GetFoldername());
                   // Run the Sync Adapter Periodically
                   ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                   ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
@@ -297,6 +305,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
           this.accontConfigurationActivity.portnumTextView.setText("");
           this.accontConfigurationActivity.syncintervalTextView.setText("15");
           this.accontConfigurationActivity.securitySpinner.setSelection(0);
+          this.accontConfigurationActivity.folderTextView.setText("");
           this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
         }
     	final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage,Toast.LENGTH_LONG);
