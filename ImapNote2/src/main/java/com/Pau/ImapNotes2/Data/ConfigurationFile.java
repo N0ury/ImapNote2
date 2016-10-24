@@ -16,30 +16,46 @@ import android.util.Xml;
 
 public class ConfigurationFile {
 
+    // Why do we need a copy of the application context reference? 
+    // It is not necessary in the actual constructor only in the Clear 
+    // method which presumably could get it from the getContext static method.
     private Context applicationContext;
+    // For logging.
     private static final String TAG = "IN_ConfigurationFile";
     
+    // The account name is the concatenation of the username and server.
     private String accountname;
+    // User name on the IMAP server.
     private String username;
     private String password;
+    // Address of the IMAP server
     private String server;
+    // Port number.
     private String portnum;
+    // TLS, etc.
     private String security;
+    // ?
     private String usesticky;
+    // The name of the IMAP folder to be used.
     private String imapfolder;
     
     
     public ConfigurationFile(Context myContext){
+        // Save the context reference.  It seems that this is probably unnecessary.
         this.applicationContext = myContext;
         
         try {
             Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
             new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf"));
+            // The expressions ending in getNodeValue shoule be placed in a function 
+            // to reduce clutter and improve maintainability.
             this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
             this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
             this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
             this.imapfolder = this.LoadItemFromXML(fileToLoad, "imapfolder").item(0).getChildNodes().item(0).getNodeValue();
             this.accountname = this.username + "@" + this.server;
+            // All of these can be simplified by initializing the fields to the default values and 
+            // only setting when the value exists in the file.
             if (this.LoadItemFromXML(fileToLoad, "portnum").getLength() == 0)
                 // portnum option doesn't exist
                 this.portnum = "";
@@ -58,6 +74,8 @@ public class ConfigurationFile {
 
 //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
+            // This catch should be turned into a simple if then and the catch 
+            // reserved for conditions that cannot be checked for.
 //Log.d(TAG, "Conf file absent, go to the exception that initializes variables");
             this.accountname = "";
             this.username = "";
@@ -137,6 +155,9 @@ public class ConfigurationFile {
         this.imapfolder = null;
     }
     
+    // This function could take the context as an argument.  
+    // In addition the name of the file should be a named constant
+    // because it is used elewhere.
     public void SaveConfigurationToXML() throws IllegalArgumentException, IllegalStateException, IOException{
         FileOutputStream configurationFile = this.applicationContext.openFileOutput("ImapNotes2.conf", Context.MODE_PRIVATE);
         XmlSerializer serializer = Xml.newSerializer();
