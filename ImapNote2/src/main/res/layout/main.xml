@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent" android:layout_height="wrap_content">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/status"
@@ -21,13 +22,13 @@
         android:background="@color/ListColor"
         android:text="Select account"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#000000" >
+        android:textColor="#000000">
 
     </TextView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <Spinner
             android:id="@+id/accountSpinner"
@@ -47,7 +48,6 @@
     <ListView
         android:id="@+id/notesList"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-    </ListView>
+        android:layout_height="fill_parent"></ListView>
 
 </LinearLayout>

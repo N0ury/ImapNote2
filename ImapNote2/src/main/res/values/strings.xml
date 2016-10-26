@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ImapNotes2</string>
+    <string name="account">Account</string>
+    <string name="titleNew">New</string>
+    <string name="refresh">Refresh</string>
+    <string name="about">About</string>
+    <string name="search">search</string>
 </resources>
