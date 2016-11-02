@@ -7,6 +7,7 @@ import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Sync.Security;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
@@ -35,7 +36,7 @@ import android.widget.Toast;
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
     public static final int TO_REFRESH = 999;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
-    private static final String TAG = "AccontConfigurationActivity";
+    private static final String TAG = "AccountConfigurationActivity";
 
     private Imaper imapFolder;
 
@@ -111,12 +112,14 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         this.stickyCheckBox = (CheckBox) findViewById(R.id.stickyCheckBox);
 
         securitySpinner = (Spinner) findViewById(R.id.securitySpinner);
-        List<String> list = new ArrayList<String>();
+        /*List<String> list = new ArrayList<String>();
         list.add("None");
         list.add("SSL/TLS");
         list.add("SSL/TLS (accept all certificates)");
         list.add("STARTTLS");
         list.add("STARTTLS (accept all certificates)");
+        */
+        List<String> list = Security.Printables();
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
                 (this, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource
@@ -223,7 +226,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     class LoginThread extends AsyncTask<Object, Void, Boolean> {
 
-        private AccountConfigurationActivity accontConfigurationActivity;
+        private AccountConfigurationActivity accountConfigurationActivity;
         private ImapNotes2Result res = new ImapNotes2Result();
         String action;
 
@@ -238,12 +241,12 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         ((ImapNotes2Account) stuffs[1]).GetSecurity(),
                         ((ImapNotes2Account) stuffs[1]).GetUsesticky(),
                         ((ImapNotes2Account) stuffs[1]).GetFoldername());
-                accontConfigurationActivity = (AccountConfigurationActivity) stuffs[3];
+                accountConfigurationActivity = (AccountConfigurationActivity) stuffs[3];
                 if (this.res.returnCode == 0) {
                     Account account = new Account(((ImapNotes2Account) stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
                     long SYNC_FREQUENCY = (long) stuffs[5];
                     AccountManager am = AccountManager.get(((AccountConfigurationActivity) stuffs[3]));
-                    accontConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
+                    accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                     Bundle result = null;
                     if (this.action.equals("EDIT_ACCOUNT")) {
                         result = new Bundle();
@@ -298,16 +301,16 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         protected void onPostExecute(Boolean result) {
             if (result) {
-                accontConfigurationActivity.settings.Clear();
-                this.accontConfigurationActivity.accountnameTextView.setText("");
-                this.accontConfigurationActivity.usernameTextView.setText("");
-                this.accontConfigurationActivity.passwordTextView.setText("");
-                this.accontConfigurationActivity.serverTextView.setText("");
-                this.accontConfigurationActivity.portnumTextView.setText("");
-                this.accontConfigurationActivity.syncintervalTextView.setText("15");
-                this.accontConfigurationActivity.securitySpinner.setSelection(0);
-                this.accontConfigurationActivity.folderTextView.setText("");
-                this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
+                accountConfigurationActivity.settings.Clear();
+                this.accountConfigurationActivity.accountnameTextView.setText("");
+                this.accountConfigurationActivity.usernameTextView.setText("");
+                this.accountConfigurationActivity.passwordTextView.setText("");
+                this.accountConfigurationActivity.serverTextView.setText("");
+                this.accountConfigurationActivity.portnumTextView.setText("");
+                this.accountConfigurationActivity.syncintervalTextView.setText("15");
+                this.accountConfigurationActivity.securitySpinner.setSelection(0);
+                this.accountConfigurationActivity.folderTextView.setText("");
+                this.accountConfigurationActivity.stickyCheckBox.setChecked(false);
             }
             final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage, Toast.LENGTH_LONG);
             tag.show();

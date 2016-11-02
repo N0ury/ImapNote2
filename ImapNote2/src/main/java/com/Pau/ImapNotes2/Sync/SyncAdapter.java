@@ -23,6 +23,11 @@ import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Sync.SyncUtils;
 import com.sun.mail.imap.AppendUID;
 
+/// A SyncAdapter provides methods to be called by the Android
+/// framework when the framework is ready for the synchronization to
+/// occur.  The application does not need to consider threading
+/// because the sync happens under Android control not under control
+/// of the application.
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
     private static Context context;
@@ -32,6 +37,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private String[] listOfNew;
     private String[] listOfDeleted;
     private static Account account;
+    /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
     private Long UIDValidity = (long) -1;
     private static ImapNotes2Result res;
     private final static int NEW = 1;
@@ -45,8 +51,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         this.context = context;
     }
 
-    public SyncAdapter(Context context, boolean autoInitialize, 
-                       boolean allowParallelSyncs) {
+    public SyncAdapter(Context context,
+                       boolean autoInitialize, // ?
+                       boolean allowParallelSyncs // always false, set
+                       // in
+                       // syncadapter.xml
+    ) {
         super(context, autoInitialize, allowParallelSyncs);
         mContentResolver = context.getContentResolver();
         this.context = context;
@@ -54,34 +64,29 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
-                              ContentProviderClient provider, SyncResult syncResult) {
+                              ContentProviderClient provider,
+                              SyncResult syncResult) {
         //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
         this.account = account;
         isChanged = false;
         isSynced = false;
         String syncinterval;
-        
-        SyncUtils.CreateDirs (account.name, this.context);
+
+        SyncUtils.CreateDirs(account.name, this.context);
 
         storedNotes = new NotesDb(this.context);
         storedNotes.OpenDb();
 
         AccountManager am = AccountManager.get(this.context);
         syncinterval = am.getUserData(account, "syncinterval");
-/*
-// Temporary workaround for a bug
-// Portnum was put into account manager sync interval (143 or 993 or ... minutes)
-if (syncinterval != null)
-if (syncinterval.equals("143") || syncinterval.equals("993")) am.setUserData(account, "syncinterval", "15");
-else am.setUserData(account, "syncinterval", "15");
-*/
 
         // Connect to remote and get UIDValidity
         this.res = ConnectToRemote();
         if (this.res.returnCode != 0) {
             storedNotes.CloseDb();
 
-            // Notify Listactivity that it's finished, but it can't refresh display
+            // Notify Listactivity that it's finished, but it can't
+            // refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra("ACCOUNTNAME",account.name);
             isChanged = false;
@@ -103,7 +108,9 @@ else am.setUserData(account, "syncinterval", "15");
                 SyncUtils.ClearHomeDir(account, this.context);
                 SyncUtils.CreateDirs (account.name, this.context);
                 // Get all notes from remote and replace local
-                SyncUtils.GetNotes(account,this.res.notesFolder,this.context,storedNotes);
+                SyncUtils.GetNotes(account,
+                        this.res.notesFolder,
+                        this.context, storedNotes);
                 storedNotes.CloseDb();
             } catch (MessagingException e) {
             // TODO Auto-generated catch block
@@ -124,7 +131,7 @@ else am.setUserData(account, "syncinterval", "15");
             context.sendBroadcast(i);
             return;
         }
-        
+
         // Send new local messages to remote, move them to local folder
         // and update uids in database
         boolean newNotesManaged = handleNewNotes();
@@ -206,7 +213,7 @@ else am.setUserData(account, "syncinterval", "15");
             }
             // Send this new message to remote
             final MimeMessage[] msg = {(MimeMessage)message};
-            
+
             try {
                 uids = SyncUtils.sendMessageToRemote(msg);
             } catch (MessagingException e) {
