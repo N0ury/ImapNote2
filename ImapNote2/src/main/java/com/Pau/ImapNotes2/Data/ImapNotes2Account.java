@@ -2,6 +2,8 @@ package com.Pau.ImapNotes2.Data;
 
 import android.accounts.Account;
 
+import com.Pau.ImapNotes2.Sync.Security;
+
 public class ImapNotes2Account {
 
     private String accountname = "";
@@ -9,7 +11,7 @@ public class ImapNotes2Account {
     private String password = "";
     private String server = "";
     private String portnum = "";
-    private String security = "";
+    private Security security = null;
     private String usesticky = "";
     private String syncinterval = "15";
     private String imapfolder = "";
@@ -75,12 +77,12 @@ public class ImapNotes2Account {
         this.portnum = Portnum;
     }
 
-    public String GetSecurity() {
-        return this.security;
+    public Security GetSecurity() {
+        return security;
     }
 
-    public void SetSecurity(String Security) {
-        this.security = Security;
+    public void SetSecurity(Security Security) {
+        security = Security;
     }
 
     public String GetUsesticky() {

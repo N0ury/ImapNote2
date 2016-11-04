@@ -1,7 +1,13 @@
 package com.Pau.ImapNotes2.Sync;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by kj on 11/1/16.
@@ -11,16 +17,27 @@ import java.util.List;
  */
 
 public enum Security {
-    None("None"),
-    SSL_TLS("SSL/TLS"),
-    SSL_TLS_accept_all_certificates("SSL/TLS (accept all certificates)"),
-    STARTTLS("STARTTLS"),
-    STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)");
+    None("None", "", "imap", ""),
+    SSL_TLS("SSL/TLS", "993", "imaps", "false"),
+    SSL_TLS_accept_all_certificates("SSL/TLS (accept all certificates)", "993", "imaps", "true"),
+    STARTTLS("STARTTLS", "143", "imaps", "false"),
+    STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)", "143", "imaps", "true");
+
+    public final String proto;
+    public final String acceptcrt;
+
 
     private final String printable;
+    public final String defaultPort;
 
-    Security(String printable) {
+    Security(String printable,
+             String defaultPort,
+             String proto,
+             String acceptcrt) {
         this.printable = printable;
+        this.defaultPort = defaultPort;
+        this.proto = proto;
+        this.acceptcrt = acceptcrt;
     }
 
     public static List<String> Printables() {
@@ -30,4 +47,29 @@ public enum Security {
         }
         return list;
     }
+
+    // Mapping from integer.  See http://dan.clarke.name/2011/07/enum-in-java-with-int-conversion/
+    private static final Map<Integer, Security> _map = new HashMap<Integer, Security>();
+
+    static {
+        for (Security security : Security.values())
+            _map.put(security.ordinal(), security);
+    }
+
+    public static Security from(int ordinal) {
+        return _map.get(ordinal);
+    }
+
+    public static Security from(String name) {
+        for (Security security : Security.values()) {
+            if (Objects.equals(security.name(), name)) {
+                return security;
+            }
+        }
+        // Wasn't recognized, try using the ordinal instead
+        int i = Integer.parseInt(name);
+        return from(i);
+    }
+
+
 }

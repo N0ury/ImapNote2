@@ -19,6 +19,7 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Flags;
 
+import com.Pau.ImapNotes2.Sync.Security;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -45,7 +46,13 @@ public class Imaper {
     private Boolean useProxy = false;
     public static final String PREFS_NAME = "PrefsFile";
 
-    public ImapNotes2Result ConnectToProvider(String username, String password, String server, String portnum, String security, String usesticky, String override) throws MessagingException {
+    public ImapNotes2Result ConnectToProvider(String username,
+                                              String password,
+                                              String server,
+                                              String portnum,
+                                              Security security,
+                                              String usesticky,
+                                              String override) throws MessagingException {
         if (this.IsConnected())
             this.store.close();
 
@@ -55,9 +62,9 @@ public class Imaper {
         } else {
             this.folderoverride = override;
         }
-        this.proto = "";
-        this.acceptcrt = "";
-        int security_i = Integer.parseInt(security);
+        this.proto = security.proto;
+        this.acceptcrt = security.acceptcrt;
+/*        int security_i = Integer.parseInt(security);
         switch (security_i) {
             case 0:
                 // None
@@ -88,7 +95,7 @@ public class Imaper {
             default:
                 this.proto = "Invalid proto";
                 break;
-        }
+        }*/
         MailSSLSocketFactory sf = null;
         try {
             sf = new MailSSLSocketFactory();

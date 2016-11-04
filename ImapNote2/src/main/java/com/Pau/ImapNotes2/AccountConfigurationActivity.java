@@ -1,14 +1,5 @@
 package com.Pau.ImapNotes2;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.Pau.ImapNotes2.Data.ConfigurationFile;
-import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
-import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Sync.Security;
-
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
@@ -33,6 +24,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Pau.ImapNotes2.Data.ConfigurationFile;
+import com.Pau.ImapNotes2.Data.ImapNotes2Account;
+import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
+import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Sync.Security;
+
+import java.util.List;
+
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
     public static final int TO_REFRESH = 999;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
@@ -50,8 +49,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private CheckBox stickyCheckBox;
     private Spinner securitySpinner;
     private ImapNotes2Account imapNotes2Account;
-    private String security;
-    private int security_i;
+    private Security security;
+    //private int security_i;
     private String action;
     private String accountname;
     private ConfigurationFile settings;
@@ -62,7 +61,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Login Button
-            if (((String) accountnameTextView.getText().toString()).contains("'")) {
+            if (accountnameTextView.getText().toString().contains("'")) {
                 // Single quotation marks are not allowed in accountname
                 Toast.makeText(getApplicationContext(), "Quotation marks are not allowed in accountname",
                         Toast.LENGTH_LONG).show();
@@ -76,7 +75,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Edit Button
-            if (((String) accountnameTextView.getText().toString()).contains("'")) {
+            if (accountnameTextView.getText().toString().contains("'")) {
                 // Single quotation marks are not allowed in accountname
                 Toast.makeText(getApplicationContext(), "Quotation marks are not allowed in accountname",
                         Toast.LENGTH_LONG).show();
@@ -120,7 +119,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         list.add("STARTTLS (accept all certificates)");
         */
         List<String> list = Security.Printables();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource
                 (android.R.layout.simple_spinner_dropdown_item);
@@ -149,9 +148,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             this.serverTextView.setText(this.settings.GetServer());
             this.portnumTextView.setText(this.settings.GetPortnum());
             this.security = this.settings.GetSecurity();
-            if (this.security == null) this.security = "0";
-            this.security_i = Integer.parseInt(this.security);
-            this.securitySpinner.setSelection(this.security_i);
+            // Can never be null. if (this.security == null) this.security = "0";
+            int security_i = this.security.ordinal();
+            this.securitySpinner.setSelection(security_i);
             this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.settings.GetUsesticky()));
             this.syncintervalTextView.setText("15");
             this.folderTextView.setText(this.settings.GetFoldername());
@@ -167,24 +166,24 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             }
         }
 
-        if ((this.action == null) || (this.myAccount == null)) {
+        if ((this.action == null) || (myAccount == null)) {
             this.action = "CREATE_ACCOUNT";
         }
 
         if (this.action.equals("EDIT_ACCOUNT")) {
             // Here we have to edit an existing account
             this.accountnameTextView.setText(this.accountname);
-            this.usernameTextView.setText(this.accountManager.getUserData(myAccount, "username"));
-            this.passwordTextView.setText(this.accountManager.getPassword(myAccount));
-            this.serverTextView.setText(this.accountManager.getUserData(myAccount, "server"));
-            this.portnumTextView.setText(this.accountManager.getUserData(myAccount, "portnum"));
-            this.security = this.accountManager.getUserData(myAccount, "security");
-            this.stickyCheckBox.setChecked(Boolean.parseBoolean(this.accountManager.getUserData(myAccount, "usesticky")));
-            this.syncintervalTextView.setText(this.accountManager.getUserData(myAccount, "syncinterval"));
-            this.folderTextView.setText(this.accountManager.getUserData(myAccount, "imapfolder"));
-            if (this.security == null) this.security = "0";
-            this.security_i = Integer.parseInt(this.security);
-            this.securitySpinner.setSelection(this.security_i);
+            this.usernameTextView.setText(accountManager.getUserData(myAccount, "username"));
+            this.passwordTextView.setText(accountManager.getPassword(myAccount));
+            this.serverTextView.setText(accountManager.getUserData(myAccount, "server"));
+            this.portnumTextView.setText(accountManager.getUserData(myAccount, "portnum"));
+            this.security = Security.from(accountManager.getUserData(myAccount, "security"));
+            this.stickyCheckBox.setChecked(Boolean.parseBoolean(accountManager.getUserData(myAccount, "usesticky")));
+            this.syncintervalTextView.setText(accountManager.getUserData(myAccount, "syncinterval"));
+            this.folderTextView.setText(accountManager.getUserData(myAccount, "imapfolder"));
+            //if (this.security == null) this.security = "0";
+            int security_i = security.ordinal();
+            this.securitySpinner.setSelection(security_i);
             Button buttonEdit = new Button(this);
             buttonEdit.setText("Save");
             buttonEdit.setOnClickListener(clickListenerEdit);
@@ -215,7 +214,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         this.imapNotes2Account.SetPassword(this.passwordTextView.getText().toString().trim());
         this.imapNotes2Account.SetServer(this.serverTextView.getText().toString().trim());
         this.imapNotes2Account.SetPortnum(this.portnumTextView.getText().toString());
-        this.imapNotes2Account.SetSecurity(this.security);
+        this.imapNotes2Account.SetSecurity(this.security.name());
         this.imapNotes2Account.SetUsesticky(String.valueOf(this.stickyCheckBox.isChecked()));
         this.imapNotes2Account.SetSyncinterval(this.syncintervalTextView.getText().toString());
         this.imapNotes2Account.SetFoldername(this.folderTextView.getText().toString());
@@ -247,7 +246,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     long SYNC_FREQUENCY = (long) stuffs[5];
                     AccountManager am = AccountManager.get(((AccountConfigurationActivity) stuffs[3]));
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
-                    Bundle result = null;
+                    Bundle result;
                     if (this.action.equals("EDIT_ACCOUNT")) {
                         result = new Bundle();
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
@@ -343,11 +342,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        this.security = Integer.toString(position);
-        if ((position == 0) || (position == 3) || (position == 4))
-            this.portnumTextView.setText("143");
-        if ((position == 1) || (position == 2))
-            this.portnumTextView.setText("993");
+        security = Security.from(position);
+        this.portnumTextView.setText(security.defaultPort);
     }
 
     @Override
