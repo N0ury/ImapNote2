@@ -17,14 +17,14 @@ import java.util.Objects;
  */
 
 public enum Security {
-    None("None", "", "imap", ""),
-    SSL_TLS("SSL/TLS", "993", "imaps", "false"),
-    SSL_TLS_accept_all_certificates("SSL/TLS (accept all certificates)", "993", "imaps", "true"),
-    STARTTLS("STARTTLS", "143", "imaps", "false"),
-    STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)", "143", "imaps", "true");
+    None("None", "", "imap", false),
+    SSL_TLS("SSL/TLS", "993", "imaps", false),
+    SSL_TLS_accept_all_certificates("SSL/TLS (accept all certificates)", "993", "imaps", true),
+    STARTTLS("STARTTLS", "143", "imaps", false),
+    STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)", "143", "imaps", true);
 
     public final String proto;
-    public final String acceptcrt;
+    public final boolean acceptcrt;
 
 
     private final String printable;
@@ -33,7 +33,7 @@ public enum Security {
     Security(String printable,
              String defaultPort,
              String proto,
-             String acceptcrt) {
+             boolean acceptcrt) {
         this.printable = printable;
         this.defaultPort = defaultPort;
         this.proto = proto;

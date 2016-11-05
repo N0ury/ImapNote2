@@ -35,12 +35,12 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
         this.notesList = ((ArrayList<OneNote>) stuffs[2]);
         this.storedNotes = ((NotesDb) stuffs[5]);
         this.ctx = (Context) stuffs[6];
-        username = ((ImapNotes2Account) stuffs[1]).GetUsername();
-        password = ((ImapNotes2Account) stuffs[1]).GetPassword();
-        server = ((ImapNotes2Account) stuffs[1]).GetServer();
-        portnum = ((ImapNotes2Account) stuffs[1]).GetPortnum();
-        security = ((ImapNotes2Account) stuffs[1]).GetSecurity();
-        usesticky = ((ImapNotes2Account) stuffs[1]).GetUsesticky();
+        //username = ((ImapNotes2Account) stuffs[1]).GetUsername();
+        //password = ((ImapNotes2Account) stuffs[1]).GetPassword();
+        //server = ((ImapNotes2Account) stuffs[1]).GetServer();
+        //portnum = ((ImapNotes2Account) stuffs[1]).GetPortnum();
+        //security = ((ImapNotes2Account) stuffs[1]).GetSecurity();
+        //usesticky = ((ImapNotes2Account) stuffs[1]).GetUsesticky();
 
 
         if (this.storedNotes == null) this.storedNotes = new NotesDb(this.ctx);

@@ -32,6 +32,8 @@ import com.Pau.ImapNotes2.Sync.Security;
 
 import java.util.List;
 
+import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
+
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
     public static final int TO_REFRESH = 999;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
@@ -214,7 +216,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         this.imapNotes2Account.SetPassword(this.passwordTextView.getText().toString().trim());
         this.imapNotes2Account.SetServer(this.serverTextView.getText().toString().trim());
         this.imapNotes2Account.SetPortnum(this.portnumTextView.getText().toString());
-        this.imapNotes2Account.SetSecurity(this.security.name());
+        this.imapNotes2Account.SetSecurity(this.security);
         this.imapNotes2Account.SetUsesticky(String.valueOf(this.stickyCheckBox.isChecked()));
         this.imapNotes2Account.SetSyncinterval(this.syncintervalTextView.getText().toString());
         this.imapNotes2Account.SetFoldername(this.folderTextView.getText().toString());
@@ -241,7 +243,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         ((ImapNotes2Account) stuffs[1]).GetUsesticky(),
                         ((ImapNotes2Account) stuffs[1]).GetFoldername());
                 accountConfigurationActivity = (AccountConfigurationActivity) stuffs[3];
-                if (this.res.returnCode == 0) {
+                if (this.res.returnCode == ResultCodeSuccess) {
                     Account account = new Account(((ImapNotes2Account) stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
                     long SYNC_FREQUENCY = (long) stuffs[5];
                     AccountManager am = AccountManager.get(((AccountConfigurationActivity) stuffs[3]));
@@ -256,7 +258,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         am.setUserData(account, "server", ((ImapNotes2Account) stuffs[1]).GetServer());
                         am.setUserData(account, "portnum", ((ImapNotes2Account) stuffs[1]).GetPortnum());
                         am.setUserData(account, "syncinterval", ((ImapNotes2Account) stuffs[1]).GetSyncinterval());
-                        am.setUserData(account, "security", ((ImapNotes2Account) stuffs[1]).GetSecurity());
+                        am.setUserData(account, "security", ((ImapNotes2Account) stuffs[1]).GetSecurity().name());
                         am.setUserData(account, "usesticky", ((ImapNotes2Account) stuffs[1]).GetUsesticky());
                         am.setUserData(account, "imapfolder", ((ImapNotes2Account) stuffs[1]).GetFoldername());
                         // Run the Sync Adapter Periodically
@@ -275,7 +277,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             am.setUserData(account, "server", ((ImapNotes2Account) stuffs[1]).GetServer());
                             am.setUserData(account, "portnum", ((ImapNotes2Account) stuffs[1]).GetPortnum());
                             am.setUserData(account, "syncinterval", ((ImapNotes2Account) stuffs[1]).GetSyncinterval());
-                            am.setUserData(account, "security", ((ImapNotes2Account) stuffs[1]).GetSecurity());
+                            am.setUserData(account, "security", ((ImapNotes2Account) stuffs[1]).GetSecurity().name());
                             am.setUserData(account, "usesticky", ((ImapNotes2Account) stuffs[1]).GetUsesticky());
                             am.setUserData(account, "imapfolder", ((ImapNotes2Account) stuffs[1]).GetFoldername());
                             // Run the Sync Adapter Periodically

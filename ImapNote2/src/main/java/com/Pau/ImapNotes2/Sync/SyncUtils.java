@@ -30,6 +30,7 @@ import javax.mail.Message;
 import javax.mail.Session;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
+import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 import com.Pau.ImapNotes2.Miscs.Sticky;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -43,13 +44,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeException;
+import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
+
 public class SyncUtils {
 
     static Store store;
     static Session session;
     static final String TAG = "IN_SyncUtils";
     static String proto;
-    static String acceptcrt;
+    private static boolean acceptcrt;
     static String sfolder = "Notes";
     static private String folderoverride;
     static Folder notesFolder = null;
@@ -64,7 +68,7 @@ public class SyncUtils {
                                                    String password,
                                                    String server,
                                                    String portnum,
-                                                   String security,
+                                                   Security security,
                                                    String usesticky,
                                                    String override) throws MessagingException {
         if (IsConnected())
@@ -74,8 +78,9 @@ public class SyncUtils {
 
         folderoverride = (override == null) ? "" : override;
 
-        proto = "";
-        acceptcrt = "";
+        proto = security.proto;
+        acceptcrt = security.acceptcrt;
+/*
         int security_i = Integer.parseInt(security);
         switch (security_i) {
             case 0:
@@ -107,13 +112,14 @@ public class SyncUtils {
                 // TODO: Make sure that this cannot happen.
                 throw new InvalidParameterException("Invalid security: <" + security + ">");
         }
+*/
         MailSSLSocketFactory sf = null;
         try {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
             res.errorMessage = "Can't connect to server";
-            res.returnCode = -1;
+            res.returnCode = Imaper.ResultCodeCantConnect;
             return res;
         }
 
@@ -123,13 +129,13 @@ public class SyncUtils {
         props.setProperty(String.format("mail.%s.port", proto), portnum);
         props.setProperty("mail.store.protocol", proto);
 
-        if ((acceptcrt.equals("true"))) {
+        if ((acceptcrt)) {
             sf.setTrustedHosts(new String[]{server});
             if (proto.equals("imap")) {
                 props.put("mail.imap.ssl.socketFactory", sf);
                 props.put("mail.imap.starttls.enable", "true");
             }
-        } else if (acceptcrt.equals("false")) {
+        } else if (security != Security.None) {
             props.put(String.format("mail.%s.ssl.checkserveridentity", proto), "true");
             if (proto.equals("imap")) {
                 props.put("mail.imap.starttls.enable", "true");
@@ -141,6 +147,7 @@ public class SyncUtils {
         }
 
         props.setProperty("mail.imap.connectiontimeout", "1000");
+        // TODO: use user defined proxy.
         if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");
@@ -168,13 +175,13 @@ public class SyncUtils {
             notesFolder = store.getFolder(sfolder);
             res.UIDValidity = ((IMAPFolder) notesFolder).getUIDValidity();
             res.errorMessage = "";
-            res.returnCode = 0;
+            res.returnCode = ResultCodeSuccess;
             res.notesFolder = notesFolder;
             return res;
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
             res.errorMessage = e.getMessage();
-            res.returnCode = -2;
+            res.returnCode = ResultCodeException;
             return res;
         }
 

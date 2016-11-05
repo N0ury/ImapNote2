@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.mail.Flags;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -22,6 +23,8 @@ import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Sync.SyncUtils;
 import com.sun.mail.imap.AppendUID;
+
+import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 
 /// A SyncAdapter provides methods to be called by the Android
 /// framework when the framework is ready for the synchronization to
@@ -82,13 +85,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // Connect to remote and get UIDValidity
         this.res = ConnectToRemote();
-        if (this.res.returnCode != 0) {
+        if (this.res.returnCode != ResultCodeSuccess) {
             storedNotes.CloseDb();
 
             // Notify Listactivity that it's finished, but it can't
             // refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
-            i.putExtra("ACCOUNTNAME",account.name);
+            i.putExtra("ACCOUNTNAME", account.name);
             isChanged = false;
             isSynced = false;
             i.putExtra("CHANGED", isChanged);
@@ -106,23 +109,23 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 storedNotes.ClearDb(account.name);
                 // delete notes in folders for this account and recreate dirs
                 SyncUtils.ClearHomeDir(account, this.context);
-                SyncUtils.CreateDirs (account.name, this.context);
+                SyncUtils.CreateDirs(account.name, this.context);
                 // Get all notes from remote and replace local
                 SyncUtils.GetNotes(account,
                         this.res.notesFolder,
                         this.context, storedNotes);
                 storedNotes.CloseDb();
             } catch (MessagingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
             SyncUtils.SetUIDValidity(account, this.res.UIDValidity, this.context);
             // Notify Listactivity that it's finished, and that it can refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
-            i.putExtra("ACCOUNTNAME",account.name);
+            i.putExtra("ACCOUNTNAME", account.name);
             isChanged = true;
             isSynced = true;
             i.putExtra("CHANGED", isChanged);
@@ -144,15 +147,15 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         // handle notes created or removed on remote
         boolean remoteNotesManaged = false;
         String usesticky = am.getUserData(account, "usesticky");
-    try {
-        remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
-    } catch (MessagingException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
+        try {
+            remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
+        } catch (MessagingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         if (remoteNotesManaged) isChanged = true;
 
         storedNotes.CloseDb();
@@ -162,11 +165,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //Log.d(TAG, "Network synchronization complete of account: "+account.name);
         // Notify Listactivity that it's finished, and that it can refresh display
         Intent i = new Intent(SyncService.SYNC_FINISHED);
-        i.putExtra("ACCOUNTNAME",account.name);
+        i.putExtra("ACCOUNTNAME", account.name);
         i.putExtra("CHANGED", isChanged);
         isSynced = true;
         i.putExtra("SYNCED", isSynced);
-            i.putExtra("SYNCINTERVAL", syncinterval);
+        i.putExtra("SYNCINTERVAL", syncinterval);
         context.sendBroadcast(i);
     }
 
@@ -174,20 +177,20 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         AccountManager am = AccountManager.get(this.context);
         ImapNotes2Result res = null;
         try {
-        res = SyncUtils.ConnectToRemote(
-              am.getUserData(account, "username"),
-              am.getPassword(account),
-              am.getUserData(account, "server"),
-              am.getUserData(account, "portnum"),
-              am.getUserData(account, "security"),
-              am.getUserData(account, "usesticky"),
-              am.getUserData(account, "imapfolder"));
+            res = SyncUtils.ConnectToRemote(
+                    am.getUserData(account, "username"),
+                    am.getPassword(account),
+                    am.getUserData(account, "server"),
+                    am.getUserData(account, "portnum"),
+                    Security.from(am.getUserData(account, "security")),
+                    am.getUserData(account, "usesticky"),
+                    am.getUserData(account, "imapfolder"));
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if (res.returnCode != 0) {
-            Log.d(TAG,"Connection problem !!!");
+        if (res.returnCode != ResultCodeSuccess) {
+            Log.d(TAG, "Connection problem !!!");
         }
         return res;
     }
@@ -197,8 +200,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         boolean newNotesManaged = false;
         AppendUID[] uids = null;
         String rootString = context.getFilesDir() + "/" + account.name;
-        File rootDir = new File (rootString);
-        File dirNew = new File (rootDir + "/new");
+        File rootDir = new File(rootString);
+        File dirNew = new File(rootDir + "/new");
         listOfNew = dirNew.list();
         for (String fileNew : listOfNew) {
             //Log.d(TAG,"New Note to process:"+fileNew);
@@ -206,13 +209,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             // Read local new message from file
             message = SyncUtils.ReadMailFromFile(fileNew, NEW, false, rootString);
             try {
-                message.setFlag(Flags.Flag.SEEN,true); // set message as seen
+                message.setFlag(Flags.Flag.SEEN, true); // set message as seen
             } catch (MessagingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             // Send this new message to remote
-            final MimeMessage[] msg = {(MimeMessage)message};
+            final MimeMessage[] msg = {(MimeMessage) message};
 
             try {
                 uids = SyncUtils.sendMessageToRemote(msg);
@@ -225,10 +228,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             // Update uid in database entry
             String newuid = Long.toString(uids[0].uid);
-            storedNotes.UpdateANote(fileNew,newuid,account.name);
+            storedNotes.UpdateANote(fileNew, newuid, account.name);
             // move new note from new dir, one level up
-            File fileInNew = new File (dirNew, fileNew);
-            File to = new File (rootDir, newuid);
+            File fileInNew = new File(dirNew, fileNew);
+            File to = new File(rootDir, newuid);
             fileInNew.renameTo(to);
         }
         return newNotesManaged;
@@ -238,8 +241,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Message message = null;
         boolean deletedNotesManaged = false;
         String rootString = context.getFilesDir() + "/" + account.name;
-        File rootDir = new File (rootString);
-        File dirDeleted = new File (rootDir + "/deleted");
+        File rootDir = new File(rootString);
+        File dirDeleted = new File(rootDir + "/deleted");
         listOfDeleted = dirDeleted.list();
         for (String fileDeleted : listOfDeleted) {
             try {
@@ -249,7 +252,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             // remove file from deleted
-            File toDelete = new File (dirDeleted, fileDeleted);
+            File toDelete = new File(dirDeleted, fileDeleted);
             toDelete.delete();
             deletedNotesManaged = true;
         }

@@ -36,15 +36,15 @@ public class Imaper {
     private Store store;
     private Session session;
     private static final String TAG = "IN_Imaper";
-    private String proto;
-    private String acceptcrt;
     private static String sfolder = "Notes";
-    private String folderoverride;
-    private Folder notesFolder = null;
+    //private Folder notesFolder = null;
     private ImapNotes2Result res;
     private Long UIDValidity;
-    private Boolean useProxy = false;
     public static final String PREFS_NAME = "PrefsFile";
+
+    public static final int ResultCodeSuccess = 0;
+    public static final int ResultCodeException = -2;
+    public static final int ResultCodeCantConnect = -1;
 
     public ImapNotes2Result ConnectToProvider(String username,
                                               String password,
@@ -52,48 +52,44 @@ public class Imaper {
                                               String portnum,
                                               Security security,
                                               String usesticky,
-                                              String override) throws MessagingException {
-        if (this.IsConnected())
-            this.store.close();
+                                              String folderoverride) throws MessagingException {
+        if (IsConnected()) {
+            store.close();
+        }
 
         res = new ImapNotes2Result();
-        if (override == null) {
-            this.folderoverride = "";
-        } else {
-            this.folderoverride = override;
-        }
-        this.proto = security.proto;
-        this.acceptcrt = security.acceptcrt;
+        String proto = security.proto;
+        boolean acceptcrt = security.acceptcrt;
 /*        int security_i = Integer.parseInt(security);
         switch (security_i) {
             case 0:
                 // None
-                this.proto = "imap";
-                this.acceptcrt = "";
+                proto = "imap";
+                acceptcrt = "";
                 break;
             case 1:
                 // SSL/TLS
-                this.proto = "imaps";
-                this.acceptcrt = "false";
+                proto = "imaps";
+                acceptcrt = "false";
                 break;
             case 2:
                 // SSL/TLS/TRUST ALL
-                this.proto = "imaps";
-                this.acceptcrt = "true";
+                proto = "imaps";
+                acceptcrt = "true";
                 break;
             case 3:
                 // STARTTLS
-                this.proto = "imap";
-                this.acceptcrt = "false";
+                proto = "imap";
+                acceptcrt = "false";
                 break;
             case 4:
                 // STARTTLS/TRUST ALL
-                this.proto = "imap";
-                this.acceptcrt = "true";
+                proto = "imap";
+                acceptcrt = "true";
                 break;
 ////////////////////// Change this
             default:
-                this.proto = "Invalid proto";
+                proto = "Invalid proto";
                 break;
         }*/
         MailSSLSocketFactory sf = null;
@@ -101,36 +97,38 @@ public class Imaper {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
-            this.res.errorMessage = "Can't connect to server";
-            this.res.returnCode = -1;
-            return this.res;
+            res.errorMessage = "Can't connect to server";
+            res.returnCode = -1;
+            return res;
         }
 
         Properties props = new Properties();
 
-        props.setProperty(String.format("mail.%s.host", this.proto), server);
-        props.setProperty(String.format("mail.%s.port", this.proto), portnum);
-        props.setProperty("mail.store.protocol", this.proto);
+        props.setProperty(String.format("mail.%s.host", proto), server);
+        props.setProperty(String.format("mail.%s.port", proto), portnum);
+        props.setProperty("mail.store.protocol", proto);
 
-        if ((this.acceptcrt.equals("true"))) {
+        if (acceptcrt) {
             sf.setTrustedHosts(new String[]{server});
-            if (this.proto.equals("imap")) {
+            if (proto.equals("imap")) {
                 props.put("mail.imap.ssl.socketFactory", sf);
                 props.put("mail.imap.starttls.enable", "true");
             }
-        } else if (this.acceptcrt.equals("false")) {
-            props.put(String.format("mail.%s.ssl.checkserveridentity", this.proto), "true");
-            if (this.proto.equals("imap")) {
+        } else if (security != Security.None) {
+            props.put(String.format("mail.%s.ssl.checkserveridentity", proto), "true");
+            if (proto.equals("imap")) {
                 props.put("mail.imap.starttls.enable", "true");
             }
         }
 
-        if (this.proto.equals("imaps")) {
+        if (proto.equals("imaps")) {
             props.put("mail.imaps.socketFactory", sf);
         }
 
         props.setProperty("mail.imap.connectiontimeout", "1000");
-        if (this.useProxy) {
+        // TODO: implement proxy handling properly.
+        Boolean useProxy = false;
+        if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");
 /*
@@ -141,40 +139,40 @@ public class Imaper {
         props.put("sun.net.spi.nameservice.nameservers", "192.168.0.99");
 */
         }
-        this.session = Session.getInstance(props, null);
-//this.session.setDebug(true);
-        this.store = this.session.getStore(this.proto);
+        session = Session.getInstance(props, null);
+//session.setDebug(true);
+        store = session.getStore(proto);
         try {
-            this.store.connect(server, username, password);
-            Boolean hasUIDPLUS = ((IMAPStore) this.store).hasCapability("UIDPLUS");
+            store.connect(server, username, password);
+            Boolean hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
 //Log.d(TAG, "has UIDPLUS="+hasUIDPLUS);
 
             Folder[] folders = store.getPersonalNamespaces();
             Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-            if (this.folderoverride.length() > 0) {
-                Imaper.sfolder = this.folderoverride;
+            if (folderoverride.length() > 0) {
+                Imaper.sfolder = folderoverride;
             } else if (folder.getFullName().length() == 0) {
                 Imaper.sfolder = "Notes";
             } else {
                 char separator = folder.getSeparator();
                 Imaper.sfolder = folder.getFullName() + separator + "Notes";
             }
-            this.res.errorMessage = "";
-            this.res.returnCode = 0;
-            return this.res;
+            res.errorMessage = "";
+            res.returnCode = ResultCodeSuccess;
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
             Log.d(TAG, e.getMessage());
-            this.res.errorMessage = e.getMessage();
-            this.res.returnCode = -2;
-            return this.res;
+            res.errorMessage = e.getMessage();
+            res.returnCode = ResultCodeException;
+            return res;
         }
 
     }
 
     public boolean IsConnected() {
-        return this.store != null && this.store.isConnected();
+        return store != null && store.isConnected();
     }
 
     // Put values in shared preferences:
@@ -182,7 +180,7 @@ public class Imaper {
         SharedPreferences preferences = ImapNotes2.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Name", "valid_data");
-        editor.putLong("UIDValidity", this.UIDValidity);
+        editor.putLong("UIDValidity", UIDValidity);
         editor.apply();
     }
 
@@ -191,7 +189,7 @@ public class Imaper {
         SharedPreferences preferences = (ImapNotes2.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
         String name = preferences.getString("Name", "");
         if (!name.equalsIgnoreCase("")) {
-            this.UIDValidity = preferences.getLong("UIDValidity", -1);
+            UIDValidity = preferences.getLong("UIDValidity", -1);
         }
     }
 }

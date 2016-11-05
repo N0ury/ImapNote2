@@ -81,8 +81,12 @@ public class ImapNotes2Account {
         return security;
     }
 
-    public void SetSecurity(Security Security) {
-        security = Security;
+    public void SetSecurity(Security security) {
+        this.security = security;
+    }
+
+    public void SetSecurity(String security) {
+        SetSecurity(Security.from(security));
     }
 
     public String GetUsesticky() {
