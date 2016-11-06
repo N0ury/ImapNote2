@@ -39,10 +39,9 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     Imaper imapFolder;
     boolean bool_to_return;
     OneNote currentNote = null;
-    NotesDb storedNotes;
-    Context ctx;
+    private NotesDb storedNotes;
+    private Context ctx;
     ProgressDialog pDialog;
-    String body = null;
     String action;
     private static final String TAG = "UpdateThread";
 
@@ -81,11 +80,9 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 String[] tok = noteTxt.split("\n", 2);
                 String title = tok[0];
                 String position = "0 0 0 0";
-                if (((ImapNotes2Account) stuffs[1]).GetUsesticky().equals("true"))
-                    body = noteTxt.replaceAll("\n", "\\\\n");
-                else
-                    body = "<html><head></head><body>" + this.noteBody + "</body></html>";
-
+                String body = (((ImapNotes2Account) stuffs[1]).GetUsesticky()) ?
+                        noteTxt.replaceAll("\n", "\\\\n") :
+                        "<html><head></head><body>" + this.noteBody + "</body></html>";
 
                 String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
                 Date date = new Date();
@@ -149,7 +146,9 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         }
     }
 
-    public void WriteMailToNew(OneNote note, String usesticky, String noteBody) throws MessagingException, IOException {
+    public void WriteMailToNew(OneNote note,
+                               boolean usesticky,
+                               String noteBody) throws MessagingException, IOException {
         String body = null;
 
         // Here we add the new note to the "new" folder
@@ -157,7 +156,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
-        if (usesticky.equals("true")) {
+        if (usesticky) {
             body = "BEGIN:STICKYNOTE\nCOLOR:" + this.color + "\nTEXT:" + noteBody +
                     "\nPOSITION:0 0 0 0\nEND:STICKYNOTE";
             message.setText(body);
@@ -182,7 +181,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         // Remove (CET) or (GMT+1) part as asked in github issue #13
         String headerDate = (mailDateFormat.format(new Date())).replaceAll("\\(.*$", "");
         message.addHeader("Date", headerDate);
-        //déterminer l'uid temporaire
+        // Get temporary UID
         String uid = Integer.toString(Math.abs(Integer.parseInt(note.GetUid())));
         File directory = new File((ImapNotes2.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname() + "/new");

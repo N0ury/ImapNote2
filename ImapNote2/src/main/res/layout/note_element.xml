@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--This layout displays the title and time stamp of a single note. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="60dip"
     android:orientation="vertical"
     android:padding="5dip">
 
+    <!-- The notes are listed in most recently edited order using the first line as the title-->
     <TextView
         android:id="@+id/noteTitle"
         android:layout_width="wrap_content"
@@ -16,6 +19,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000000"></TextView>
 
+    <!-- This text view is used to display the date and time of the most recent edit. -->
     <TextView
         android:id="@+id/noteInformation"
         android:layout_width="wrap_content"

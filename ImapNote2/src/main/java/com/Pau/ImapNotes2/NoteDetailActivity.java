@@ -26,8 +26,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +42,7 @@ public class NoteDetailActivity extends Activity {
     private static final int DELETE_BUTTON = 3;
     private static final int EDIT_BUTTON = 6;
     private HashMap hm;
-    private String usesticky;
+    private boolean usesticky;
     private Sticky sticky;
     private String stringres;
     private String color;
@@ -61,9 +63,9 @@ public class NoteDetailActivity extends Activity {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
 
-        this.hm = (HashMap) getIntent().getExtras().get("selectedNote");
-        this.usesticky = (String) getIntent().getExtras().get("useSticky");
-
+        Bundle extras = getIntent().getExtras();
+        this.hm = (HashMap) extras.get("selectedNote");
+        this.usesticky = "true".equals((String) extras.get("useSticky"));
         suid = this.hm.get("uid").toString();
         String rootDir = (ImapNotes2.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
@@ -73,7 +75,28 @@ public class NoteDetailActivity extends Activity {
         position = sticky.GetPosition();
         color = sticky.GetColor();
         Spanned plainText = Html.fromHtml(stringres);
-        ((EditText) findViewById(R.id.bodyView)).setText(plainText);
+        EditText editText = ((EditText) findViewById(R.id.bodyView));
+        editText.setText(plainText);
+        // Watch for changes to that we can auto save.
+        // See http://stackoverflow.com/questions/7117209/how-to-know-key-presses-in-edittext#14251047
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //here is your code
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+
+        });
         this.ResetColors();
         //invalidateOptionsMenu();
     }
@@ -123,11 +146,7 @@ public class NoteDetailActivity extends Activity {
         MenuItem item = menu.findItem(R.id.color);
         super.onPrepareOptionsMenu(menu);
         //depending on your conditions, either enable/disable
-        if (this.usesticky.equals("true")) {
-            item.setVisible(true);
-        } else {
-            item.setVisible(false);
-        }
+        item.setVisible(usesticky);
         menu.findItem(this.realColor).setChecked(true);
         return true;
     }
@@ -142,16 +161,7 @@ public class NoteDetailActivity extends Activity {
                 finish();//finishing activity
                 return true;
             case R.id.save:
-                //Log.d(TAG,"We ask to modify Message #"+this.currentNote.get("number"));
-                intent.putExtra("EDIT_ITEM_NUM_IMAP", suid);
-                intent.putExtra("EDIT_ITEM_TXT",
-                        Html.toHtml(((EditText) findViewById(R.id.bodyView)).getText()));
-                if (!this.usesticky.equals("true")) {
-                    this.color = "NONE";
-                }
-                intent.putExtra("EDIT_ITEM_COLOR", this.color);
-                setResult(NoteDetailActivity.EDIT_BUTTON, intent);
-                finish();//finishing activity
+                Save();
                 return true;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -186,6 +196,20 @@ public class NoteDetailActivity extends Activity {
         }
     }
 
+    private void Save() {
+        Log.d(TAG, "Save");
+        Intent intent = new Intent();
+        intent.putExtra("EDIT_ITEM_NUM_IMAP", suid);
+        intent.putExtra("EDIT_ITEM_TXT",
+                Html.toHtml(((EditText) findViewById(R.id.bodyView)).getText()));
+        if (!usesticky) {
+            this.color = "NONE";
+        }
+        intent.putExtra("EDIT_ITEM_COLOR", this.color);
+        setResult(NoteDetailActivity.EDIT_BUTTON, intent);
+        finish();//finishing activity
+
+    }
     public enum Colors {
         BLUE,
         WHITE,

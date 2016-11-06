@@ -54,4 +54,5 @@ public class NewNoteActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

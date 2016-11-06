@@ -12,7 +12,7 @@ public class ImapNotes2Account {
     private String server = "";
     private String portnum = "";
     private Security security = null;
-    private String usesticky = "";
+    private boolean usesticky = false;
     private String syncinterval = "15";
     private String imapfolder = "";
     private Boolean accountHasChanged = false;
@@ -89,11 +89,11 @@ public class ImapNotes2Account {
         SetSecurity(Security.from(security));
     }
 
-    public String GetUsesticky() {
+    public boolean GetUsesticky() {
         return this.usesticky;
     }
 
-    public void SetUsesticky(String Usesticky) {
+    public void SetUsesticky(boolean Usesticky) {
         this.usesticky = Usesticky;
     }
 
@@ -131,7 +131,7 @@ public class ImapNotes2Account {
         this.server = null;
         this.portnum = null;
         this.security = null;
-        this.usesticky = null;
+        this.usesticky = false;
         this.imapfolder = null;
         this.accountHasChanged = false;
     }

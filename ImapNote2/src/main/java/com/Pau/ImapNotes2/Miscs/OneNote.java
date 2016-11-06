@@ -2,6 +2,7 @@ package com.Pau.ImapNotes2.Miscs;
 
 import java.util.HashMap;
 
+/*  Represents metadata aboit a note. */
 public class OneNote extends HashMap<String, String> {
 
     /**
@@ -9,14 +10,14 @@ public class OneNote extends HashMap<String, String> {
      */
     private static final long serialVersionUID = 1L;
 
-    public OneNote() {
-        super();
-        this.put("title", "No Title");
-        this.put("date", "No Date");
-        this.put("uid", "0");
+    /*    public OneNote() {
+            super();
+            this.put("title", "No Title");
+            this.put("date", "No Date");
+            this.put("uid", "0");
 
-    }
-
+        }
+    */
     public OneNote(String title, String date, String uid) {
         super();
         this.put("title", title);
@@ -37,10 +38,11 @@ public class OneNote extends HashMap<String, String> {
         return this.get("uid");
     }
 
-    public void SetTitle(String title) {
-        this.put("title", title);
-    }
-
+    /*
+        public void SetTitle(String title) {
+            this.put("title", title);
+        }
+    */
     public void SetDate(String date) {
         this.put("date", date);
     }
