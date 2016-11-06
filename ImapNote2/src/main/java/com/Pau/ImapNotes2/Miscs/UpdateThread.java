@@ -30,6 +30,7 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.SimpleAdapter;
 
+// TODO: move arguments from execute to constructor.
 public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     NotesListAdapter adapter;
     ArrayList<OneNote> notesList;

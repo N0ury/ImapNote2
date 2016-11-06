@@ -22,6 +22,7 @@ public class ConfigurationFile {
     // For logging.
     private static final String TAG = "IN_ConfigurationFile";
 
+    // TODO: make all fields final.
     // The account name is the concatenation of the username and server.
     private String accountname;
     // User name on the IMAP server.
@@ -34,7 +35,7 @@ public class ConfigurationFile {
     // TLS, etc.
     private Security security = Security.None;
     // ?
-    private String usesticky;
+    private boolean usesticky;
     // The name of the IMAP folder to be used.
     private String imapfolder;
 
@@ -61,9 +62,9 @@ public class ConfigurationFile {
             }
             if (LoadItemFromXML(fileToLoad, "usesticky").getLength() == 0)
                 // usesticky option doesn't exist, say no
-                usesticky = "false";
+                usesticky = false;
             else
-                usesticky = NodeValueFromXML(fileToLoad, "usesticky");
+                usesticky = Boolean.parseBoolean(NodeValueFromXML(fileToLoad, "usesticky"));
 
 //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
@@ -76,7 +77,7 @@ public class ConfigurationFile {
             server = "";
             security = Security.None;
             portnum = security.defaultPort;
-            usesticky = "false";
+            usesticky = false;
             imapfolder = "";
         }
     }
@@ -125,13 +126,15 @@ public class ConfigurationFile {
         security = security;
     }
 
-    public String GetUsesticky() {
+    public boolean GetUsesticky() {
         return usesticky;
     }
+/*
 
-    public void SetUsesticky(String Usesticky) {
-        usesticky = Usesticky;
+    public void SetUsesticky(boolean usesticky) {
+        this.usesticky = usesticky;
     }
+*/
 
     public String GetFoldername() {
         return imapfolder;
@@ -146,7 +149,7 @@ public class ConfigurationFile {
         server = null;
         portnum = null;
         security = null;
-        usesticky = null;
+        usesticky = false;
         imapfolder = null;
     }
 
@@ -168,7 +171,7 @@ public class ConfigurationFile {
         SerializeText(serializer, "portnum", portnum);
         SerializeText(serializer, "security", security.name());
         SerializeText(serializer, "imapfolder", imapfolder);
-        SerializeText(serializer, "usesticky", usesticky);
+        SerializeText(serializer, "usesticky", String.valueOf(usesticky));
         serializer.endTag(null, "Configuration");
         serializer.endDocument();
         serializer.flush();

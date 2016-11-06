@@ -1,0 +1,77 @@
+* To do
+
+Add configuration for directory synchronization.
+
+Implement synchronization.
+
+Implement text file merging
+
+Implement Unix and Windows desktop versions.
+
+* Directory synchronization
+
+Use the already implemented accounts.
+
+One sync. definition consists of the following:
+
+- Account to be used
+
+- Root directory on the server
+
+- Root directory on the local system.  Use a directory chooser dialog.
+
+- Include sub-directories or not.  Checkbox.
+
+- A list of glob patterns defining the files to be included.  Simple
+  text field.  Use white space as separator.
+
+- A list of glob patterns defining the files to be excluded.  Simple
+  text field.  Use white space as separator.
+
+- The maximum allowed network transfer rate.
+
+- The length of time allowed for a complete scan of the directory.
+
+
+Use android.os.PatternMatcher to implement the globbing.
+
+
+* Merge
+
+Should be a three way merge so that we can automatically resolve as
+many conflicts as possible.  This means keeping two copies on the
+server.
+
+We can avoid worrying about race conditions by recognizing that this
+is essentially a single user system so simultaneous access will be
+unlikely (not impossible though)
+
+https://gist.github.com/stepchowfun/4713315
+
+
+* Sync adapters
+
+See:
+
+- https://developer.android.com/training/sync-adapters/creating-sync-adapter.html
+
+- src/main/res/xml/syncadapter.xml
+
+- src/main/java/com/Pau/ImapNotes2/Sync/SyncAdapter.java
+
+- src/main/java/com/Pau/ImapNotes2/Sync/SyncService.java
+
+
+
+* Auto save
+
+First question is how is the note saved in the first place.
+
+Then can we do it automatically and then can we start the sync early?
+
+
+* SQLite database
+
+This is used to store metadata about the notes.  The notes themselves
+are stored as files in a sub-directory named after the account to
+which they belong.

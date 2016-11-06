@@ -51,7 +51,7 @@ public class Imaper {
                                               String server,
                                               String portnum,
                                               Security security,
-                                              String usesticky,
+                                              boolean usesticky,
                                               String folderoverride) throws MessagingException {
         if (IsConnected()) {
             store.close();
