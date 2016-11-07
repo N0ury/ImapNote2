@@ -1,18 +1,21 @@
 package com.Pau.ImapNotes2.Miscs;
 
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
+
 public class Sticky {
 
     private static String text;
     private static String position;
-    private static String color;
+    private static Colors color;
 
     public Sticky() {
         Sticky.text = "";
         Sticky.position = "0 0 0 0";
-        Sticky.color = "YELLOW";
+        Sticky.color = Colors.YELLOW;
     }
 
-    public Sticky(String text, String position, String color) {
+    public Sticky(String text, String position,
+                  Colors color) {
         Sticky.text = text;
         Sticky.position = position;
         Sticky.color = color;
@@ -26,7 +29,7 @@ public class Sticky {
         return Sticky.text;
     }
 
-    public String GetColor() {
+    public Colors GetColor() {
         return Sticky.color;
     }
 
@@ -38,7 +41,7 @@ public class Sticky {
         Sticky.position = position;
     }
 
-    public void SetColor(String color) {
+    public void SetColor(Colors color) {
         Sticky.color = color;
     }
 }

@@ -1,26 +1,5 @@
 package com.Pau.ImapNotes2;
 
-import java.util.HashMap;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.MimeMessage;
-
-import org.apache.commons.io.IOUtils;
-
-import com.Pau.ImapNotes2.Miscs.OneNote;
-import com.Pau.ImapNotes2.Miscs.Sticky;
-import com.Pau.ImapNotes2.Sync.SyncUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -37,6 +16,24 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.Pau.ImapNotes2.Miscs.Sticky;
+import com.Pau.ImapNotes2.Sync.SyncUtils;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.internet.ContentType;
+
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.BLUE;
+
 public class NoteDetailActivity extends Activity {
 
     private static final int DELETE_BUTTON = 3;
@@ -45,7 +42,7 @@ public class NoteDetailActivity extends Activity {
     private boolean usesticky;
     private Sticky sticky;
     private String stringres;
-    private String color;
+    private Colors color;
     private String position;
     private int realColor = R.id.yellow;
     private Boolean isClicked = false;
@@ -105,10 +102,11 @@ public class NoteDetailActivity extends Activity {
         this.isClicked = true;
     }
 
+    // TODO: Find out what this is for.
     private void ResetColors() {
-        ((EditText) findViewById(R.id.bodyView)).setBackgroundColor(Color.TRANSPARENT);
+        findViewById(R.id.bodyView).setBackgroundColor(Color.TRANSPARENT);
         ((EditText) findViewById(R.id.bodyView)).setTextColor(Color.BLACK);
-        Colors currentColor = Colors.valueOf(color);
+        Colors currentColor = color;
         switch (currentColor) {
             case BLUE:
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFA6CAFD);
@@ -168,27 +166,27 @@ public class NoteDetailActivity extends Activity {
                 return true;
             case R.id.blue:
                 item.setChecked(true);
-                this.color = "BLUE";
+                this.color = BLUE;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFA6CAFD);
                 return true;
             case R.id.white:
                 item.setChecked(true);
-                this.color = "WHITE";
+                this.color = Colors.WHITE;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFFF);
                 return true;
             case R.id.yellow:
                 item.setChecked(true);
-                this.color = "YELLOW";
+                this.color = Colors.YELLOW;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFCC);
                 return true;
             case R.id.pink:
                 item.setChecked(true);
-                this.color = "PINK";
+                this.color = Colors.PINK;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFCCCC);
                 return true;
             case R.id.green:
                 item.setChecked(true);
-                this.color = "GREEN";
+                this.color = Colors.GREEN;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFCCFFCC);
                 return true;
             default:
@@ -203,7 +201,7 @@ public class NoteDetailActivity extends Activity {
         intent.putExtra("EDIT_ITEM_TXT",
                 Html.toHtml(((EditText) findViewById(R.id.bodyView)).getText()));
         if (!usesticky) {
-            this.color = "NONE";
+            this.color = Colors.NONE;
         }
         intent.putExtra("EDIT_ITEM_COLOR", this.color);
         setResult(NoteDetailActivity.EDIT_BUTTON, intent);
@@ -294,14 +292,14 @@ public class NoteDetailActivity extends Activity {
         stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
         stringres = stringres.replaceAll("</p>", "");
 
-        return new Sticky(stringres, "", "NONE");
+        return new Sticky(stringres, "", Colors.NONE);
     }
 
     private Sticky ReadPlainnote(String stringres) {
 //        Log.d(TAG,"From server (plain):"+stringres);
         stringres = stringres.replaceAll("\n", "<br>");
 
-        return new Sticky(stringres, "", "NONE");
+        return new Sticky(stringres, "", Colors.NONE);
     }
 
     private void WriteMailToFile(String suid, Message message) {

@@ -33,6 +33,7 @@ import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 import com.Pau.ImapNotes2.Miscs.Sticky;
+import com.Pau.ImapNotes2.NoteDetailActivity;
 import com.sun.mail.util.MailSSLSocketFactory;
 
 import com.sun.mail.imap.IMAPStore;
@@ -46,6 +47,8 @@ import android.util.Log;
 
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeException;
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
+import static com.Pau.ImapNotes2.NoteDetailActivity.*;
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
 
 public class SyncUtils {
 
@@ -212,27 +215,33 @@ public class SyncUtils {
         }
     }
 
+    private static final Pattern patternColor = Pattern.compile("^COLOR:(.*?)$", Pattern.MULTILINE);
+    private static final Pattern patternPosition = Pattern.compile("^POSITION:(.*?)$", Pattern.MULTILINE);
+    private static final Pattern patternText = Pattern.compile("TEXT:(.*?)(END:|POSITION:)", Pattern.DOTALL);
+
+
     public static Sticky ReadStickynote(String stringres) {
-        String color = new String("");
+        Colors color = NONE;
         String position = new String("");
         String text = new String("");
-        Pattern p = null;
+        //Pattern p = null;
         Matcher m = null;
 
-        p = Pattern.compile("^COLOR:(.*?)$", Pattern.MULTILINE);
-        m = p.matcher(stringres);
+        m = patternColor.matcher(stringres);
         if (m.find()) {
-            color = m.group(1);
+            String colorName = m.group(1);
+            Log.d(TAG, " Color: " + colorName + " " + (colorName == null));
+            color = ((colorName == null) || colorName.equals("null")) ?
+                    Colors.NONE :
+                    Colors.valueOf(m.group(1));
         }
 
-        p = Pattern.compile("^POSITION:(.*?)$", Pattern.MULTILINE);
-        m = p.matcher(stringres);
+        m = patternPosition.matcher(stringres);
         if (m.find()) {
             position = m.group(1);
         }
 
-        p = Pattern.compile("TEXT:(.*?)(END:|POSITION:)", Pattern.DOTALL);
-        m = p.matcher(stringres);
+        m = patternText.matcher(stringres);
         if (m.find()) {
             text = m.group(1);
             // Kerio Connect puts CR+LF+space every 78 characters from line 2
