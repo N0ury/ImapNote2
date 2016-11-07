@@ -59,6 +59,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.Pau.ImapNotes2.NoteDetailActivity.*;
+
 
 public class Listactivity extends Activity implements OnItemSelectedListener, Filterable {
     private static final int SEE_DETAIL = 2;
@@ -127,7 +129,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         this.accountSpinner.setAdapter(spinnerList);
 
         this.noteList = new ArrayList<>();
-        ((ImapNotes2) this.getApplicationContext()).SetNotesList(this.noteList);
+        ((ImapNotes2k) this.getApplicationContext()).SetNotesList(this.noteList);
         this.listToView = new NotesListAdapter(
                 getApplicationContext(),
                 this.noteList,
@@ -140,7 +142,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         listview.setTextFilterEnabled(true);
 
         this.imapFolder = new Imaper();
-        ((ImapNotes2) this.getApplicationContext()).SetImaper(this.imapFolder);
+        ((ImapNotes2k) this.getApplicationContext()).SetImaper(this.imapFolder);
 
         if (Listactivity.storedNotes == null)
             storedNotes = new NotesDb(getApplicationContext());
@@ -226,10 +228,15 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         status.setText("Welcome");
     }
 
-    public void UpdateList(String suid, String noteBody, String color, String action) {
+    public void UpdateList(String suid,
+                           String noteBody,
+                           Colors color,
+                           String action) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2", "Updating notes list... ", true);
 
-        new UpdateThread().execute(this.imapFolder, Listactivity.imapNotes2Account, this.noteList, this.listToView, loadingDialog, suid, noteBody, color, this.getApplicationContext(), action, storedNotes);
+        new UpdateThread(this.imapFolder, Listactivity.imapNotes2Account, this.noteList,
+                this.listToView, loadingDialog, suid, noteBody,
+                color, this.getApplicationContext(), action, storedNotes).execute();
 
     }
 
@@ -319,7 +326,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 if (resultCode == Listactivity.EDIT_BUTTON) {
                     String txt = data.getStringExtra("EDIT_ITEM_TXT");
                     String suid = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
-                    String color = data.getStringExtra("EDIT_ITEM_COLOR");
+                    Colors color = (Colors) data.getSerializableExtra("EDIT_ITEM_COLOR");
                     //Log.d(TAG,"Received request to delete message:"+suid);
                     //Log.d(TAG,"Received request to replace message with:"+txt);
                     this.UpdateList(suid, txt, color, "update");
@@ -329,7 +336,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 if (resultCode == Listactivity.SAVE_BUTTON) {
                     String res = data.getStringExtra("SAVE_ITEM");
                     //Log.d(TAG,"Received request to save message:"+res);
-                    String color = data.getStringExtra("SAVE_ITEM_COLOR");
+                    Colors color = (Colors) data.getSerializableExtra("SAVE_ITEM_COLOR");
                     this.UpdateList(null, res, color, "insert");
                 }
         }
@@ -434,7 +441,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                         iter.remove();
                         // Why try here?
                         try {
-                            String stringDir = ImapNotes2.ConfigurationDirPath() + "/" + s;
+                            String stringDir = ImapNotes2k.ConfigurationDirPath() + "/" + s;
                             FileUtils.deleteDirectory(new File(stringDir));
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
@@ -446,7 +453,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 for (String accountName : newList) {
                     if (!(Listactivity.currentList.contains(accountName))) {
                         Listactivity.currentList.add(accountName);
-                        SyncUtils.CreateDirs(accountName, ImapNotes2.getAppContext());
+                        SyncUtils.CreateDirs(accountName, ImapNotes2k.getAppContext());
 
                         equalLists = false;
                     }
@@ -454,7 +461,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 if (equalLists) return;
                 updateAccountSpinner();
             } else {
-                File filesDir = ImapNotes2.ConfigurationDir();
+                File filesDir = ImapNotes2k.ConfigurationDir();
                 try {
                     FileUtils.cleanDirectory(filesDir);
                 } catch (IOException e) {

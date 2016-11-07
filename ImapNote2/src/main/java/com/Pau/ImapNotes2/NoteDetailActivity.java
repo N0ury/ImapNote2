@@ -64,7 +64,7 @@ public class NoteDetailActivity extends Activity {
         this.hm = (HashMap) extras.get("selectedNote");
         this.usesticky = (boolean) extras.get("useSticky");
         suid = this.hm.get("uid").toString();
-        String rootDir = (ImapNotes2.getAppContext()).getFilesDir() + "/" +
+        String rootDir = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         message = SyncUtils.ReadMailFromFile(suid, ROOT_AND_NEW, true, rootDir);
         sticky = GetInfoFromMessage(message);
@@ -303,7 +303,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     private void WriteMailToFile(String suid, Message message) {
-        String directory = (ImapNotes2.getAppContext()).getFilesDir() + "/" +
+        String directory = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         try {
             File outfile = new File(directory, suid);

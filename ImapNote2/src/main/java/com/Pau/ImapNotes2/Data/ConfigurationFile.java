@@ -14,7 +14,7 @@ import android.content.Context;
 //import android.util.Log;
 import android.util.Xml;
 
-import com.Pau.ImapNotes2.ImapNotes2;
+import com.Pau.ImapNotes2.ImapNotes2k;
 import com.Pau.ImapNotes2.Sync.Security;
 
 public class ConfigurationFile {
@@ -43,7 +43,7 @@ public class ConfigurationFile {
     public ConfigurationFile() {
         try {
             Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                    new File(ImapNotes2.ConfigurationFilePath()));
+                    new File(ImapNotes2k.ConfigurationFilePath()));
             username = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UserName);
             password = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Password);
             server = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Server);
@@ -143,7 +143,7 @@ public class ConfigurationFile {
 
     public void Clear() {
         //noinspection ResultOfMethodCallIgnored
-        new File(ImapNotes2.ConfigurationFilePath()).delete();
+        new File(ImapNotes2k.ConfigurationFilePath()).delete();
         username = null;
         password = null;
         server = null;
@@ -159,7 +159,7 @@ public class ConfigurationFile {
     public void SaveConfigurationToXML()
             throws IllegalArgumentException, IllegalStateException, IOException {
         FileOutputStream configurationFile
-                = ImapNotes2.getAppContext().openFileOutput(ImapNotes2.ConfigurationFilePath(),
+                = ImapNotes2k.getAppContext().openFileOutput(ImapNotes2k.ConfigurationFilePath(),
                 Context.MODE_PRIVATE);
         XmlSerializer serializer = Xml.newSerializer();
         serializer.setOutput(configurationFile, "UTF-8");

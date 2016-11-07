@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -17,8 +18,9 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MailDateFormat;
 
-import com.Pau.ImapNotes2.ImapNotes2;
+import com.Pau.ImapNotes2.ImapNotes2k;
 import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.NoteDetailActivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
@@ -27,27 +29,59 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.Html;
-import android.util.Log;
-import android.widget.SimpleAdapter;
+import android.widget.Adapter;
+
+import static com.Pau.ImapNotes2.NoteDetailActivity.*;
 
 // TODO: move arguments from execute to constructor.
 public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
-    NotesListAdapter adapter;
-    ArrayList<OneNote> notesList;
-    String suid;
-    String noteBody;
-    String color;
-    Imaper imapFolder;
+    private final ImapNotes2Account imapNotes2Account;
+    private final ProgressDialog progressDialog;
+    private final NotesListAdapter adapter;
+    private final ArrayList<OneNote> notesList;
+    private String suid;
+    private final String noteBody;
+    private final Colors color;
+    private final Imaper imapFolder;
     boolean bool_to_return;
     OneNote currentNote = null;
     private NotesDb storedNotes;
-    private Context ctx;
-    ProgressDialog pDialog;
-    String action;
+    private final Context ctx;
+    private final String action;
     private static final String TAG = "UpdateThread";
 
+    /*
+    Assign all fields in the constructor because we never reuse this object.  This makes the code
+    typesafe.  Make them final to preven accidental reuse.
+    */
+    public UpdateThread(Imaper imapFolder,
+                        ImapNotes2Account imapNotes2Account,
+                        ArrayList<OneNote> noteList,
+                        NotesListAdapter listToView,
+                        ProgressDialog loadingDialog,
+                        String suid,
+                        String noteBody,
+                        Colors color,
+                        Context applicationContext,
+                        String action,
+                        NotesDb storedNotes) {
+
+        this.imapFolder = imapFolder;
+        this.imapNotes2Account = imapNotes2Account;
+        this.notesList = noteList;
+        this.adapter = listToView;
+        this.progressDialog = loadingDialog;
+        this.suid = suid;
+        this.noteBody = noteBody;
+        this.color = color;
+        this.ctx = applicationContext;
+        this.action = action;
+        this.storedNotes = storedNotes;
+
+    }
     @Override
     protected Boolean doInBackground(Object... stuffs) {
+/*
         this.adapter = ((NotesListAdapter) stuffs[3]);
         this.notesList = ((ArrayList<OneNote>) stuffs[2]);
         this.suid = ((String) stuffs[5]);
@@ -57,84 +91,85 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         this.ctx = (Context) stuffs[8];
         this.action = (String) stuffs[9];
         this.storedNotes = (NotesDb) stuffs[10];
+*/
 
         try {
             // Do we have a note to remove?
-            if (this.action.equals("delete") || this.action.equals("update")) {
+            if (action.equals("delete") || action.equals("update")) {
                 //Log.d(TAG,"Received request to delete message #"+suid);
                 // Here we delete the note from the local notes list
                 //Log.d(TAG,"Delete note in Listview");
-                this.notesList.remove(getIndexByNumber(this.suid));
-                MoveMailToDeleted(this.suid);
-                this.storedNotes.OpenDb();
-                this.storedNotes.DeleteANote(this.suid, Listactivity.imapNotes2Account.GetAccountname());
-                this.storedNotes.CloseDb();
-                this.bool_to_return = true;
+                notesList.remove(getIndexByNumber(suid));
+                MoveMailToDeleted(suid);
+                storedNotes.OpenDb();
+                storedNotes.DeleteANote(suid, Listactivity.imapNotes2Account.GetAccountname());
+                storedNotes.CloseDb();
+                bool_to_return = true;
             }
 
             // Do we have a note to add?
-            if (this.action.equals("insert") || this.action.equals("update")) {
+            if (action.equals("insert") || action.equals("update")) {
 //Log.d(TAG,"Sticky ? "+((ImapNotes2Account)stuffs[1]).GetUsesticky());
-//Log.d(TAG,"Color:"+this.color);
-                //Log.d(TAG,"Received request to add new message"+this.noteBody+"===");
-                String noteTxt = Html.fromHtml(this.noteBody).toString();
+//Log.d(TAG,"Color:"+color);
+                //Log.d(TAG,"Received request to add new message"+noteBody+"===");
+                String noteTxt = Html.fromHtml(noteBody).toString();
                 String[] tok = noteTxt.split("\n", 2);
                 String title = tok[0];
                 String position = "0 0 0 0";
-                String body = (((ImapNotes2Account) stuffs[1]).GetUsesticky()) ?
+                String body = (imapNotes2Account.GetUsesticky()) ?
                         noteTxt.replaceAll("\n", "\\\\n") :
-                        "<html><head></head><body>" + this.noteBody + "</body></html>";
+                        "<html><head></head><body>" + noteBody + "</body></html>";
 
                 String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
                 Date date = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
                 String stringDate = sdf.format(date);
-                this.currentNote = new OneNote(title, stringDate, "");
+                currentNote = new OneNote(title, stringDate, "");
                 // Add note to database
-                if (this.storedNotes == null) this.storedNotes = new NotesDb(this.ctx);
-                this.storedNotes.OpenDb();
-                this.suid = this.storedNotes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountname());
-                this.currentNote.SetUid(this.suid);
+                if (storedNotes == null) storedNotes = new NotesDb(ctx);
+                storedNotes.OpenDb();
+                suid = storedNotes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountname());
+                currentNote.SetUid(suid);
                 // Here we ask to add the new note to the "new" folder
                 // Must be done AFTER uid has been set in currenteNote
                 WriteMailToNew(currentNote,
-                        ((ImapNotes2Account) stuffs[1]).GetUsesticky(), body);
-                this.storedNotes.InsertANoteInDb(this.currentNote, Listactivity.imapNotes2Account.GetAccountname());
-                this.storedNotes.CloseDb();
+                        imapNotes2Account.GetUsesticky(), body);
+                storedNotes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountname());
+                storedNotes.CloseDb();
                 // Add note to noteList but chage date format before
-                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.ctx);
+                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(ctx);
                 String sdate = DateFormat.getDateTimeInstance().format(date);
-                this.currentNote.SetDate(sdate);
-                this.notesList.add(0, this.currentNote);
-                this.bool_to_return = true;
+                currentNote.SetDate(sdate);
+                notesList.add(0, currentNote);
+                bool_to_return = true;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            this.bool_to_return = false;
+            bool_to_return = false;
         } finally {
-            ((ProgressDialog) stuffs[4]).dismiss();
+            progressDialog.dismiss();
         }
-        return this.bool_to_return;
+        return bool_to_return;
     }
 
     protected void onPostExecute(Boolean result) {
         if (result) {
-            if (this.bool_to_return) /* note added or removed */
-                this.adapter.notifyDataSetChanged();
+            if (bool_to_return) /* note added or removed */
+                adapter.notifyDataSetChanged();
         }
     }
 
     public int getIndexByNumber(String pNumber) {
-        for (OneNote _item : this.notesList) {
+        for (OneNote _item : notesList) {
             if (_item.GetUid().equals(pNumber))
-                return this.notesList.indexOf(_item);
+                return notesList.indexOf(_item);
         }
         return -1;
     }
 
     private void MoveMailToDeleted(String suid) {
-        String directory = (ImapNotes2.getAppContext()).getFilesDir() + "/" +
+        String directory = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         String positiveUid = suid.substring(1);
         File from = new File(directory, suid);
@@ -158,7 +193,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
         if (usesticky) {
-            body = "BEGIN:STICKYNOTE\nCOLOR:" + this.color + "\nTEXT:" + noteBody +
+            body = "BEGIN:STICKYNOTE\nCOLOR:" + color.name() + "\nTEXT:" + noteBody +
                     "\nPOSITION:0 0 0 0\nEND:STICKYNOTE";
             message.setText(body);
             message.setHeader("Content-Transfer-Encoding", "8bit");
@@ -184,7 +219,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         message.addHeader("Date", headerDate);
         // Get temporary UID
         String uid = Integer.toString(Math.abs(Integer.parseInt(note.GetUid())));
-        File directory = new File((ImapNotes2.getAppContext()).getFilesDir() + "/" +
+        File directory = new File((ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname() + "/new");
         //message.setFrom(new InternetAddress("ImapNotes2", Listactivity.imapNotes2Account.GetAccountname()));
         message.setFrom(Listactivity.imapNotes2Account.GetAccountname());

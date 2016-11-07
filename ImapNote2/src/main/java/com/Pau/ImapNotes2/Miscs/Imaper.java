@@ -1,11 +1,6 @@
 package com.Pau.ImapNotes2.Miscs;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Properties;
 
 import android.content.Context;
@@ -13,23 +8,16 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import javax.mail.Folder;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.mail.Flags;
 
 import com.Pau.ImapNotes2.Sync.Security;
-import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.util.MailSSLSocketFactory;
 
-import java.util.regex.*;
-
-import com.Pau.ImapNotes2.Miscs.Sticky;
-import com.Pau.ImapNotes2.ImapNotes2;
+import com.Pau.ImapNotes2.ImapNotes2k;
 import com.Pau.ImapNotes2.Listactivity;
-import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 
 public class Imaper {
 
@@ -177,7 +165,7 @@ public class Imaper {
 
     // Put values in shared preferences:
     public void SetPrefs() {
-        SharedPreferences preferences = ImapNotes2.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
+        SharedPreferences preferences = ImapNotes2k.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Name", "valid_data");
         editor.putLong("UIDValidity", UIDValidity);
@@ -186,7 +174,7 @@ public class Imaper {
 
     // Retrieve values from shared preferences:
     public void GetPrefs() {
-        SharedPreferences preferences = (ImapNotes2.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
+        SharedPreferences preferences = (ImapNotes2k.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
         String name = preferences.getString("Name", "");
         if (!name.equalsIgnoreCase("")) {
             UIDValidity = preferences.getLong("UIDValidity", -1);

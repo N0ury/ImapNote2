@@ -131,7 +131,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         securitySpinner.setOnItemSelectedListener(this);
 
         imapNotes2Account = new ImapNotes2Account();
-        this.imapFolder = ((ImapNotes2) getApplicationContext()).GetImaper();
+        this.imapFolder = ((ImapNotes2k) getApplicationContext()).GetImaper();
         this.settings = new ConfigurationFile();
 
         Bundle extras = getIntent().getExtras();

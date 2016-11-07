@@ -11,7 +11,11 @@ import android.app.Application;
 import android.content.Context;
 
 
-public class ImapNotes2 extends Application {
+/*
+Changed name by appending a k so that I can have this and the original installed side by side,
+perhaps.
+ */
+public class ImapNotes2k extends Application {
 
     private ConfigurationFile thisSessionConfigurationFile;
     private Imaper thisSessionImapFolder;
@@ -24,13 +28,13 @@ public class ImapNotes2 extends Application {
     public void onCreate() {
         super.onCreate();
         // Save the context in a static so that it is easy to access everywhere.
-        ImapNotes2.context = getApplicationContext();
+        ImapNotes2k.context = getApplicationContext();
     }
 
     // Simplify access to the application context.  But why not just use getApplicationContext
     // everywhere?
     public static Context getAppContext() {
-        return ImapNotes2.context;
+        return ImapNotes2k.context;
     }
 
     public static String ConfigurationFilePath() {
@@ -38,11 +42,11 @@ public class ImapNotes2 extends Application {
     }
 
     public static String ConfigurationDirPath() {
-        return ImapNotes2.ConfigurationDir().getPath();
+        return ImapNotes2k.ConfigurationDir().getPath();
     }
 
     public static File ConfigurationDir() {
-        return ImapNotes2.getAppContext().getFilesDir();
+        return ImapNotes2k.getAppContext().getFilesDir();
     }
 
     // ?
