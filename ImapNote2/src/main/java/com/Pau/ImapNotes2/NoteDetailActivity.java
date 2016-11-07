@@ -65,7 +65,7 @@ public class NoteDetailActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         this.hm = (HashMap) extras.get("selectedNote");
-        this.usesticky = "true".equals((String) extras.get("useSticky"));
+        this.usesticky = (boolean) extras.get("useSticky");
         suid = this.hm.get("uid").toString();
         String rootDir = (ImapNotes2.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
@@ -77,7 +77,7 @@ public class NoteDetailActivity extends Activity {
         Spanned plainText = Html.fromHtml(stringres);
         EditText editText = ((EditText) findViewById(R.id.bodyView));
         editText.setText(plainText);
-        // Watch for changes to that we can auto save.
+        // TODO: Watch for changes to that we can auto save.
         // See http://stackoverflow.com/questions/7117209/how-to-know-key-presses-in-edittext#14251047
         editText.addTextChangedListener(new TextWatcher() {
             @Override

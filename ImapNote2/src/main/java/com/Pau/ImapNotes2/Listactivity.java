@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import org.apache.commons.io.FileUtils;
 
 //import com.Pau.ImapNotes2.R;
+import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
@@ -57,6 +58,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class Listactivity extends Activity implements OnItemSelectedListener, Filterable {
     private static final int SEE_DETAIL = 2;
@@ -145,9 +147,9 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         // When item is clicked, we go to NoteDetailActivity
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> arg0, View widget, int selectedNote, long arg3) {
+            public void onItemClick(AdapterView<?> parent, View widget, int selectedNote, long rowId) {
                 Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
-                toDetail.putExtra("selectedNote", (OneNote) arg0.getItemAtPosition(selectedNote));
+                toDetail.putExtra("selectedNote", (OneNote) parent.getItemAtPosition(selectedNote));
                 toDetail.putExtra("useSticky", Listactivity.imapNotes2Account.GetUsesticky());
                 startActivityForResult(toDetail, SEE_DETAIL);
             }
@@ -354,14 +356,14 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         // End of code
         ImapNotes2Account imapNotes2Account = Listactivity.imapNotes2Account;
         imapNotes2Account.SetAccountname(account.name);
-        imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, "username"));
+        imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
         String pwd = Listactivity.accountManager.getPassword(account);
         imapNotes2Account.SetPassword(pwd);
-        imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, "server"));
-        imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, "portnum"));
-        imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, "security"));
-        imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, "usesticky")));
-        imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, "syncinterval"));
+        imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Server));
+        imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.PortNumber));
+        imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Security));
+        imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
+        imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
         imapNotes2Account.SetaccountHasChanged();
         imapNotes2Account.SetAccount(account);
         this.RefreshList();
@@ -384,14 +386,14 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         if (Listactivity.currentList.size() == 1) {
             Account account = Listactivity.accounts[0];
             ImapNotes2Account imapNotes2Account = Listactivity.imapNotes2Account;
-            imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, "username"));
+            imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
             String pwd = Listactivity.accountManager.getPassword(account);
             imapNotes2Account.SetPassword(pwd);
-            imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, "server"));
-            imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, "portnum"));
-            imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, "security"));
-            imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, "usesticky")));
-            imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, "syncinterval"));
+            imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Server));
+            imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.PortNumber));
+            imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Security));
+            imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
+            imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
             imapNotes2Account.SetaccountHasChanged();
         }
     }

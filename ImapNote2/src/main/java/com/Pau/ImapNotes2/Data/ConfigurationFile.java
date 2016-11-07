@@ -44,27 +44,27 @@ public class ConfigurationFile {
         try {
             Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                     new File(ImapNotes2.ConfigurationFilePath()));
-            username = NodeValueFromXML(fileToLoad, "username");
-            password = NodeValueFromXML(fileToLoad, "password");
-            server = NodeValueFromXML(fileToLoad, "server");
-            imapfolder = NodeValueFromXML(fileToLoad, "imapfolder");
+            username = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UserName);
+            password = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Password);
+            server = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Server);
+            imapfolder = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.ImapFolder);
             accountname = username + "@" + server;
             // All of these can be simplified by initializing the fields to the default values and
             // only setting when the value exists in the file.
-            if (LoadItemFromXML(fileToLoad, "security").getLength() != 0) {
-                security = Security.from(NodeValueFromXML(fileToLoad, "security"));
+            if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.Security).getLength() != 0) {
+                security = Security.from(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Security));
             }
-            if (LoadItemFromXML(fileToLoad, "portnum").getLength() == 0) {
+            if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.PortNumber).getLength() == 0) {
                 // portnum option doesn't exist
                 portnum = security.defaultPort;
             } else {
-                portnum = NodeValueFromXML(fileToLoad, "portnum");
+                portnum = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.PortNumber);
             }
-            if (LoadItemFromXML(fileToLoad, "usesticky").getLength() == 0)
+            if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.UseSticky).getLength() == 0)
                 // usesticky option doesn't exist, say no
                 usesticky = false;
             else
-                usesticky = Boolean.parseBoolean(NodeValueFromXML(fileToLoad, "usesticky"));
+                usesticky = Boolean.parseBoolean(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UseSticky));
 
 //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
@@ -165,13 +165,13 @@ public class ConfigurationFile {
         serializer.setOutput(configurationFile, "UTF-8");
         serializer.startDocument(null, true);
         serializer.startTag(null, "Configuration");
-        SerializeText(serializer, "username", username);
-        SerializeText(serializer, "password", password);
-        SerializeText(serializer, "server", server);
-        SerializeText(serializer, "portnum", portnum);
-        SerializeText(serializer, "security", security.name());
-        SerializeText(serializer, "imapfolder", imapfolder);
-        SerializeText(serializer, "usesticky", String.valueOf(usesticky));
+        SerializeText(serializer, ConfigurationFieldNames.UserName, username);
+        SerializeText(serializer, ConfigurationFieldNames.Password, password);
+        SerializeText(serializer, ConfigurationFieldNames.Server, server);
+        SerializeText(serializer, ConfigurationFieldNames.PortNumber, portnum);
+        SerializeText(serializer, ConfigurationFieldNames.Security, security.name());
+        SerializeText(serializer, ConfigurationFieldNames.ImapFolder, imapfolder);
+        SerializeText(serializer, ConfigurationFieldNames.UseSticky, String.valueOf(usesticky));
         serializer.endTag(null, "Configuration");
         serializer.endDocument();
         serializer.flush();

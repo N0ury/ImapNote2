@@ -19,6 +19,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Sync.SyncUtils;
@@ -146,7 +147,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // handle notes created or removed on remote
         boolean remoteNotesManaged = false;
-        String usesticky = am.getUserData(account, "usesticky");
+        String usesticky = am.getUserData(account, ConfigurationFieldNames.UseSticky);
         try {
             remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
         } catch (MessagingException e) {
@@ -178,13 +179,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         ImapNotes2Result res = null;
         try {
             res = SyncUtils.ConnectToRemote(
-                    am.getUserData(account, "username"),
+                    am.getUserData(account, ConfigurationFieldNames.UserName),
                     am.getPassword(account),
-                    am.getUserData(account, "server"),
-                    am.getUserData(account, "portnum"),
-                    Security.from(am.getUserData(account, "security")),
-                    am.getUserData(account, "usesticky"),
-                    am.getUserData(account, "imapfolder"));
+                    am.getUserData(account, ConfigurationFieldNames.Server),
+                    am.getUserData(account, ConfigurationFieldNames.PortNumber),
+                    Security.from(am.getUserData(account, ConfigurationFieldNames.Security)),
+                    am.getUserData(account, ConfigurationFieldNames.UseSticky),
+                    am.getUserData(account, ConfigurationFieldNames.ImapFolder));
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

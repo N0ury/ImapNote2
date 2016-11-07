@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
@@ -175,14 +176,14 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         if (this.action.equals("EDIT_ACCOUNT")) {
             // Here we have to edit an existing account
             this.accountnameTextView.setText(this.accountname);
-            this.usernameTextView.setText(accountManager.getUserData(myAccount, "username"));
+            this.usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
             this.passwordTextView.setText(accountManager.getPassword(myAccount));
-            this.serverTextView.setText(accountManager.getUserData(myAccount, "server"));
-            this.portnumTextView.setText(accountManager.getUserData(myAccount, "portnum"));
-            this.security = Security.from(accountManager.getUserData(myAccount, "security"));
-            this.stickyCheckBox.setChecked(Boolean.parseBoolean(accountManager.getUserData(myAccount, "usesticky")));
-            this.syncintervalTextView.setText(accountManager.getUserData(myAccount, "syncinterval"));
-            this.folderTextView.setText(accountManager.getUserData(myAccount, "imapfolder"));
+            this.serverTextView.setText(GetConfigValue(ConfigurationFieldNames.Server));
+            this.portnumTextView.setText(GetConfigValue(ConfigurationFieldNames.PortNumber));
+            this.security = Security.from(GetConfigValue(ConfigurationFieldNames.Security));
+            this.stickyCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseSticky)));
+            this.syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
+            this.folderTextView.setText(GetConfigValue(ConfigurationFieldNames.ImapFolder));
             //if (this.security == null) this.security = "0";
             int security_i = security.ordinal();
             this.securitySpinner.setSelection(security_i);
@@ -208,44 +209,41 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         );
     }
 
+    private String GetConfigValue(String name) {
+        return accountManager.getUserData(myAccount, name);
+    }
+
     // DoLogin method is defined in account_selection.xml (account_selection layout)
     public void DoLogin(View v) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2", "Logging into your account... ", true);
-        this.imapNotes2Account.SetAccountname(this.accountnameTextView.getText().toString().trim());
-        this.imapNotes2Account.SetUsername(this.usernameTextView.getText().toString().trim());
-        this.imapNotes2Account.SetPassword(this.passwordTextView.getText().toString().trim());
-        this.imapNotes2Account.SetServer(this.serverTextView.getText().toString().trim());
-        this.imapNotes2Account.SetPortnum(this.portnumTextView.getText().toString());
-        this.imapNotes2Account.SetSecurity(this.security);
-        this.imapNotes2Account.SetUsesticky(this.stickyCheckBox.isChecked());
-        this.imapNotes2Account.SetSyncinterval(this.syncintervalTextView.getText().toString());
-        this.imapNotes2Account.SetFoldername(this.folderTextView.getText().toString());
+        imapNotes2Account.SetAccountname(accountnameTextView.getText().toString().trim());
+        imapNotes2Account.SetUsername(usernameTextView.getText().toString().trim());
+        imapNotes2Account.SetPassword(passwordTextView.getText().toString().trim());
+        imapNotes2Account.SetServer(serverTextView.getText().toString().trim());
+        imapNotes2Account.SetPortnum(portnumTextView.getText().toString());
+        imapNotes2Account.SetSecurity(security);
+        imapNotes2Account.SetUsesticky(stickyCheckBox.isChecked());
+        imapNotes2Account.SetSyncinterval(syncintervalTextView.getText().toString());
+        imapNotes2Account.SetFoldername(folderTextView.getText().toString());
         long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
         new LoginThread(
-                this.imapFolder,
-                this.imapNotes2Account,
+                imapFolder,
+                imapNotes2Account,
                 loadingDialog,
                 this,
-                this.action,
+                action,
                 SYNC_FREQUENCY).execute();
     }
 
     class LoginThread extends AsyncTask<Void, Void, Boolean> {
-        /*
-                private final int ParamImapFolder = 0;
-                private final int ParamImapNotes2Account = 1;
-                private final int ParamImapLoadingDialog = 2;
-                private final int ParamAccountConfigurationActivity = 3;
-                private final int ParamAction = 4;
-                private final int ParamSyncPeriod = 5;
-        */
+
         private final ImapNotes2Account imapNotes2Account;
         private final ProgressDialog progressDialog;
         private final long SYNC_FREQUENCY;
 
         private AccountConfigurationActivity accountConfigurationActivity;
         private ImapNotes2Result res = new ImapNotes2Result();
-        String action;
+        private String action;
 
         public LoginThread(Imaper mapFolder,
                            ImapNotes2Account imapNotes2Account,
@@ -285,13 +283,13 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                         setAccountAuthenticatorResult(result);
-                        am.setUserData(account, "username", imapNotes2Account.GetUsername());
-                        am.setUserData(account, "server", imapNotes2Account.GetServer());
-                        am.setUserData(account, "portnum", imapNotes2Account.GetPortnum());
-                        am.setUserData(account, "syncinterval", imapNotes2Account.GetSyncinterval());
-                        am.setUserData(account, "security", imapNotes2Account.GetSecurity().name());
-                        am.setUserData(account, "usesticky", String.valueOf(imapNotes2Account.GetUsesticky()));
-                        am.setUserData(account, "imapfolder", imapNotes2Account.GetFoldername());
+                        am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
+                        am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
+                        am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
+                        am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
+                        am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
+                        am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
+                        am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
                         // Run the Sync Adapter Periodically
                         ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                         ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
@@ -304,13 +302,13 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                             setAccountAuthenticatorResult(result);
-                            am.setUserData(account, "username", imapNotes2Account.GetUsername());
-                            am.setUserData(account, "server", imapNotes2Account.GetServer());
-                            am.setUserData(account, "portnum", imapNotes2Account.GetPortnum());
-                            am.setUserData(account, "syncinterval", imapNotes2Account.GetSyncinterval());
-                            am.setUserData(account, "security", imapNotes2Account.GetSecurity().name());
-                            am.setUserData(account, "usesticky", String.valueOf(imapNotes2Account.GetUsesticky()));
-                            am.setUserData(account, "imapfolder", imapNotes2Account.GetFoldername());
+                            am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
+                            am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
+                            am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
+                            am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
+                            am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
+                            am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
+                            am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
                             // Run the Sync Adapter Periodically
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
