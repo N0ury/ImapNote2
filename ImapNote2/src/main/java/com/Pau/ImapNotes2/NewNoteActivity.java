@@ -14,7 +14,7 @@ public class NewNoteActivity extends Activity {
 
     private static final int SAVE_BUTTON = 5;
     private static final String TAG = "IN_NewNoteActivity";
-    private String sticky;
+    private boolean sticky;
     private String color = "NONE";
 
     public void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class NewNoteActivity extends Activity {
         setContentView(R.layout.new_note);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         this.ResetColors();
-        this.sticky = (String) getIntent().getExtras().get("usesSticky");
+        this.sticky = (boolean) getIntent().getExtras().get("usesSticky");
     }
 
     private void ResetColors() {
@@ -40,7 +40,7 @@ public class NewNoteActivity extends Activity {
             case R.id.save:
                 Intent intent = new Intent();
                 intent.putExtra("SAVE_ITEM", Html.toHtml(((EditText) findViewById(R.id.editNote)).getText()));
-                if (this.sticky.equals("true")) {
+                if (this.sticky) {
                     this.color = "YELLOW";
                 }
                 intent.putExtra("SAVE_ITEM_COLOR", this.color);
