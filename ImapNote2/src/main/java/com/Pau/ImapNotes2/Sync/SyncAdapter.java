@@ -22,7 +22,6 @@ import javax.mail.internet.MimeMessage;
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
-import com.Pau.ImapNotes2.Sync.SyncUtils;
 import com.sun.mail.imap.AppendUID;
 
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
@@ -247,7 +246,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         listOfDeleted = dirDeleted.list();
         for (String fileDeleted : listOfDeleted) {
             try {
-                SyncUtils.DeleteNote(this.res.notesFolder, Integer.parseInt(fileDeleted));
+                SyncUtils.DeleteNote(Integer.parseInt(fileDeleted));
             } catch (Exception e) {
                 e.printStackTrace();
             }

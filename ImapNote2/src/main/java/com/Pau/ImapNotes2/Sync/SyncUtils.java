@@ -1,5 +1,22 @@
 package com.Pau.ImapNotes2.Sync;
 
+import android.accounts.Account;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
+import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.ImapNotes2.Miscs.Sticky;
+import com.sun.mail.imap.AppendUID;
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPStore;
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,10 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
-import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -19,35 +34,16 @@ import java.util.regex.Pattern;
 
 import javax.mail.Flags;
 import javax.mail.Folder;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.UIDFolder;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.io.FileUtils;
-
-import javax.mail.Message;
-import javax.mail.Session;
-import com.Pau.ImapNotes2.Data.NotesDb;
-import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
-import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Miscs.OneNote;
-import com.Pau.ImapNotes2.Miscs.Sticky;
-import com.Pau.ImapNotes2.NoteDetailActivity;
-import com.sun.mail.util.MailSSLSocketFactory;
-
-import com.sun.mail.imap.IMAPStore;
-import com.sun.mail.imap.AppendUID;
-import com.sun.mail.imap.IMAPFolder;
-
-import android.accounts.Account;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeException;
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
-import static com.Pau.ImapNotes2.NoteDetailActivity.*;
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
 
 public class SyncUtils {
@@ -60,7 +56,7 @@ public class SyncUtils {
     static String sfolder = "Notes";
     static private String folderoverride;
     static Folder notesFolder = null;
-    static ImapNotes2Result res;
+    static ImapNotes2Result res = new ImapNotes2Result();
     static Long UIDValidity;
     private final static int NEW = 1;
     private final static int DELETED = 2;
@@ -76,8 +72,6 @@ public class SyncUtils {
                                                    String override) throws MessagingException {
         if (IsConnected())
             store.close();
-
-        res = new ImapNotes2Result();
 
         folderoverride = (override == null) ? "" : override;
 
@@ -190,9 +184,15 @@ public class SyncUtils {
 
     }
 
-    public static void GetNotes(Account account, Folder notesFolder, Context ctx, NotesDb storedNotes) throws MessagingException, IOException {
-        Long UIDM;
-        Message notesMessage;
+    /* Copy all notes from the IMAP server to the local directory using the UID as the file name.
+
+     */
+    public static void GetNotes(Account account,
+                                Folder notesFolder,
+                                Context ctx,
+                                NotesDb storedNotes) throws MessagingException, IOException {
+        //Long UIDM;
+        //Message notesMessage;
         File directory = new File(ctx.getFilesDir() + "/" + account.name);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_ONLY) != 0)
@@ -205,10 +205,10 @@ public class SyncUtils {
         Message[] notesMessages = notesFolder.getMessages();
         //Log.d(TAG,"number of messages in folder="+(notesMessages.length));
         for (int index = notesMessages.length - 1; index >= 0; index--) {
-            notesMessage = notesMessages[index];
+            Message notesMessage = notesMessages[index];
             // write every message in files/{accountname} directory
             // filename is the original message uid
-            UIDM = ((IMAPFolder) notesFolder).getUID(notesMessage);
+            Long UIDM = ((IMAPFolder) notesFolder).getUID(notesMessage);
             String suid = UIDM.toString();
             File outfile = new File(directory, suid);
             GetOneNote(outfile, notesMessage, storedNotes, account.name, suid, true);
@@ -219,31 +219,30 @@ public class SyncUtils {
     private static final Pattern patternPosition = Pattern.compile("^POSITION:(.*?)$", Pattern.MULTILINE);
     private static final Pattern patternText = Pattern.compile("TEXT:(.*?)(END:|POSITION:)", Pattern.DOTALL);
 
-
     public static Sticky ReadStickynote(String stringres) {
         Colors color = NONE;
-        String position = new String("");
-        String text = new String("");
+        String position = "";
+        String text = "";
         //Pattern p = null;
-        Matcher m = null;
 
-        m = patternColor.matcher(stringres);
-        if (m.find()) {
-            String colorName = m.group(1);
+
+        Matcher matcherColor = patternColor.matcher(stringres);
+        if (matcherColor.find()) {
+            String colorName = matcherColor.group(1);
             Log.d(TAG, " Color: " + colorName + " " + (colorName == null));
             color = ((colorName == null) || colorName.equals("null")) ?
                     Colors.NONE :
-                    Colors.valueOf(m.group(1));
+                    Colors.valueOf(colorName);
         }
 
-        m = patternPosition.matcher(stringres);
-        if (m.find()) {
-            position = m.group(1);
+        Matcher matcherPosition = patternPosition.matcher(stringres);
+        if (matcherPosition.find()) {
+            position = matcherPosition.group(1);
         }
 
-        m = patternText.matcher(stringres);
-        if (m.find()) {
-            text = m.group(1);
+        Matcher matcherText = patternText.matcher(stringres);
+        if (matcherText.find()) {
+            text = matcherText.group(1);
             // Kerio Connect puts CR+LF+space every 78 characters from line 2
             // first line seem to be smaller. We remove these characters
             text = text.replaceAll("\r\n ", "");
@@ -257,11 +256,12 @@ public class SyncUtils {
         return store != null && store.isConnected();
     }
 
-    public static void DeleteNote(Folder notesFolder, int numMessage) throws MessagingException, IOException {
-        notesFolder = store.getFolder(sfolder);
+    public static void DeleteNote(int numMessage) throws MessagingException, IOException {
+        Folder notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
-            if ((notesFolder.getMode() & Folder.READ_WRITE) != 0)
+            if ((notesFolder.getMode() & Folder.READ_WRITE) != 0) {
                 notesFolder.open(Folder.READ_WRITE);
+            }
         } else {
             notesFolder.open(Folder.READ_WRITE);
         }
