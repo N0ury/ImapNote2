@@ -43,39 +43,43 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(Context context, boolean autoInitialize) {
+    public SyncAdapter(Context context,
+                       boolean autoInitialize) {
         super(context, autoInitialize);
         mContentResolver = context.getContentResolver();
-        this.context = context;
+        // TODO: do we really need a copy of the context reference?
+        SyncAdapter.context = context;
     }
 
     public SyncAdapter(Context context,
                        boolean autoInitialize, // ?
-                       boolean allowParallelSyncs // always false, set
-                       // in
-                       // syncadapter.xml
+                       boolean allowParallelSyncs // always false, set in syncadapter.xml
     ) {
         super(context, autoInitialize, allowParallelSyncs);
         mContentResolver = context.getContentResolver();
-        this.context = context;
+        SyncAdapter.context = context;
     }
 
     @Override
-    public void onPerformSync(Account account, Bundle extras, String authority,
+    public void onPerformSync(Account account,
+                              Bundle extras,
+                              String authority,
                               ContentProviderClient provider,
                               SyncResult syncResult) {
         //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
-        this.account = account;
+        // TODO: should the account be static?  Should it be local?  If static then why do we not
+        // provide it in the constructor?
+        SyncAdapter.account = account;
         Boolean isChanged = false;
         Boolean isSynced = false;
         String syncinterval;
 
-        SyncUtils.CreateDirs(account.name, this.context);
+        SyncUtils.CreateDirs(account.name, context);
 
-        storedNotes = new NotesDb(this.context);
+        storedNotes = new NotesDb(context);
         storedNotes.OpenDb();
 
-        AccountManager am = AccountManager.get(this.context);
+        AccountManager am = AccountManager.get(context);
         syncinterval = am.getUserData(account, "syncinterval");
 
         // Connect to remote and get UIDValidity
@@ -96,19 +100,20 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         // Compare UIDValidity to old saved one
+        //
         if (!(res.UIDValidity.equals
-                (SyncUtils.GetUIDValidity(this.account, this.context)))) {
+                (SyncUtils.GetUIDValidity(SyncAdapter.account, context)))) {
             // Replace local data by remote
             try {
                 // delete notes in NotesDb for this account
                 storedNotes.ClearDb(account.name);
                 // delete notes in folders for this account and recreate dirs
-                SyncUtils.ClearHomeDir(account, this.context);
-                SyncUtils.CreateDirs(account.name, this.context);
+                SyncUtils.ClearHomeDir(account, context);
+                SyncUtils.CreateDirs(account.name, context);
                 // Get all notes from remote and replace local
                 SyncUtils.GetNotes(account,
                         res.notesFolder,
-                        this.context, storedNotes);
+                        context, storedNotes);
                 storedNotes.CloseDb();
             } catch (MessagingException e) {
                 // TODO Auto-generated catch block
@@ -117,7 +122,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            SyncUtils.SetUIDValidity(account, res.UIDValidity, this.context);
+            SyncUtils.SetUIDValidity(account, res.UIDValidity, context);
             // Notify Listactivity that it's finished, and that it can refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra("ACCOUNTNAME", account.name);
@@ -175,7 +180,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
      */
     ImapNotes2Result ConnectToRemote() {
-        AccountManager am = AccountManager.get(this.context);
+        AccountManager am = AccountManager.get(context);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
                     am.getUserData(account, ConfigurationFieldNames.UserName),
                     am.getPassword(account),
