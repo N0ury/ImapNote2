@@ -157,7 +157,7 @@ public class Imaper {
 
     }
 
-    public boolean IsConnected() {
+    private boolean IsConnected() {
         return store != null && store.isConnected();
     }
 

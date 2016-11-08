@@ -12,12 +12,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 public class SyncThread extends AsyncTask<Object, Void, Boolean> {
-    NotesListAdapter adapter;
-    ArrayList<OneNote> notesList;
-    NotesDb storedNotes;
+    private NotesListAdapter adapter;
+    private ArrayList<OneNote> notesList;
+    private NotesDb storedNotes;
     boolean bool_to_return;
     ImapNotes2Result res = new ImapNotes2Result();
-    Context ctx;
+    private Context ctx;
     private static final String TAG = "SyncThread";
 
     // TODO: remove unused arguments.

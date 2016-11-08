@@ -32,7 +32,7 @@ import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 /// because the sync happens under Android control not under control
 /// of the application.
 class SyncAdapter extends AbstractThreadedSyncAdapter {
-    public static final String TAG = "SyncAdapter";
+    private static final String TAG = "SyncAdapter";
     private static Context context;
     private NotesDb storedNotes;
     private static Account account;
@@ -179,7 +179,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     the caller becomes responsible.  This is the correct approach.
 
      */
-    ImapNotes2Result ConnectToRemote() {
+    private ImapNotes2Result ConnectToRemote() {
         AccountManager am = AccountManager.get(context);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
                     am.getUserData(account, ConfigurationFieldNames.UserName),

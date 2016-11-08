@@ -48,13 +48,13 @@ import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
 
 public class SyncUtils {
 
-    static Store store;
-    static final String TAG = "IN_SyncUtils";
-    static String proto;
-    static String sfolder = "Notes";
-    static Folder notesFolder = null;
+    private static Store store;
+    private static final String TAG = "IN_SyncUtils";
+    private static String proto;
+    private static String sfolder = "Notes";
+    private static Folder notesFolder = null;
     private static ImapNotes2Result res = new ImapNotes2Result();
-    static Long UIDValidity;
+    private static Long UIDValidity;
     private final static int NEW = 1;
     private final static int DELETED = 2;
     private final static int ROOT_AND_NEW = 3;
@@ -228,7 +228,7 @@ public class SyncUtils {
         return new Sticky(text, position, color);
     }
 
-    public static boolean IsConnected() {
+    private static boolean IsConnected() {
         return store != null && store.isConnected();
     }
 
@@ -352,7 +352,7 @@ public class SyncUtils {
         directory.mkdirs();
     }
 
-    public static void GetOneNote(File outfile, Message notesMessage, NotesDb storedNotes, String accountName, String suid, boolean updateDb) {
+    private static void GetOneNote(File outfile, Message notesMessage, NotesDb storedNotes, String accountName, String suid, boolean updateDb) {
         OutputStream str = null;
 
         try {

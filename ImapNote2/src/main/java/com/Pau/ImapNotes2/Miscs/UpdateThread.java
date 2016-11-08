@@ -154,7 +154,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         }
     }
 
-    public int getIndexByNumber(String pNumber) {
+    private int getIndexByNumber(String pNumber) {
         for (OneNote _item : notesList) {
             if (_item.GetUid().equals(pNumber))
                 return notesList.indexOf(_item);
@@ -176,9 +176,9 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         }
     }
 
-    public void WriteMailToNew(OneNote note,
-                               boolean usesticky,
-                               String noteBody) throws MessagingException, IOException {
+    private void WriteMailToNew(OneNote note,
+                                boolean usesticky,
+                                String noteBody) throws MessagingException, IOException {
         String body = null;
 
         // Here we add the new note to the "new" folder

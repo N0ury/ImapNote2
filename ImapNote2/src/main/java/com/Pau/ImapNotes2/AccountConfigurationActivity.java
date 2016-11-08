@@ -36,8 +36,8 @@ import java.util.List;
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
-    public static final int TO_REFRESH = 999;
-    public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
+    private static final int TO_REFRESH = 999;
+    private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "AccountConfigurationActivity";
 
     private Imaper imapFolder;
@@ -215,7 +215,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     }
 
     // DoLogin method is defined in account_selection.xml (account_selection layout)
-    public void DoLogin(View v) {
+    private void DoLogin(View v) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2", "Logging into your account... ", true);
         imapNotes2Account.SetAccountname(accountnameTextView.getText().toString().trim());
         imapNotes2Account.SetUsername(usernameTextView.getText().toString().trim());

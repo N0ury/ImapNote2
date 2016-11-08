@@ -83,7 +83,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private static List<String> currentList;
     private TextView status = null;
     private static String OldStatus;
-    public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
+    private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
 
 
@@ -219,17 +219,17 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         }
     };
 
-    public void RefreshList() {
+    private void RefreshList() {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2", "Refreshing notes list... ", true);
 
         new SyncThread().execute(this.imapFolder, Listactivity.imapNotes2Account, this.noteList, this.listToView, loadingDialog, storedNotes, this.getApplicationContext());
         status.setText("Welcome");
     }
 
-    public void UpdateList(String suid,
-                           String noteBody,
-                           Colors color,
-                           String action) {
+    private void UpdateList(String suid,
+                            String noteBody,
+                            Colors color,
+                            String action) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2", "Updating notes list... ", true);
 
         new UpdateThread(this.imapFolder, Listactivity.imapNotes2Account, this.noteList,
@@ -507,7 +507,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
-    public static void TriggerSync(TextView statusField) {
+    private static void TriggerSync(TextView statusField) {
         OldStatus = statusField.getText().toString();
         statusField.setText("Syncing...");
         Account mAccount = Listactivity.imapNotes2Account.GetAccount();

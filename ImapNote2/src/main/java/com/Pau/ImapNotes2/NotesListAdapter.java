@@ -240,7 +240,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @param value the value retrieved from the data set
      * @see #setViewImage(ImageView, String)
      */
-    public void setViewImage(ImageView v, int value) {
+    private void setViewImage(ImageView v, int value) {
         v.setImageResource(value);
     }
 
@@ -260,7 +260,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @param value the value retrieved from the data set
      * @see #setViewImage(ImageView, int)
      */
-    public void setViewImage(ImageView v, String value) {
+    private void setViewImage(ImageView v, String value) {
         try {
             v.setImageResource(Integer.parseInt(value));
         } catch (NumberFormatException nfe) {
@@ -276,7 +276,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @param v    TextView to receive text
      * @param text the text to be set for the TextView
      */
-    public void setViewText(TextView v, String text) {
+    private void setViewText(TextView v, String text) {
         v.setText(text);
     }
 
