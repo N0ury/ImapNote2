@@ -1,12 +1,21 @@
 * To do
 
-Add configuration for directory synchronization.
+** Add configuration for directory synchronization.
 
-Implement synchronization.
+** Implement synchronization.
 
-Implement text file merging
+** Implement text file merging
 
-Implement Unix and Windows desktop versions.
+** Implement Unix and Windows desktop versions.
+
+** Implement undo delete
+
+** Implement Autosave
+
+
+First question is how is the note saved in the first place.
+
+Then can we do it automatically and then can we start the sync early?
 
 * Directory synchronization
 
@@ -63,18 +72,13 @@ See:
 
 
 
-* Auto save
-
-First question is how is the note saved in the first place.
-
-Then can we do it automatically and then can we start the sync early?
 
 
 * SQLite database
 
 This is used to store metadata about the notes.  The notes themselves
 are stored as files in a sub-directory named after the account to
-which they belong.
+which they belong.  The file names are the IMAP UIDs.
 
 * Code analysis
 
@@ -83,8 +87,13 @@ convert fields to local variables, etc.
 
 ** Analyses done
 
-| Analysis           | Notes                                                                |
-|--------------------+----------------------------------------------------------------------|
-| Field can be local | Some of these seem to be work in progress so have been left unfixed. |
-|                    |                                                                      |
+Ran whole project default profile to get an overview and then picked
+one analysis at a time to be fixed, tested and committed.
+
+| Group         | Analysis                         | Synopsis                                                                                               | Notes                                                                |
+|---------------+----------------------------------+--------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------|
+|               | Field can be local               |                                                                                                        | Some of these seem to be work in progress so have been left unfixed. |
+|               | Parameter can be local           |                                                                                                        | No suspicious code found.                                            |
+| Probable bugs | Constant conditions & exceptions | Method invocation 'setDisplayHomeAsUpEnabled' at line 106 may produce 'java.lang.NullPointerException' | Suppressed because result is not used.                               |
+|               |                                  | ConstantConditions                                                                                     | Some possible null pointers remain.                                  |
 

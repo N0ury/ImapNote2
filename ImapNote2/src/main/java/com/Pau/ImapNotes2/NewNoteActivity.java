@@ -20,6 +20,7 @@ public class NewNoteActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_note);
+        //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
         this.ResetColors();
         this.sticky = (boolean) getIntent().getExtras().get("usesSticky");

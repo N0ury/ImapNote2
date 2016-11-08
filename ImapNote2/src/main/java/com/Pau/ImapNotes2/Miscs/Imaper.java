@@ -111,8 +111,9 @@ public class Imaper {
         }
 
         props.setProperty("mail.imap.connectiontimeout", "1000");
-        // TODO: implement proxy handling properly.
         Boolean useProxy = false;
+        //noinspection ConstantConditions
+        // TODO: implement proxy handling properly.
         if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");

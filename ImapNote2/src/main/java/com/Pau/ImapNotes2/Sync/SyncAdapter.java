@@ -89,8 +89,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             i.putExtra("ACCOUNTNAME", account.name);
             isChanged = false;
             isSynced = false;
-            i.putExtra("CHANGED", isChanged);
-            i.putExtra("SYNCED", isSynced);
+            i.putExtra("CHANGED", false);
+            i.putExtra("SYNCED", false);
             i.putExtra("SYNCINTERVAL", syncinterval);
             context.sendBroadcast(i);
             return;
@@ -123,8 +123,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             i.putExtra("ACCOUNTNAME", account.name);
             isChanged = true;
             isSynced = true;
-            i.putExtra("CHANGED", isChanged);
-            i.putExtra("SYNCED", isSynced);
+            i.putExtra("CHANGED", true);
+            i.putExtra("SYNCED", true);
             i.putExtra("SYNCINTERVAL", syncinterval);
             context.sendBroadcast(i);
             return;
@@ -168,11 +168,15 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         context.sendBroadcast(i);
     }
 
+    /* It is possible for this function to throw exceptions; the original code caught
+    MessagingException but just logged it instead of handling it.  This results in a possibility of
+    returning null.  Removing the catch fixies the possible null reference but of course means that
+    the caller becomes responsible.  This is the correct approach.
+
+     */
     ImapNotes2Result ConnectToRemote() {
         AccountManager am = AccountManager.get(this.context);
-        ImapNotes2Result res = null;
-        try {
-            res = SyncUtils.ConnectToRemote(
+        ImapNotes2Result res = SyncUtils.ConnectToRemote(
                     am.getUserData(account, ConfigurationFieldNames.UserName),
                     am.getPassword(account),
                     am.getUserData(account, ConfigurationFieldNames.Server),
@@ -180,12 +184,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     Security.from(am.getUserData(account, ConfigurationFieldNames.Security)),
                     am.getUserData(account, ConfigurationFieldNames.UseSticky),
                     am.getUserData(account, ConfigurationFieldNames.ImapFolder));
-        } catch (MessagingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         if (res.returnCode != ResultCodeSuccess) {
-            Log.d(TAG, "Connection problem !!!");
+            Log.d(TAG, "Connection problem: " + res.errorMessage);
         }
         return res;
     }
@@ -214,20 +214,17 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             try {
                 uids = SyncUtils.sendMessageToRemote(msg);
-            } catch (MessagingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // Update uid in database entry
+                String newuid = Long.toString(uids[0].uid);
+                storedNotes.UpdateANote(fileNew, newuid, account.name);
+                // move new note from new dir, one level up
+                File fileInNew = new File(dirNew, fileNew);
+                File to = new File(rootDir, newuid);
+                fileInNew.renameTo(to);
+            } catch (Exception e) {
+                // TODO: Handle message properly.
+                Log.d(TAG, e.getMessage());
             }
-            // Update uid in database entry
-            String newuid = Long.toString(uids[0].uid);
-            storedNotes.UpdateANote(fileNew, newuid, account.name);
-            // move new note from new dir, one level up
-            File fileInNew = new File(dirNew, fileNew);
-            File to = new File(rootDir, newuid);
-            fileInNew.renameTo(to);
         }
         return newNotesManaged;
     }

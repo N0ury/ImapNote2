@@ -49,70 +49,47 @@ import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
 public class SyncUtils {
 
     static Store store;
-    static Session session;
     static final String TAG = "IN_SyncUtils";
     static String proto;
     static String sfolder = "Notes";
     static Folder notesFolder = null;
-    static ImapNotes2Result res = new ImapNotes2Result();
+    private static ImapNotes2Result res = new ImapNotes2Result();
     static Long UIDValidity;
     private final static int NEW = 1;
     private final static int DELETED = 2;
     private final static int ROOT_AND_NEW = 3;
 
-    public static ImapNotes2Result ConnectToRemote(String username,
-                                                   String password,
-                                                   String server,
-                                                   String portnum,
-                                                   Security security,
-                                                   String usesticky,
-                                                   String override) throws MessagingException {
-        if (IsConnected())
-            store.close();
+    /* This function cannot return null.  Can we mark it so that the analysers can use this
+    information?
+    */
+    static ImapNotes2Result ConnectToRemote(String username,
+                                            String password,
+                                            String server,
+                                            String portnum,
+                                            Security security,
+                                            String usesticky,
+                                            String override) {
+        if (IsConnected()) {
+            try {
+                store.close();
+            } catch (MessagingException e) {
+                // Log the error but do not propagate the exception because the connection is now
+                // closed even if an exception was thrown.
+                Log.d(TAG, e.getMessage());
+            }
+        }
 
         String folderoverride = (override == null) ? "" : override;
 
         proto = security.proto;
         boolean acceptcrt = security.acceptcrt;
-/*
-        int security_i = Integer.parseInt(security);
-        switch (security_i) {
-            case 0:
-                // None
-                proto = "imap";
-                acceptcrt = "";
-                break;
-            case 1:
-                // SSL/TLS
-                proto = "imaps";
-                acceptcrt = "false";
-                break;
-            case 2:
-                // SSL/TLS/TRUST ALL
-                proto = "imaps";
-                acceptcrt = "true";
-                break;
-            case 3:
-                // STARTTLS
-                proto = "imap";
-                acceptcrt = "false";
-                break;
-            case 4:
-                // STARTTLS/TRUST ALL
-                proto = "imap";
-                acceptcrt = "true";
-                break;
-            default:
-                // TODO: Make sure that this cannot happen.
-                throw new InvalidParameterException("Invalid security: <" + security + ">");
-        }
-*/
+
         MailSSLSocketFactory sf = null;
         try {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
-            res.errorMessage = "Can't connect to server";
+            res.errorMessage = "Can't connect to server: " + e.getMessage();
             res.returnCode = Imaper.ResultCodeCantConnect;
             return res;
         }
@@ -143,14 +120,15 @@ public class SyncUtils {
         props.setProperty("mail.imap.connectiontimeout", "1000");
         // TODO: use user defined proxy.
         Boolean useProxy = false;
+        //noinspection ConstantConditions
         if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");
         }
-        session = Session.getInstance(props, null);
-//this.session.setDebug(true);
-        store = session.getStore(proto);
         try {
+            Session session = Session.getInstance(props, null);
+//this.session.setDebug(true);
+            store = session.getStore(proto);
             store.connect(server, username, password);
             res.hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
 //Log.d(TAG, "has UIDPLUS="+res.hasUIDPLUS);

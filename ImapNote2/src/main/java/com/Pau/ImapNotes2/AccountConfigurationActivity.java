@@ -103,6 +103,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_selection);
+        //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
         this.accountnameTextView = (TextView) (findViewById(R.id.accountnameEdit));
         this.usernameTextView = (TextView) findViewById(R.id.usernameEdit);

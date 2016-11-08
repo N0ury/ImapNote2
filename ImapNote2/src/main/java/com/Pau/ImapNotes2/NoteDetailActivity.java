@@ -48,6 +48,7 @@ public class NoteDetailActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.note_detail);
+        //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
         // Don't display keyboard when on note detail, only if user touches the screen
         getWindow().setSoftInputMode(
@@ -57,6 +58,7 @@ public class NoteDetailActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         HashMap hm = (HashMap) extras.get("selectedNote");
         this.usesticky = (boolean) extras.get("useSticky");
+        assert hm != null;
         suid = hm.get("uid").toString();
         String rootDir = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
