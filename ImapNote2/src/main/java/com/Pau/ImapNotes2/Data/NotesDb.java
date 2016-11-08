@@ -65,11 +65,16 @@ public class NotesDb {
     }
 
     public void UpdateANote(String olduid, String newuid, String accountname) {
+        /* TODO: use sql template and placeholders instead of string concatenation.
+                 */
         String req = "update notesTable set number='" + newuid + "' where number='-" + olduid + "' and accountname='" + accountname + "'";
         this.notesDb.execSQL(req);
     }
 
     public String GetDate(String uid, String accountname) {
+       /* Returns a string representing the modification time of the note.
+          TODO: use date class.
+        */
         String selectQuery = "select date from notesTable where number = '" + uid + "' and accountname='" + accountname + "'";
         Cursor c = this.notesDb.rawQuery(selectQuery, null);
         if (c.moveToFirst()) {

@@ -299,7 +299,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @see SimpleAdapter#setViewImage(ImageView, String)
      * @see SimpleAdapter#setViewText(TextView, String)
      */
-    public static interface ViewBinder {
+    public interface ViewBinder {
         /**
          * Binds the specified data to the specified view.
          * <p>

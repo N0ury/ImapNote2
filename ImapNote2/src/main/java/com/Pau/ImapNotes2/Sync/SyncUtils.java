@@ -387,7 +387,6 @@ public class SyncUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ;
         try {
             title = notesMessage.getSubject();
         } catch (Exception e) {
