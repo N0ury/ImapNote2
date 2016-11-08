@@ -53,7 +53,7 @@ public class SyncUtils {
     private static String proto;
     private static String sfolder = "Notes";
     private static Folder notesFolder = null;
-    private static ImapNotes2Result res = new ImapNotes2Result();
+    private static final ImapNotes2Result res = new ImapNotes2Result();
     private static Long UIDValidity;
     private final static int NEW = 1;
     private final static int DELETED = 2;

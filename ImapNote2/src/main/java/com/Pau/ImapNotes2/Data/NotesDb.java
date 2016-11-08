@@ -18,7 +18,7 @@ public class NotesDb {
 
     private static final int NOTES_VERSION = 3;
     private static final String TAG = "IN_NotesDb";
-    private Context ctx;
+    private final Context ctx;
 
     private static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
             + "notesTable ("
@@ -29,7 +29,7 @@ public class NotesDb {
             + "accountname text not null);";
 
     private SQLiteDatabase notesDb;
-    private NotesDbHelper defaultHelper;
+    private final NotesDbHelper defaultHelper;
 
     public NotesDb(Context applicationContext) {
         this.defaultHelper = new NotesDbHelper(applicationContext, "NotesDb", NOTES_VERSION);

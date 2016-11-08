@@ -41,7 +41,7 @@ public class ImapNotesAuthenticatorService extends Service {
 
     private static class Authenticator extends AbstractAccountAuthenticator {
 
-        private Context mContext;
+        private final Context mContext;
 
         public Authenticator(Context context) {
             super(context);

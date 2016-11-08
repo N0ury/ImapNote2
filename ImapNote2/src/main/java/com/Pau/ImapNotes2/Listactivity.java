@@ -87,7 +87,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private static final String TAG = "IN_Listactivity";
 
 
-    private OnClickListener clickListenerEditAccount = new View.OnClickListener() {
+    private final OnClickListener clickListenerEditAccount = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Intent res = new Intent();
@@ -187,7 +187,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         unregisterReceiver(syncFinishedReceiver);
     }
 
-    private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
             String accountname = intent.getStringExtra("ACCOUNTNAME");

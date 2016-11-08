@@ -60,7 +60,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private static Account myAccount = null;
     private static AccountManager accountManager;
 
-    private OnClickListener clickListenerLogin = new View.OnClickListener() {
+    private final OnClickListener clickListenerLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             // Click on Login Button
@@ -74,7 +74,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         }
     };
 
-    private OnClickListener clickListenerEdit = new View.OnClickListener() {
+    private final OnClickListener clickListenerEdit = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             // Click on Edit Button
@@ -88,7 +88,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         }
     };
 
-    private OnClickListener clickListenerRemove = new View.OnClickListener() {
+    private final OnClickListener clickListenerRemove = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             // Clic on Remove Button
@@ -242,9 +242,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private final ProgressDialog progressDialog;
         private final long SYNC_FREQUENCY;
 
-        private AccountConfigurationActivity accountConfigurationActivity;
+        private final AccountConfigurationActivity accountConfigurationActivity;
         private ImapNotes2Result res = new ImapNotes2Result();
-        private String action;
+        private final String action;
 
         public LoginThread(Imaper mapFolder,
                            ImapNotes2Account imapNotes2Account,

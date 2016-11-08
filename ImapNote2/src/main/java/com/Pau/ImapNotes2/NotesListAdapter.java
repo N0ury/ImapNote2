@@ -55,15 +55,15 @@ import java.util.Map;
  * If no appropriate binding can be found, an {@link IllegalStateException} is thrown.
  */
 public class NotesListAdapter extends BaseAdapter implements Filterable {
-    private int[] mTo;
-    private String[] mFrom;
+    private final int[] mTo;
+    private final String[] mFrom;
     private ViewBinder mViewBinder;
 
     private List<? extends Map<String, ?>> mData;
 
-    private int mResource;
+    private final int mResource;
     private int mDropDownResource;
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
 
     private SimpleFilter mFilter;
     private ArrayList<Map<String, ?>> mUnfilteredData;
