@@ -23,18 +23,40 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     Context ctx;
     private static final String TAG = "SyncThread";
 
+    // TODO: remove unused arguments.
+    public SyncThread(Object imapFolder,
+                      ImapNotes2Account imapNotes2Account,
+                      ArrayList<OneNote> noteList,
+                      NotesListAdapter listToView,
+                      ProgressDialog loadingDialog,
+                      NotesDb storedNotes,
+                      Context applicationContext) {
+        //this.imapFolder = imapFolder;
+        //this.imapNotes2Account = imapNotes2Account;
+        this.notesList = noteList;
+        this.adapter = listToView;
+        //this.loadingDialog = loadingDialog;
+        this.storedNotes = storedNotes;
+        this.ctx = applicationContext;
+
+    }
+
+    // Do not pass arguments via execute; the object is never reused so it is quite safe to pass
+    // the arguments in the constructor.
     @Override
     protected Boolean doInBackground(Object... stuffs) {
-        String username = null;
+        /*String username = null;
         String password = null;
         String server = null;
         String portnum = null;
         String security = null;
         String usesticky = null;
-        this.adapter = ((NotesListAdapter) stuffs[3]);
+*/
+         /*       this.adapter = ((NotesListAdapter) stuffs[3]);
         this.notesList = ((ArrayList<OneNote>) stuffs[2]);
         this.storedNotes = ((NotesDb) stuffs[5]);
         this.ctx = (Context) stuffs[6];
+ */
         //username = ((ImapNotes2Account) stuffs[1]).GetUsername();
         //password = ((ImapNotes2Account) stuffs[1]).GetPassword();
         //server = ((ImapNotes2Account) stuffs[1]).GetServer();
