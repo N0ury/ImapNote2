@@ -121,10 +121,12 @@ public class ConfigurationFile {
     public Security GetSecurity() {
         return security;
     }
+/*
 
     public void SetSecurity(Security security) {
         security = security;
     }
+*/
 
     public boolean GetUsesticky() {
         return usesticky;

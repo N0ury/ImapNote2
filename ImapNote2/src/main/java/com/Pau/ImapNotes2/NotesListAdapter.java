@@ -329,7 +329,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
             FilterResults results = new FilterResults();
 
             if (mUnfilteredData == null) {
-                mUnfilteredData = new ArrayList<Map<String, ?>>(mData);
+                mUnfilteredData = new ArrayList<>(mData);
             }
 
             if (prefix == null || prefix.length() == 0) {
@@ -342,7 +342,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
                 ArrayList<Map<String, ?>> unfilteredValues = mUnfilteredData;
                 int count = unfilteredValues.size();
 
-                ArrayList<Map<String, ?>> newValues = new ArrayList<Map<String, ?>>(count);
+                ArrayList<Map<String, ?>> newValues = new ArrayList<>(count);
 
                 for (int i = 0; i < count; i++) {
                     Map<String, ?> h = unfilteredValues.get(i);

@@ -425,7 +425,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     i++;
                 }
                 Listactivity.accounts = imapNotes2Accounts;
-                newList = new ArrayList<String>();
+                newList = new ArrayList<>();
                 for (Account account : Listactivity.accounts) {
                     newList.add(account.name);
                 }

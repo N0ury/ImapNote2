@@ -38,7 +38,7 @@ public enum Security {
     }
 
     public static List<String> Printables() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (Security e : Security.values()) {
             list.add(e.printable);
         }
@@ -46,7 +46,7 @@ public enum Security {
     }
 
     // Mapping from integer.  See http://dan.clarke.name/2011/07/enum-in-java-with-int-conversion/
-    private static final Map<Integer, Security> _map = new HashMap<Integer, Security>();
+    private static final Map<Integer, Security> _map = new HashMap<>();
 
     static {
         for (Security security : Security.values())

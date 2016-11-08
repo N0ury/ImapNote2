@@ -432,8 +432,8 @@ public class SyncUtils {
 
         Message notesMessage;
         boolean result = false;
-        ArrayList<Long> uids = new ArrayList<Long>();
-        ArrayList<String> localListOfNotes = new ArrayList<String>();
+        ArrayList<Long> uids = new ArrayList<>();
+        ArrayList<String> localListOfNotes = new ArrayList<>();
         String remoteInternaldate;
         String localInternaldate;
         Flags flags;
