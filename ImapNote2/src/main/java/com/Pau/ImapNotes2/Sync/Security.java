@@ -1,8 +1,5 @@
 package com.Pau.ImapNotes2.Sync;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

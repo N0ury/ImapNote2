@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -20,7 +19,6 @@ import javax.mail.internet.MailDateFormat;
 
 import com.Pau.ImapNotes2.ImapNotes2k;
 import com.Pau.ImapNotes2.Listactivity;
-import com.Pau.ImapNotes2.NoteDetailActivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
@@ -29,7 +27,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.Html;
-import android.widget.Adapter;
 
 import static com.Pau.ImapNotes2.NoteDetailActivity.*;
 
