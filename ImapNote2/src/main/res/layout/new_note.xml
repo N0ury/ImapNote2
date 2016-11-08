@@ -16,7 +16,7 @@
             android:ems="10"
             android:inputType="textMultiLine">
 
-            <requestFocus></requestFocus>
+            <requestFocus />
 
         </EditText>
 

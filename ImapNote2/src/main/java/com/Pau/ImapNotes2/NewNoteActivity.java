@@ -27,7 +27,7 @@ public class NewNoteActivity extends Activity {
     }
 
     private void ResetColors() {
-        ((EditText) findViewById(R.id.editNote)).setBackgroundColor(Color.TRANSPARENT);
+        findViewById(R.id.editNote).setBackgroundColor(Color.TRANSPARENT);
         ((EditText) findViewById(R.id.editNote)).setTextColor(Color.BLACK);
     }
 

@@ -21,7 +21,7 @@
             android:inputType="textMultiLine"
             android:onClick="onClick">
 
-            <requestFocus></requestFocus>
+            <requestFocus />
         </EditText>
     </LinearLayout>
 </ScrollView>

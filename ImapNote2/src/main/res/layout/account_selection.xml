@@ -17,7 +17,7 @@
             android:layout_marginBottom="10dip"
             android:text="Add Account"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/textView2"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="Accountname"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <EditText
             android:id="@+id/accountnameEdit"
@@ -35,7 +35,7 @@
             android:hint="Choose a name for this account"
             android:inputType="textEmailAddress">
 
-            <requestFocus></requestFocus>
+            <requestFocus />
         </EditText>
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="Username"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <EditText
             android:id="@+id/usernameEdit"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dip"
             android:hint="your login"
-            android:inputType="textEmailAddress"></EditText>
+            android:inputType="textEmailAddress" />
 
         <TextView
             android:id="@+id/passwordText"
@@ -60,14 +60,14 @@
             android:layout_height="wrap_content"
             android:text="Password"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <EditText
             android:id="@+id/passwordEdit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="your password"
-            android:inputType="textPassword"></EditText>
+            android:inputType="textPassword" />
 
         <TextView
             android:id="@+id/textView4"
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:text="Server"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <EditText
             android:id="@+id/serverEdit"
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dip"
             android:hint="imap notes server"
-            android:inputType="textNoSuggestions|text|textVisiblePassword"></EditText>
+            android:inputType="textNoSuggestions|text|textVisiblePassword" />
 
         <TextView
             android:id="@+id/textView6"
@@ -91,12 +91,12 @@
             android:layout_height="wrap_content"
             android:text="Security"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <Spinner
             android:id="@+id/securitySpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></Spinner>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/textView5"
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:text="Sync Interval (minutes)"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"></TextView>
+            android:textColor="#000000" />
 
         <EditText
             android:id="@+id/syncintervalEdit"

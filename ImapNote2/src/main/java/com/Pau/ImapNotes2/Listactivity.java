@@ -487,7 +487,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
             emailData = sb.toString();
         } catch (IOException e) {

@@ -108,9 +108,9 @@ public class NotesDb {
                 try {
                     date = sdf.parse(resultPointer.getString(dateIndex));
                 } catch (ParseException e) {
-                    //Exception handling
+                    // TODO: Exception handling
                 } catch (Exception e) {
-                    //handle exception
+                    // TODO: handle exception
                 }
                 DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.ctx);
                 //String sdate = dateFormat.format(date);

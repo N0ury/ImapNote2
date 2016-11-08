@@ -511,8 +511,8 @@ public class SyncUtils {
         // Remove all files and sub directories
         File filesDir = context.getFilesDir();
         File[] files = filesDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            files[i].delete();
+        for (File file : files) {
+            file.delete();
         }
         // Delete account name entries in database
         NotesDb storedNotes = new NotesDb(context);
