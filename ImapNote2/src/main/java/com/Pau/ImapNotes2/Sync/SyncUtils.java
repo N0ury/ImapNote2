@@ -166,7 +166,7 @@ public class SyncUtils {
     public static void GetNotes(Account account,
                                 Folder notesFolder,
                                 Context ctx,
-                                NotesDb storedNotes) throws MessagingException, IOException {
+                                NotesDb storedNotes) throws MessagingException {
         //Long UIDM;
         //Message notesMessage;
         File directory = new File(ctx.getFilesDir() + "/" + account.name);
@@ -232,7 +232,7 @@ public class SyncUtils {
         return store != null && store.isConnected();
     }
 
-    public static void DeleteNote(int numMessage) throws MessagingException, IOException {
+    public static void DeleteNote(int numMessage) throws MessagingException {
         Folder notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_WRITE) != 0) {
@@ -321,7 +321,7 @@ public class SyncUtils {
         return message;
     }
 
-    public static AppendUID[] sendMessageToRemote(Message[] message) throws MessagingException, IOException {
+    public static AppendUID[] sendMessageToRemote(Message[] message) throws MessagingException {
         notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_WRITE) != 0)
@@ -428,7 +428,7 @@ public class SyncUtils {
     }
 
     public static boolean handleRemoteNotes(Context context, Folder notesFolder, NotesDb storedNotes, String accountName, String usesticky)
-            throws MessagingException, IOException {
+            throws MessagingException {
 
         Message notesMessage;
         boolean result = false;
