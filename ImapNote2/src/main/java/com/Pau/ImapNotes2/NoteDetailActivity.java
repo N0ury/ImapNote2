@@ -33,6 +33,7 @@ import javax.mail.Part;
 import javax.mail.internet.ContentType;
 
 import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.BLUE;
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
 
 public class NoteDetailActivity extends Activity {
 
@@ -217,7 +218,7 @@ public class NoteDetailActivity extends Activity {
         ContentType contentType = null;
         String stringres = null;
         InputStream iis = null;
-        String color = "NONE";
+        //Colors color = NONE;
         String charset;
         Sticky sticky = null;
         try {

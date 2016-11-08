@@ -118,9 +118,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             } catch (MessagingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
             SyncUtils.SetUIDValidity(account, res.UIDValidity, context);
             // Notify Listactivity that it's finished, and that it can refresh display
@@ -150,9 +147,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
         } catch (MessagingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

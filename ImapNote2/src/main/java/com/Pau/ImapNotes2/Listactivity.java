@@ -222,7 +222,13 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private void RefreshList() {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2", "Refreshing notes list... ", true);
 
-        new SyncThread().execute(this.imapFolder, Listactivity.imapNotes2Account, this.noteList, this.listToView, loadingDialog, storedNotes, this.getApplicationContext());
+        new SyncThread(this.imapFolder,
+                Listactivity.imapNotes2Account,
+                this.noteList,
+                this.listToView,
+                loadingDialog,
+                storedNotes,
+                this.getApplicationContext()).execute();
         status.setText("Welcome");
     }
 

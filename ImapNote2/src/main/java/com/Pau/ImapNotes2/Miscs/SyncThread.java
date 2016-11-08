@@ -12,12 +12,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 public class SyncThread extends AsyncTask<Object, Void, Boolean> {
+    private final ProgressDialog progressDialog;
     private NotesListAdapter adapter;
     private ArrayList<OneNote> notesList;
     private NotesDb storedNotes;
     boolean bool_to_return;
     ImapNotes2Result res = new ImapNotes2Result();
-    private Context ctx;
     private static final String TAG = "SyncThread";
 
     // TODO: remove unused arguments.
@@ -32,9 +32,9 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
         //this.imapNotes2Account = imapNotes2Account;
         this.notesList = noteList;
         this.adapter = listToView;
-        //this.loadingDialog = loadingDialog;
-        this.storedNotes = storedNotes;
-        this.ctx = applicationContext;
+        this.progressDialog = loadingDialog;
+        //this.storedNotes = storedNotes;
+        this.storedNotes = (storedNotes == null) ? new NotesDb(applicationContext) : storedNotes;
 
     }
 
@@ -62,11 +62,10 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
         //usesticky = ((ImapNotes2Account) stuffs[1]).GetUsesticky();
 
 
-        if (this.storedNotes == null) this.storedNotes = new NotesDb(this.ctx);
-        this.storedNotes.OpenDb();
-        this.storedNotes.GetStoredNotes(this.notesList, Listactivity.imapNotes2Account.GetAccountname());
-        this.storedNotes.CloseDb();
-        ((ProgressDialog) stuffs[4]).dismiss();
+        storedNotes.OpenDb();
+        storedNotes.GetStoredNotes(this.notesList, Listactivity.imapNotes2Account.GetAccountname());
+        storedNotes.CloseDb();
+        progressDialog.dismiss();
         return true;
     }
 
