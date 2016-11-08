@@ -83,8 +83,6 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private static List<String> currentList;
     private TextView status = null;
     private static String OldStatus;
-    private Button editAccountButton = null;
-    private ListView listview;
     public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
 
@@ -136,7 +134,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 R.layout.note_element,
                 new String[]{"title", "date"},
                 new int[]{R.id.noteTitle, R.id.noteInformation});
-        listview = (ListView) findViewById(R.id.notesList);
+        ListView listview = (ListView) findViewById(R.id.notesList);
         listview.setAdapter(this.listToView);
 
         listview.setTextFilterEnabled(true);
@@ -157,7 +155,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             }
         });
 
-        editAccountButton = (Button) findViewById(R.id.editAccountButton);
+        Button editAccountButton = (Button) findViewById(R.id.editAccountButton);
         editAccountButton.setOnClickListener(clickListenerEditAccount);
 
     }

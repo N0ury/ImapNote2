@@ -38,15 +38,9 @@ public class NoteDetailActivity extends Activity {
 
     private static final int DELETE_BUTTON = 3;
     private static final int EDIT_BUTTON = 6;
-    private HashMap hm;
     private boolean usesticky;
-    private Sticky sticky;
-    private String stringres;
     private Colors color;
-    private String position;
     private int realColor = R.id.yellow;
-    private Boolean isClicked = false;
-    private Message message;
     private String suid; // uid as string
     private final static int ROOT_AND_NEW = 3;
     private static final String TAG = "IN_NoteDetailActivity";
@@ -61,15 +55,15 @@ public class NoteDetailActivity extends Activity {
         );
 
         Bundle extras = getIntent().getExtras();
-        this.hm = (HashMap) extras.get("selectedNote");
+        HashMap hm = (HashMap) extras.get("selectedNote");
         this.usesticky = (boolean) extras.get("useSticky");
-        suid = this.hm.get("uid").toString();
+        suid = hm.get("uid").toString();
         String rootDir = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
-        message = SyncUtils.ReadMailFromFile(suid, ROOT_AND_NEW, true, rootDir);
-        sticky = GetInfoFromMessage(message);
-        stringres = sticky.GetText();
-        position = sticky.GetPosition();
+        Message message = SyncUtils.ReadMailFromFile(suid, ROOT_AND_NEW, true, rootDir);
+        Sticky sticky = GetInfoFromMessage(message);
+        String stringres = sticky.GetText();
+        String position = sticky.GetPosition();
         color = sticky.GetColor();
         Spanned plainText = Html.fromHtml(stringres);
         EditText editText = ((EditText) findViewById(R.id.bodyView));
@@ -99,7 +93,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     public void onClick(View v) {
-        this.isClicked = true;
+        Boolean isClicked = true;
     }
 
     // TODO: Find out what this is for.

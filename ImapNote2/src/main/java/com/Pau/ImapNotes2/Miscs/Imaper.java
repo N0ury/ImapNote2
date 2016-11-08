@@ -22,11 +22,8 @@ import com.Pau.ImapNotes2.Listactivity;
 public class Imaper {
 
     private Store store;
-    private Session session;
     private static final String TAG = "IN_Imaper";
     private static String sfolder = "Notes";
-    //private Folder notesFolder = null;
-    private ImapNotes2Result res;
     private Long UIDValidity;
     public static final String PREFS_NAME = "PrefsFile";
 
@@ -45,7 +42,7 @@ public class Imaper {
             store.close();
         }
 
-        res = new ImapNotes2Result();
+        ImapNotes2Result res = new ImapNotes2Result();
         String proto = security.proto;
         boolean acceptcrt = security.acceptcrt;
 /*        int security_i = Integer.parseInt(security);
@@ -127,7 +124,7 @@ public class Imaper {
         props.put("sun.net.spi.nameservice.nameservers", "192.168.0.99");
 */
         }
-        session = Session.getInstance(props, null);
+        Session session = Session.getInstance(props, null);
 //session.setDebug(true);
         store = session.getStore(proto);
         try {

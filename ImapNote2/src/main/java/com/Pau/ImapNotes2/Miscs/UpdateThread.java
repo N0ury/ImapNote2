@@ -42,9 +42,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private String suid;
     private final String noteBody;
     private final Colors color;
-    private final Imaper imapFolder;
-    boolean bool_to_return;
-    OneNote currentNote = null;
+    private boolean bool_to_return;
     private NotesDb storedNotes;
     private final Context ctx;
     private final String action;
@@ -66,7 +64,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                         String action,
                         NotesDb storedNotes) {
 
-        this.imapFolder = imapFolder;
+        Imaper imapFolder1 = imapFolder;
         this.imapNotes2Account = imapNotes2Account;
         this.notesList = noteList;
         this.adapter = listToView;
@@ -124,7 +122,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 Date date = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
                 String stringDate = sdf.format(date);
-                currentNote = new OneNote(title, stringDate, "");
+                OneNote currentNote = new OneNote(title, stringDate, "");
                 // Add note to database
                 if (storedNotes == null) storedNotes = new NotesDb(ctx);
                 storedNotes.OpenDb();

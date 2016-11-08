@@ -34,15 +34,10 @@ import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
     private static Context context;
-    private static Boolean isChanged;
-    private static Boolean isSynced;
     private NotesDb storedNotes;
-    private String[] listOfNew;
-    private String[] listOfDeleted;
     private static Account account;
     /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
     private Long UIDValidity = (long) -1;
-    private static ImapNotes2Result res;
     private final static int NEW = 1;
     private final static int DELETED = 2;
 
@@ -71,8 +66,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                               SyncResult syncResult) {
         //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
         this.account = account;
-        isChanged = false;
-        isSynced = false;
+        Boolean isChanged = false;
+        Boolean isSynced = false;
         String syncinterval;
 
         SyncUtils.CreateDirs(account.name, this.context);
@@ -84,8 +79,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncinterval = am.getUserData(account, "syncinterval");
 
         // Connect to remote and get UIDValidity
-        this.res = ConnectToRemote();
-        if (this.res.returnCode != ResultCodeSuccess) {
+        ImapNotes2Result res = ConnectToRemote();
+        if (res.returnCode != ResultCodeSuccess) {
             storedNotes.CloseDb();
 
             // Notify Listactivity that it's finished, but it can't
@@ -101,7 +96,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         // Compare UIDValidity to old saved one
-        if (!(this.res.UIDValidity.equals
+        if (!(res.UIDValidity.equals
                 (SyncUtils.GetUIDValidity(this.account, this.context)))) {
             // Replace local data by remote
             try {
@@ -112,7 +107,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 SyncUtils.CreateDirs(account.name, this.context);
                 // Get all notes from remote and replace local
                 SyncUtils.GetNotes(account,
-                        this.res.notesFolder,
+                        res.notesFolder,
                         this.context, storedNotes);
                 storedNotes.CloseDb();
             } catch (MessagingException e) {
@@ -122,7 +117,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            SyncUtils.SetUIDValidity(account, this.res.UIDValidity, this.context);
+            SyncUtils.SetUIDValidity(account, res.UIDValidity, this.context);
             // Notify Listactivity that it's finished, and that it can refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra("ACCOUNTNAME", account.name);
@@ -202,7 +197,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         String rootString = context.getFilesDir() + "/" + account.name;
         File rootDir = new File(rootString);
         File dirNew = new File(rootDir + "/new");
-        listOfNew = dirNew.list();
+        String[] listOfNew = dirNew.list();
         for (String fileNew : listOfNew) {
             //Log.d(TAG,"New Note to process:"+fileNew);
             newNotesManaged = true;
@@ -243,7 +238,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         String rootString = context.getFilesDir() + "/" + account.name;
         File rootDir = new File(rootString);
         File dirDeleted = new File(rootDir + "/deleted");
-        listOfDeleted = dirDeleted.list();
+        String[] listOfDeleted = dirDeleted.list();
         for (String fileDeleted : listOfDeleted) {
             try {
                 SyncUtils.DeleteNote(Integer.parseInt(fileDeleted));

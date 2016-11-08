@@ -75,3 +75,16 @@ Then can we do it automatically and then can we start the sync early?
 This is used to store metadata about the notes.  The notes themselves
 are stored as files in a sub-directory named after the account to
 which they belong.
+
+* Code analysis
+
+Run Android lint to discover opportunities to get rid of warnings,
+convert fields to local variables, etc.
+
+** Analyses done
+
+| Analysis           | Notes                                                                |
+|--------------------+----------------------------------------------------------------------|
+| Field can be local | Some of these seem to be work in progress so have been left unfixed. |
+|                    |                                                                      |
+

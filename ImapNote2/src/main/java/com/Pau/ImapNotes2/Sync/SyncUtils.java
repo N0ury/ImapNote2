@@ -52,16 +52,13 @@ public class SyncUtils {
     static Session session;
     static final String TAG = "IN_SyncUtils";
     static String proto;
-    private static boolean acceptcrt;
     static String sfolder = "Notes";
-    static private String folderoverride;
     static Folder notesFolder = null;
     static ImapNotes2Result res = new ImapNotes2Result();
     static Long UIDValidity;
     private final static int NEW = 1;
     private final static int DELETED = 2;
     private final static int ROOT_AND_NEW = 3;
-    private static Boolean useProxy = false;
 
     public static ImapNotes2Result ConnectToRemote(String username,
                                                    String password,
@@ -73,10 +70,10 @@ public class SyncUtils {
         if (IsConnected())
             store.close();
 
-        folderoverride = (override == null) ? "" : override;
+        String folderoverride = (override == null) ? "" : override;
 
         proto = security.proto;
-        acceptcrt = security.acceptcrt;
+        boolean acceptcrt = security.acceptcrt;
 /*
         int security_i = Integer.parseInt(security);
         switch (security_i) {
@@ -145,6 +142,7 @@ public class SyncUtils {
 
         props.setProperty("mail.imap.connectiontimeout", "1000");
         // TODO: use user defined proxy.
+        Boolean useProxy = false;
         if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");
