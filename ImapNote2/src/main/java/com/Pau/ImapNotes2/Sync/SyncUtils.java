@@ -329,8 +329,7 @@ public class SyncUtils {
         } else {
             notesFolder.open(Folder.READ_WRITE);
         }
-        AppendUID[] uids = ((IMAPFolder) notesFolder).appendUIDMessages(message);
-        return uids;
+        return ((IMAPFolder) notesFolder).appendUIDMessages(message);
     }
 
     public static void ClearHomeDir(Account account, Context ctx) {

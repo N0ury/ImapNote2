@@ -61,7 +61,6 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                         String action,
                         NotesDb storedNotes) {
 
-        Imaper imapFolder1 = imapFolder;
         this.imapNotes2Account = imapNotes2Account;
         this.notesList = noteList;
         this.adapter = listToView;

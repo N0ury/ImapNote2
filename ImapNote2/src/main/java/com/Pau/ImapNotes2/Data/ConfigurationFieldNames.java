@@ -1,7 +1,7 @@
 package com.Pau.ImapNotes2.Data;
 
 /**
- * Created by kj on 11/7/16.
+ * Created by kj on 2016-11-08 14:18.
  */
 
 public final class ConfigurationFieldNames {
