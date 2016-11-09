@@ -10,16 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import static com.Pau.ImapNotes2.NoteDetailActivity.*;
-import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
-import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.YELLOW;
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 
 public class NewNoteActivity extends Activity {
 
     private static final int SAVE_BUTTON = 5;
     private static final String TAG = "IN_NewNoteActivity";
     private boolean sticky;
-    private Colors color = NONE;
+    private Colors color = Colors.NONE;
     //region Intent item names
     public static final String usesSticky = "usesSticky";
     //endregion
@@ -49,7 +47,7 @@ public class NewNoteActivity extends Activity {
                 Intent intent = new Intent();
                 intent.putExtra("SAVE_ITEM", Html.toHtml(((EditText) findViewById(R.id.editNote)).getText()));
                 if (this.sticky) {
-                    this.color = YELLOW;
+                    this.color = Colors.YELLOW;
                 }
                 intent.putExtra("SAVE_ITEM_COLOR", this.color);
                 setResult(SAVE_BUTTON, intent);

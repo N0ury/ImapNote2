@@ -32,9 +32,6 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.ContentType;
 
-import com.Pau.ImapNotes2.Listactivity;
-import com.Pau.ImapNotes2.NoteDetailActivity.Colors;
-
 
 
 public class NoteDetailActivity extends Activity {
@@ -162,7 +159,8 @@ public class NoteDetailActivity extends Activity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
+        switch (itemId) {
             case R.id.delete:
                 //Log.d(TAG,"We ask to delete Message #"+currentNote.get("number"));
                 intent.putExtra(Listactivity.DELETE_ITEM_NUM_IMAP, suid);
@@ -176,29 +174,13 @@ public class NoteDetailActivity extends Activity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.blue:
-                item.setChecked(true);
-                color = Colors.BLUE;
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFA6CAFD);
-                return true;
             case R.id.white:
-                item.setChecked(true);
-                color = Colors.WHITE;
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFFF);
-                return true;
             case R.id.yellow:
-                item.setChecked(true);
-                color = Colors.YELLOW;
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFCC);
-                return true;
             case R.id.pink:
-                item.setChecked(true);
-                color = Colors.PINK;
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFCCCC);
-                return true;
             case R.id.green:
                 item.setChecked(true);
-                color = Colors.GREEN;
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFCCFFCC);
+                color = Colors.fromId(itemId);
+                (findViewById(R.id.scrollView)).setBackgroundColor(color.colorCode);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -220,14 +202,35 @@ public class NoteDetailActivity extends Activity {
 
     }
 
-    // TODO: use R.id.blue etc.
+    // List the colours together with the ids of the option widgets used to select them and the
+    // RGB values used as the actual colours.  Doing this means that we do not need so much code
+    // in switch statements, etc.
     public enum Colors {
-        BLUE,
-        WHITE,
-        YELLOW,
-        PINK,
-        GREEN,
-        NONE
+        BLUE(R.id.blue, 0xFFA6CAFD),
+        WHITE(R.id.white, 0xFFFFFFFF),
+        YELLOW(R.id.yellow, 0xFFFFFFCC),
+        PINK(R.id.pink, 0xFFFFCCCC),
+        GREEN(R.id.green, 0xFFCCFFCC),
+        // Is NONE ever used?
+        NONE(0, 0);
+
+        public final int id;
+        public final int colorCode;
+
+        private Colors(int id,
+                       int colorCode) {
+            this.id = id;
+            this.colorCode = colorCode;
+        }
+
+        public static Colors fromId(int id) {
+
+            for (Colors color : Colors.values()) {
+                if (color.id == id)
+                    return color;
+            }
+            throw new IllegalArgumentException("id not found in Colors: " + Integer.toString(id));
+        }
     }
 
     private Sticky GetInfoFromMessage(Message message) {

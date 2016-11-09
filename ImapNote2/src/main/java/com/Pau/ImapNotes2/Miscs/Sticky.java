@@ -4,6 +4,7 @@ import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 
 public class Sticky {
 
+    // TODO: Why are these fields static when the class is not?
     private static String text;
     private static String position;
     private static Colors color;
@@ -14,7 +15,9 @@ public class Sticky {
         Sticky.color = Colors.YELLOW;
     }
 
-    public Sticky(String text, String position,
+    // TODO: why is a constructor allowed to modify static members?
+    public Sticky(String text,
+                  String position,
                   Colors color) {
         Sticky.text = text;
         Sticky.position = position;

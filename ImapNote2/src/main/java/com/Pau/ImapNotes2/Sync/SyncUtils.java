@@ -41,10 +41,7 @@ import javax.mail.Store;
 import javax.mail.UIDFolder;
 import javax.mail.internet.MimeMessage;
 
-import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeException;
-import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
-import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
 
 public class SyncUtils {
 
@@ -148,13 +145,13 @@ public class SyncUtils {
             notesFolder = store.getFolder(sfolder);
             res.UIDValidity = ((IMAPFolder) notesFolder).getUIDValidity();
             res.errorMessage = "";
-            res.returnCode = ResultCodeSuccess;
+            res.returnCode = Imaper.ResultCodeSuccess;
             res.notesFolder = notesFolder;
             return res;
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
             res.errorMessage = e.getMessage();
-            res.returnCode = ResultCodeException;
+            res.returnCode = Imaper.ResultCodeException;
             return res;
         }
 
@@ -196,27 +193,25 @@ public class SyncUtils {
     private static final Pattern patternText = Pattern.compile("TEXT:(.*?)(END:|POSITION:)", Pattern.DOTALL);
 
     public static Sticky ReadStickynote(String stringres) {
-        Colors color = NONE;
-        String position = "";
-        String text = "";
-        //Pattern p = null;
-
 
         Matcher matcherColor = patternColor.matcher(stringres);
+        Colors color = Colors.NONE;
         if (matcherColor.find()) {
             String colorName = matcherColor.group(1);
-            Log.d(TAG, " Color: " + colorName + " " + (colorName == null));
             color = ((colorName == null) || colorName.equals("null")) ?
                     Colors.NONE :
                     Colors.valueOf(colorName);
+        } else {
+            color = Colors.NONE;
         }
 
         Matcher matcherPosition = patternPosition.matcher(stringres);
-        if (matcherPosition.find()) {
-            position = matcherPosition.group(1);
-        }
+        String position = matcherPosition.find() ?
+                matcherPosition.group(1) :
+                "";
 
         Matcher matcherText = patternText.matcher(stringres);
+        String text = "";
         if (matcherText.find()) {
             text = matcherText.group(1);
             // Kerio Connect puts CR+LF+space every 78 characters from line 2
