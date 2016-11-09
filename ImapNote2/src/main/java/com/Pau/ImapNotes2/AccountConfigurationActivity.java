@@ -60,6 +60,13 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private static Account myAccount = null;
     private static AccountManager accountManager;
 
+    //region Intent item names and values.
+    public static final String ACTION = "ACTION";
+    public static final String ACCOUNTNAME = "ACCOUNTNAME";
+    public static final String EDIT_ACCOUNT = "EDIT_ACCOUNT";
+    public static final String CREATE_ACCOUNT = "CREATE_ACCOUNT";
+    //endregion
+
     private final OnClickListener clickListenerLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -137,11 +144,11 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            if (extras.containsKey("action")) {
-                action = extras.getString("action");
+            if (extras.containsKey(ACTION)) {
+                action = extras.getString(ACTION);
             }
-            if (extras.containsKey("accountname")) {
-                accountname = extras.getString("accountname");
+            if (extras.containsKey(ACCOUNTNAME)) {
+                accountname = extras.getString(ACCOUNTNAME);
             }
         }
 

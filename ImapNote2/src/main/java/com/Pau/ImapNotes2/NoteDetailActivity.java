@@ -32,12 +32,14 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.ContentType;
 
-import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.BLUE;
-import static com.Pau.ImapNotes2.NoteDetailActivity.Colors.NONE;
+import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.NoteDetailActivity.Colors;
+
+
 
 public class NoteDetailActivity extends Activity {
 
-    private static final int DELETE_BUTTON = 3;
+    //private static final int DELETE_BUTTON = 3;
     private static final int EDIT_BUTTON = 6;
     private boolean usesticky;
     private Colors color;
@@ -45,6 +47,12 @@ public class NoteDetailActivity extends Activity {
     private String suid; // uid as string
     private final static int ROOT_AND_NEW = 3;
     private static final String TAG = "IN_NoteDetailActivity";
+
+    //region Intent item names
+    public static final String useSticky = "useSticky";
+    public static final String selectedNote = "selectedNote";
+    //endregion
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +65,8 @@ public class NoteDetailActivity extends Activity {
         );
 
         Bundle extras = getIntent().getExtras();
-        HashMap hm = (HashMap) extras.get("selectedNote");
-        this.usesticky = (boolean) extras.get("useSticky");
+        HashMap hm = (HashMap) extras.get(selectedNote);
+        usesticky = (boolean) extras.get(useSticky);
         assert hm != null;
         suid = hm.get("uid").toString();
         String rootDir = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
@@ -91,41 +99,47 @@ public class NoteDetailActivity extends Activity {
             }
 
         });
-        this.ResetColors();
+        ResetColors();
         //invalidateOptionsMenu();
     }
 
+    // TODO: delete this?
     public void onClick(View v) {
         Boolean isClicked = true;
     }
 
-    // TODO: Find out what this is for.
+    // realColor is misnamed.  It is the ID of the radio button widget that chooses the background
+    // colour.
+    // We have three distinct representations for each colour for different purposes, they should
+    // be collected into properties of the enum.  Then we could get rid of the switch.
     private void ResetColors() {
-        findViewById(R.id.bodyView).setBackgroundColor(Color.TRANSPARENT);
-        ((EditText) findViewById(R.id.bodyView)).setTextColor(Color.BLACK);
-        Colors currentColor = color;
-        switch (currentColor) {
+        EditText bodyView = (EditText) findViewById(R.id.bodyView);
+        bodyView.setBackgroundColor(Color.TRANSPARENT);
+        bodyView.setTextColor(Color.BLACK);
+        switch (color) {
             case BLUE:
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFA6CAFD);
-                this.realColor = R.id.blue;
+                realColor = R.id.blue;
                 break;
             case WHITE:
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFFF);
-                this.realColor = R.id.white;
+                realColor = R.id.white;
                 break;
             case YELLOW:
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFCC);
-                this.realColor = R.id.yellow;
+                realColor = R.id.yellow;
                 break;
             case PINK:
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFCCCC);
-                this.realColor = R.id.pink;
+                realColor = R.id.pink;
                 break;
             case GREEN:
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFCCFFCC);
-                this.realColor = R.id.green;
+                realColor = R.id.green;
                 break;
             default:
+                // Default should not be necessary because we should be able to ensure that it
+                // never happens.  We should instead throw an exception.
                 (findViewById(R.id.scrollView)).setBackgroundColor(Color.TRANSPARENT);
         }
         invalidateOptionsMenu();
@@ -142,7 +156,7 @@ public class NoteDetailActivity extends Activity {
         super.onPrepareOptionsMenu(menu);
         //depending on your conditions, either enable/disable
         item.setVisible(usesticky);
-        menu.findItem(this.realColor).setChecked(true);
+        menu.findItem(realColor).setChecked(true);
         return true;
     }
 
@@ -150,9 +164,9 @@ public class NoteDetailActivity extends Activity {
         Intent intent = new Intent();
         switch (item.getItemId()) {
             case R.id.delete:
-                //Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
-                intent.putExtra("DELETE_ITEM_NUM_IMAP", suid);
-                setResult(NoteDetailActivity.DELETE_BUTTON, intent);
+                //Log.d(TAG,"We ask to delete Message #"+currentNote.get("number"));
+                intent.putExtra(Listactivity.DELETE_ITEM_NUM_IMAP, suid);
+                setResult(Listactivity.DELETE_BUTTON, intent);
                 finish();//finishing activity
                 return true;
             case R.id.save:
@@ -163,27 +177,27 @@ public class NoteDetailActivity extends Activity {
                 return true;
             case R.id.blue:
                 item.setChecked(true);
-                this.color = BLUE;
+                color = Colors.BLUE;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFA6CAFD);
                 return true;
             case R.id.white:
                 item.setChecked(true);
-                this.color = Colors.WHITE;
+                color = Colors.WHITE;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFFF);
                 return true;
             case R.id.yellow:
                 item.setChecked(true);
-                this.color = Colors.YELLOW;
+                color = Colors.YELLOW;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFCC);
                 return true;
             case R.id.pink:
                 item.setChecked(true);
-                this.color = Colors.PINK;
+                color = Colors.PINK;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFCCCC);
                 return true;
             case R.id.green:
                 item.setChecked(true);
-                this.color = Colors.GREEN;
+                color = Colors.GREEN;
                 (findViewById(R.id.scrollView)).setBackgroundColor(0xFFCCFFCC);
                 return true;
             default:
@@ -194,17 +208,19 @@ public class NoteDetailActivity extends Activity {
     private void Save() {
         Log.d(TAG, "Save");
         Intent intent = new Intent();
-        intent.putExtra("EDIT_ITEM_NUM_IMAP", suid);
-        intent.putExtra("EDIT_ITEM_TXT",
+        intent.putExtra(Listactivity.EDIT_ITEM_NUM_IMAP, suid);
+        intent.putExtra(Listactivity.EDIT_ITEM_TXT,
                 Html.toHtml(((EditText) findViewById(R.id.bodyView)).getText()));
         if (!usesticky) {
-            this.color = Colors.NONE;
+            color = Colors.NONE;
         }
-        intent.putExtra("EDIT_ITEM_COLOR", this.color);
+        intent.putExtra(Listactivity.EDIT_ITEM_COLOR, color);
         setResult(NoteDetailActivity.EDIT_BUTTON, intent);
         finish();//finishing activity
 
     }
+
+    // TODO: use R.id.blue etc.
     public enum Colors {
         BLUE,
         WHITE,

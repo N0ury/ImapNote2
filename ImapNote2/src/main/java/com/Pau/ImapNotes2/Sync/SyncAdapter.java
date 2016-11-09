@@ -24,6 +24,8 @@ import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.sun.mail.imap.AppendUID;
 
+import com.Pau.ImapNotes2.Listactivity;
+
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 
 /// A SyncAdapter provides methods to be called by the Android
@@ -90,12 +92,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             // Notify Listactivity that it's finished, but it can't
             // refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
-            i.putExtra("ACCOUNTNAME", account.name);
+            i.putExtra(Listactivity.ACCOUNTNAME, account.name);
             isChanged = false;
             isSynced = false;
-            i.putExtra("CHANGED", false);
-            i.putExtra("SYNCED", false);
-            i.putExtra("SYNCINTERVAL", syncinterval);
+            i.putExtra(Listactivity.CHANGED, false);
+            i.putExtra(Listactivity.SYNCED, false);
+            i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
             context.sendBroadcast(i);
             return;
         }
@@ -122,12 +124,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             SyncUtils.SetUIDValidity(account, res.UIDValidity, context);
             // Notify Listactivity that it's finished, and that it can refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
-            i.putExtra("ACCOUNTNAME", account.name);
-            isChanged = true;
-            isSynced = true;
-            i.putExtra("CHANGED", true);
-            i.putExtra("SYNCED", true);
-            i.putExtra("SYNCINTERVAL", syncinterval);
+            i.putExtra(Listactivity.ACCOUNTNAME, account.name);
+            i.putExtra(Listactivity.CHANGED, true);
+            i.putExtra(Listactivity.SYNCED, true);
+            i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
             context.sendBroadcast(i);
             return;
         }
@@ -159,11 +159,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //Log.d(TAG, "Network synchronization complete of account: "+account.name);
         // Notify Listactivity that it's finished, and that it can refresh display
         Intent i = new Intent(SyncService.SYNC_FINISHED);
-        i.putExtra("ACCOUNTNAME", account.name);
-        i.putExtra("CHANGED", isChanged);
+        i.putExtra(Listactivity.ACCOUNTNAME, account.name);
+        i.putExtra(Listactivity.CHANGED, isChanged);
         isSynced = true;
-        i.putExtra("SYNCED", isSynced);
-        i.putExtra("SYNCINTERVAL", syncinterval);
+        i.putExtra(Listactivity.SYNCED, isSynced);
+        i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
         context.sendBroadcast(i);
     }
 

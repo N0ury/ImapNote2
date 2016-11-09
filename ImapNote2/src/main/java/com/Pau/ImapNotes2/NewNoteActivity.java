@@ -20,6 +20,9 @@ public class NewNoteActivity extends Activity {
     private static final String TAG = "IN_NewNoteActivity";
     private boolean sticky;
     private Colors color = NONE;
+    //region Intent item names
+    public static final String usesSticky = "usesSticky";
+    //endregion
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +30,7 @@ public class NewNoteActivity extends Activity {
         //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
         this.ResetColors();
-        this.sticky = (boolean) getIntent().getExtras().get("usesSticky");
+        this.sticky = (boolean) getIntent().getExtras().get(usesSticky);
     }
 
     private void ResetColors() {

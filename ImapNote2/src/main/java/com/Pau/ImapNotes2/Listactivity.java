@@ -64,10 +64,24 @@ import static com.Pau.ImapNotes2.NoteDetailActivity.*;
 
 public class Listactivity extends Activity implements OnItemSelectedListener, Filterable {
     private static final int SEE_DETAIL = 2;
-    private static final int DELETE_BUTTON = 3;
+    public static final int DELETE_BUTTON = 3;
     private static final int NEW_BUTTON = 4;
     private static final int SAVE_BUTTON = 5;
     private static final int EDIT_BUTTON = 6;
+
+
+    //region Intent item names
+    public static final String EDIT_ITEM_NUM_IMAP = "EDIT_ITEM_NUM_IMAP";
+    public static final String EDIT_ITEM_TXT = "EDIT_ITEM_TXT";
+    public static final String EDIT_ITEM_COLOR = "EDIT_ITEM_COLOR";
+    public static final String SAVE_ITEM_COLOR = "SAVE_ITEM_COLOR";
+    public static final String SAVE_ITEM = "SAVE_ITEM";
+    public static final String DELETE_ITEM_NUM_IMAP = "DELETE_ITEM_NUM_IMAP";
+    public static final String ACCOUNTNAME = "ACCOUNTNAME";
+    public static final String SYNCINTERVAL = "SYNCINTERVAL";
+    public static final String CHANGED = "CHANGED";
+    public static final String SYNCED = "SYNCED";
+    //endregion
 
     private ArrayList<OneNote> noteList;
     private NotesListAdapter listToView;
@@ -94,8 +108,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             String mPackage = "com.Pau.ImapNotes2";
             String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage, mPackage + mClass));
-            res.putExtra("action", "EDIT_ACCOUNT");
-            res.putExtra("accountname", Listactivity.imapNotes2Account.GetAccountname());
+            res.putExtra(AccountConfigurationActivity.ACTION, AccountConfigurationActivity.EDIT_ACCOUNT);
+            res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountname());
             startActivity(res);
         }
     };
@@ -149,8 +163,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View widget, int selectedNote, long rowId) {
                 Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
-                toDetail.putExtra("selectedNote", (OneNote) parent.getItemAtPosition(selectedNote));
-                toDetail.putExtra("useSticky", Listactivity.imapNotes2Account.GetUsesticky());
+                toDetail.putExtra(NoteDetailActivity.selectedNote, (OneNote) parent.getItemAtPosition(selectedNote));
+                toDetail.putExtra(NoteDetailActivity.useSticky, Listactivity.imapNotes2Account.GetUsesticky());
                 startActivityForResult(toDetail, SEE_DETAIL);
             }
         });
@@ -188,12 +202,11 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     }
 
     private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
-
         public void onReceive(Context context, Intent intent) {
-            String accountname = intent.getStringExtra("ACCOUNTNAME");
-            Boolean isChanged = intent.getBooleanExtra("CHANGED", false);
-            Boolean isSynced = intent.getBooleanExtra("SYNCED", false);
-            String syncInterval = intent.getStringExtra("SYNCINTERVAL");
+            String accountname = intent.getStringExtra(ACCOUNTNAME);
+            Boolean isChanged = intent.getBooleanExtra(CHANGED, false);
+            Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
+            String syncInterval = intent.getStringExtra(SYNCINTERVAL);
             if (accountname.equals(Listactivity.imapNotes2Account.GetAccountname())) {
                 if (isSynced) {
                     // Display last sync date
@@ -281,7 +294,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 String mPackage = "com.Pau.ImapNotes2";
                 String mClass = ".AccountConfigurationActivity";
                 res.setComponent(new ComponentName(mPackage, mPackage + mClass));
-                res.putExtra("action", "CREATE_ACCOUNT");
+                res.putExtra(AccountConfigurationActivity.ACTION, AccountConfigurationActivity.CREATE_ACCOUNT);
                 startActivity(res);
                 return true;
             case R.id.refresh:
@@ -289,7 +302,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 return true;
             case R.id.newnote:
                 Intent toNew = new Intent(this, NewNoteActivity.class);
-                toNew.putExtra("usesSticky", Listactivity.imapNotes2Account.GetUsesticky());
+                toNew.putExtra(NewNoteActivity.usesSticky, Listactivity.imapNotes2Account.GetUsesticky());
                 startActivityForResult(toNew, Listactivity.NEW_BUTTON);
                 return true;
             case R.id.about:
@@ -324,13 +337,13 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 if (resultCode == Listactivity.DELETE_BUTTON) {
                     // Delete Message asked for
                     // String suid will contain the Message Imap UID to delete
-                    String suid = data.getStringExtra("DELETE_ITEM_NUM_IMAP");
+                    String suid = data.getStringExtra(DELETE_ITEM_NUM_IMAP);
                     this.UpdateList(suid, null, null, "delete");
                 }
                 if (resultCode == Listactivity.EDIT_BUTTON) {
-                    String txt = data.getStringExtra("EDIT_ITEM_TXT");
-                    String suid = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
-                    Colors color = (Colors) data.getSerializableExtra("EDIT_ITEM_COLOR");
+                    String txt = data.getStringExtra(EDIT_ITEM_TXT);
+                    String suid = data.getStringExtra(EDIT_ITEM_NUM_IMAP);
+                    Colors color = (Colors) data.getSerializableExtra(EDIT_ITEM_COLOR);
                     //Log.d(TAG,"Received request to delete message:"+suid);
                     //Log.d(TAG,"Received request to replace message with:"+txt);
                     this.UpdateList(suid, txt, color, "update");
@@ -338,9 +351,9 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             case Listactivity.NEW_BUTTON:
                 // Returning from NewNoteActivity
                 if (resultCode == Listactivity.SAVE_BUTTON) {
-                    String res = data.getStringExtra("SAVE_ITEM");
+                    String res = data.getStringExtra(SAVE_ITEM);
                     //Log.d(TAG,"Received request to save message:"+res);
-                    Colors color = (Colors) data.getSerializableExtra("SAVE_ITEM_COLOR");
+                    Colors color = (Colors) data.getSerializableExtra(SAVE_ITEM_COLOR);
                     this.UpdateList(null, res, color, "insert");
                 }
         }
