@@ -181,7 +181,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             this.action = "CREATE_ACCOUNT";
         }
 
-        if (this.action.equals("EDIT_ACCOUNT")) {
+        if (this.action.equals(EDIT_ACCOUNT)) {
             // Here we have to edit an existing account
             this.accountnameTextView.setText(this.accountname);
             this.usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
@@ -286,7 +286,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     AccountManager am = AccountManager.get(accountConfigurationActivity);
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                     Bundle result;
-                    if (this.action.equals("EDIT_ACCOUNT")) {
+                    if (this.action.equals(EDIT_ACCOUNT)) {
                         result = new Bundle();
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
@@ -361,7 +361,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     tag.show();
                 }
             }.start();
-            if (this.action.equals("EDIT_ACCOUNT")) finish();
+            if (this.action.equals(EDIT_ACCOUNT)) {
+                finish();
+            }
         }
     }
 

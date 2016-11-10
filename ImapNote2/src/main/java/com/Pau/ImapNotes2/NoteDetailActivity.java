@@ -70,9 +70,9 @@ public class NoteDetailActivity extends Activity {
                 Listactivity.imapNotes2Account.GetAccountname();
         Message message = SyncUtils.ReadMailFromFile(suid, ROOT_AND_NEW, true, rootDir);
         Sticky sticky = GetInfoFromMessage(message);
-        String stringres = sticky.GetText();
-        String position = sticky.GetPosition();
-        color = sticky.GetColor();
+        String stringres = sticky.text;
+        String position = sticky.position;
+        color = sticky.color;
         Spanned plainText = Html.fromHtml(stringres);
         EditText editText = ((EditText) findViewById(R.id.bodyView));
         editText.setText(plainText);
@@ -107,38 +107,12 @@ public class NoteDetailActivity extends Activity {
 
     // realColor is misnamed.  It is the ID of the radio button widget that chooses the background
     // colour.
-    // We have three distinct representations for each colour for different purposes, they should
-    // be collected into properties of the enum.  Then we could get rid of the switch.
     private void ResetColors() {
         EditText bodyView = (EditText) findViewById(R.id.bodyView);
         bodyView.setBackgroundColor(Color.TRANSPARENT);
         bodyView.setTextColor(Color.BLACK);
-        switch (color) {
-            case BLUE:
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFA6CAFD);
-                realColor = R.id.blue;
-                break;
-            case WHITE:
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFFF);
-                realColor = R.id.white;
-                break;
-            case YELLOW:
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFFFCC);
-                realColor = R.id.yellow;
-                break;
-            case PINK:
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFFFCCCC);
-                realColor = R.id.pink;
-                break;
-            case GREEN:
-                (findViewById(R.id.scrollView)).setBackgroundColor(0xFFCCFFCC);
-                realColor = R.id.green;
-                break;
-            default:
-                // Default should not be necessary because we should be able to ensure that it
-                // never happens.  We should instead throw an exception.
-                (findViewById(R.id.scrollView)).setBackgroundColor(Color.TRANSPARENT);
-        }
+        (findViewById(R.id.scrollView)).setBackgroundColor(color.colorCode);
+        realColor = color.id;
         invalidateOptionsMenu();
     }
 
