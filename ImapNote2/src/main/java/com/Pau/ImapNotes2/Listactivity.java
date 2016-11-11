@@ -59,6 +59,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.Pau.ImapNotes2.AccountConfigurationActivity.*;
 import static com.Pau.ImapNotes2.NoteDetailActivity.*;
 
 
@@ -108,7 +109,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             String mPackage = "com.Pau.ImapNotes2";
             String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage, mPackage + mClass));
-            res.putExtra(AccountConfigurationActivity.ACTION, AccountConfigurationActivity.EDIT_ACCOUNT);
+            res.putExtra(ACTION, Actions.EDIT_ACCOUNT);
             res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountname());
             startActivity(res);
         }
@@ -210,8 +211,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             if (accountname.equals(Listactivity.imapNotes2Account.GetAccountname())) {
                 if (isSynced) {
                     // Display last sync date
-                    DateFormat dateFormat =
-                            android.text.format.DateFormat.getDateFormat(getApplicationContext());
+                    //DateFormat dateFormat =
+                    //        android.text.format.DateFormat.getDateFormat(getApplicationContext());
                     Date date = new Date();
                     String sdate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
                     String sinterval = " (interval:" + String.valueOf(syncInterval) + " min)";
@@ -294,7 +295,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 String mPackage = "com.Pau.ImapNotes2";
                 String mClass = ".AccountConfigurationActivity";
                 res.setComponent(new ComponentName(mPackage, mPackage + mClass));
-                res.putExtra(AccountConfigurationActivity.ACTION, AccountConfigurationActivity.CREATE_ACCOUNT);
+                res.putExtra(ACTION, Actions.CREATE_ACCOUNT);
                 startActivity(res);
                 return true;
             case R.id.refresh:
@@ -428,7 +429,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         @Override
         public void onAccountsUpdated(Account[] accounts) {
             List<String> newList;
-            Integer newListSize = 0;
+            //Integer newListSize = 0;
             //invoked when the AccountManager starts up and whenever the account set changes
             this.newAccounts = new ArrayList<>();
             for (final Account account : accounts) {

@@ -33,6 +33,7 @@ import com.Pau.ImapNotes2.Sync.Security;
 
 import java.util.List;
 
+import static com.Pau.ImapNotes2.AccountConfigurationActivity.Actions.EDIT_ACCOUNT;
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
@@ -54,18 +55,25 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private ImapNotes2Account imapNotes2Account;
     private Security security;
     //private int security_i;
-    private String action;
+    private Actions action;
     private String accountname;
-    private ConfigurationFile settings;
+    private ConfigurationFile settings = new ConfigurationFile();
+
     private static Account myAccount = null;
     private static AccountManager accountManager;
 
     //region Intent item names and values.
     public static final String ACTION = "ACTION";
     public static final String ACCOUNTNAME = "ACCOUNTNAME";
-    public static final String EDIT_ACCOUNT = "EDIT_ACCOUNT";
-    public static final String CREATE_ACCOUNT = "CREATE_ACCOUNT";
+//    public static final String EDIT_ACCOUNT = "EDIT_ACCOUNT";
+//    public static final String CREATE_ACCOUNT = "CREATE_ACCOUNT";
     //endregion
+
+
+    enum Actions {
+        CREATE_ACCOUNT,
+        EDIT_ACCOUNT
+    }
 
     private final OnClickListener clickListenerLogin = new View.OnClickListener() {
         @Override
@@ -112,14 +120,14 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         setContentView(R.layout.account_selection);
         //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        this.accountnameTextView = (TextView) (findViewById(R.id.accountnameEdit));
-        this.usernameTextView = (TextView) findViewById(R.id.usernameEdit);
-        this.passwordTextView = (TextView) findViewById(R.id.passwordEdit);
-        this.serverTextView = (TextView) findViewById(R.id.serverEdit);
-        this.portnumTextView = (TextView) findViewById(R.id.portnumEdit);
-        this.syncintervalTextView = (TextView) findViewById(R.id.syncintervalEdit);
-        this.folderTextView = (TextView) findViewById(R.id.folderEdit);
-        this.stickyCheckBox = (CheckBox) findViewById(R.id.stickyCheckBox);
+        accountnameTextView = (TextView) (findViewById(R.id.accountnameEdit));
+        usernameTextView = (TextView) findViewById(R.id.usernameEdit);
+        passwordTextView = (TextView) findViewById(R.id.passwordEdit);
+        serverTextView = (TextView) findViewById(R.id.serverEdit);
+        portnumTextView = (TextView) findViewById(R.id.portnumEdit);
+        syncintervalTextView = (TextView) findViewById(R.id.syncintervalEdit);
+        folderTextView = (TextView) findViewById(R.id.folderEdit);
+        stickyCheckBox = (CheckBox) findViewById(R.id.stickyCheckBox);
 
         securitySpinner = (Spinner) findViewById(R.id.securitySpinner);
         /*List<String> list = new ArrayList<String>();
@@ -139,33 +147,35 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         securitySpinner.setOnItemSelectedListener(this);
 
         imapNotes2Account = new ImapNotes2Account();
-        this.imapFolder = ((ImapNotes2k) getApplicationContext()).GetImaper();
-        this.settings = new ConfigurationFile();
+        imapFolder = ((ImapNotes2k) getApplicationContext()).GetImaper();
+        //settings = new ConfigurationFile();
 
         Bundle extras = getIntent().getExtras();
+        // TODO: find out if extras can be null.
         if (extras != null) {
             if (extras.containsKey(ACTION)) {
-                action = extras.getString(ACTION);
+                action = (Actions) (extras.getSerializable(ACTION));
             }
             if (extras.containsKey(ACCOUNTNAME)) {
                 accountname = extras.getString(ACCOUNTNAME);
             }
         }
 
-        if (this.settings != null) {
-            this.accountnameTextView.setText(this.settings.GetAccountname());
-            this.usernameTextView.setText(this.settings.GetUsername());
-            this.passwordTextView.setText(this.settings.GetPassword());
-            this.serverTextView.setText(this.settings.GetServer());
-            this.portnumTextView.setText(this.settings.GetPortnum());
-            this.security = this.settings.GetSecurity();
-            // Can never be null. if (this.security == null) this.security = "0";
-            int security_i = this.security.ordinal();
-            this.securitySpinner.setSelection(security_i);
-            this.stickyCheckBox.setChecked(this.settings.GetUsesticky());
-            this.syncintervalTextView.setText("15");
-            this.folderTextView.setText(this.settings.GetFoldername());
-        }
+        // Settings can never be null so there is no need to guard it
+        //if (settings != null) {
+        accountnameTextView.setText(settings.GetAccountname());
+        usernameTextView.setText(settings.GetUsername());
+        passwordTextView.setText(settings.GetPassword());
+        serverTextView.setText(settings.GetServer());
+        portnumTextView.setText(settings.GetPortnum());
+        security = settings.GetSecurity();
+        // Can never be null. if (security == null) security = "0";
+        int security_i = security.ordinal();
+        securitySpinner.setSelection(security_i);
+        stickyCheckBox.setChecked(settings.GetUsesticky());
+        syncintervalTextView.setText("15");
+        folderTextView.setText(settings.GetFoldername());
+        //}
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.bttonsLayout);
         accountManager = AccountManager.get(getApplicationContext());
@@ -177,24 +187,25 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             }
         }
 
-        if ((this.action == null) || (myAccount == null)) {
-            this.action = "CREATE_ACCOUNT";
+        // action can never be null
+        if (myAccount == null) {
+            action = Actions.CREATE_ACCOUNT;
         }
 
-        if (this.action.equals(EDIT_ACCOUNT)) {
+        if (action == EDIT_ACCOUNT) {
             // Here we have to edit an existing account
-            this.accountnameTextView.setText(this.accountname);
-            this.usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
-            this.passwordTextView.setText(accountManager.getPassword(myAccount));
-            this.serverTextView.setText(GetConfigValue(ConfigurationFieldNames.Server));
-            this.portnumTextView.setText(GetConfigValue(ConfigurationFieldNames.PortNumber));
-            this.security = Security.from(GetConfigValue(ConfigurationFieldNames.Security));
-            this.stickyCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseSticky)));
-            this.syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
-            this.folderTextView.setText(GetConfigValue(ConfigurationFieldNames.ImapFolder));
-            //if (this.security == null) this.security = "0";
-            int security_i = security.ordinal();
-            this.securitySpinner.setSelection(security_i);
+            accountnameTextView.setText(accountname);
+            usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
+            passwordTextView.setText(accountManager.getPassword(myAccount));
+            serverTextView.setText(GetConfigValue(ConfigurationFieldNames.Server));
+            portnumTextView.setText(GetConfigValue(ConfigurationFieldNames.PortNumber));
+            security = Security.from(GetConfigValue(ConfigurationFieldNames.Security));
+            stickyCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseSticky)));
+            syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
+            folderTextView.setText(GetConfigValue(ConfigurationFieldNames.ImapFolder));
+            //if (security == null) security = "0";
+            security_i = security.ordinal();
+            securitySpinner.setSelection(security_i);
             Button buttonEdit = new Button(this);
             buttonEdit.setText("Save");
             buttonEdit.setOnClickListener(clickListenerEdit);
@@ -251,13 +262,13 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         private final AccountConfigurationActivity accountConfigurationActivity;
         private ImapNotes2Result res = new ImapNotes2Result();
-        private final String action;
+        private final Actions action;
 
         public LoginThread(Imaper mapFolder,
                            ImapNotes2Account imapNotes2Account,
                            ProgressDialog loadingDialog,
                            AccountConfigurationActivity accountConfigurationActivity,
-                           String action,
+                           Actions action,
                            long SYNC_FREQUENCY) {
             this.imapNotes2Account = imapNotes2Account;
             this.progressDialog = loadingDialog;
@@ -268,10 +279,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         }
 
         protected Boolean doInBackground(Void... none) {
-            //this.action = (String) stuffs[ParamAction];
+            //action = (String) stuffs[ParamAction];
             try {
                 //ImapNotes2Account imapNotes2Account= ((ImapNotes2Account) stuffs[ParamImapNotes2Account]);
-                this.res = imapFolder.ConnectToProvider(
+                res = imapFolder.ConnectToProvider(
                         imapNotes2Account.GetUsername(),
                         imapNotes2Account.GetPassword(),
                         imapNotes2Account.GetServer(),
@@ -280,13 +291,13 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         imapNotes2Account.GetUsesticky(),
                         imapNotes2Account.GetFoldername());
                 //accountConfigurationActivity = acountConfigurationActivity;
-                if (this.res.returnCode == ResultCodeSuccess) {
+                if (res.returnCode == ResultCodeSuccess) {
                     Account account = new Account(imapNotes2Account.GetAccountname(), "com.Pau.ImapNotes2");
                     //long SYNC_FREQUENCY = (long) stuffs[ParamSyncPeriod];
                     AccountManager am = AccountManager.get(accountConfigurationActivity);
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                     Bundle result;
-                    if (this.action.equals(EDIT_ACCOUNT)) {
+                    if (action == EDIT_ACCOUNT) {
                         result = new Bundle();
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
@@ -302,7 +313,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                         ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                         ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                        this.res.errorMessage = "Account has been modified";
+                        res.errorMessage = "Account has been modified";
                         return true;
                     } else {
                         if (am.addAccountExplicitly(account, imapNotes2Account.GetPassword(), null)) {
@@ -321,10 +332,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                             ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                            this.res.errorMessage = "Account has been added";
+                            res.errorMessage = "Account has been added";
                             return true;
                         } else {
-                            this.res.errorMessage = "Account already exists or is null";
+                            res.errorMessage = "Account already exists or is null";
                             return false;
                         }
                     }
@@ -340,17 +351,17 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         protected void onPostExecute(Boolean result) {
             if (result) {
                 accountConfigurationActivity.settings.Clear();
-                this.accountConfigurationActivity.accountnameTextView.setText("");
-                this.accountConfigurationActivity.usernameTextView.setText("");
-                this.accountConfigurationActivity.passwordTextView.setText("");
-                this.accountConfigurationActivity.serverTextView.setText("");
-                this.accountConfigurationActivity.portnumTextView.setText("");
-                this.accountConfigurationActivity.syncintervalTextView.setText("15");
-                this.accountConfigurationActivity.securitySpinner.setSelection(0);
-                this.accountConfigurationActivity.folderTextView.setText("");
-                this.accountConfigurationActivity.stickyCheckBox.setChecked(false);
+                accountConfigurationActivity.accountnameTextView.setText("");
+                accountConfigurationActivity.usernameTextView.setText("");
+                accountConfigurationActivity.passwordTextView.setText("");
+                accountConfigurationActivity.serverTextView.setText("");
+                accountConfigurationActivity.portnumTextView.setText("");
+                accountConfigurationActivity.syncintervalTextView.setText("15");
+                accountConfigurationActivity.securitySpinner.setSelection(0);
+                accountConfigurationActivity.folderTextView.setText("");
+                accountConfigurationActivity.stickyCheckBox.setChecked(false);
             }
-            final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage, Toast.LENGTH_LONG);
+            final Toast tag = Toast.makeText(getApplicationContext(), res.errorMessage, Toast.LENGTH_LONG);
             tag.show();
             new CountDownTimer(5000, 1000) {
                 public void onTick(long millisUntilFinished) {
@@ -361,7 +372,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     tag.show();
                 }
             }.start();
-            if (this.action.equals(EDIT_ACCOUNT)) {
+            if (action == EDIT_ACCOUNT) {
                 finish();
             }
         }
@@ -384,7 +395,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         security = Security.from(position);
-        this.portnumTextView.setText(security.defaultPort);
+        portnumTextView.setText(security.defaultPort);
     }
 
     @Override

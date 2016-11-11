@@ -34,6 +34,7 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -43,6 +44,7 @@
             android:name=".AccountConfigurationActivity"
             android:exported="true"
             android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.Pau.ImapNotes2.Listactivity" />
@@ -51,6 +53,7 @@
         <activity
             android:name=".NoteDetailActivity"
             android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.Pau.ImapNotes2.Listactivity" />
@@ -59,6 +62,7 @@
         <activity
             android:name=".NewNoteActivity"
             android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.Pau.ImapNotes2.Listactivity" />
@@ -71,6 +75,7 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
@@ -87,6 +92,7 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
