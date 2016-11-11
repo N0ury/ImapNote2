@@ -33,9 +33,6 @@ import com.Pau.ImapNotes2.Sync.Security;
 
 import java.util.List;
 
-import static com.Pau.ImapNotes2.AccountConfigurationActivity.Actions.EDIT_ACCOUNT;
-import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
-
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
     private static final int TO_REFRESH = 999;
     private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
@@ -79,13 +76,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Login Button
-            if (accountnameTextView.getText().toString().contains("'")) {
-                // Single quotation marks are not allowed in accountname
-                Toast.makeText(getApplicationContext(), "Quotation marks are not allowed in accountname",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                DoLogin(v);
-            }
+            CheckNameAndLogIn(v);
         }
     };
 
@@ -93,22 +84,26 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Edit Button
-            if (accountnameTextView.getText().toString().contains("'")) {
-                // Single quotation marks are not allowed in accountname
-                Toast.makeText(getApplicationContext(), "Quotation marks are not allowed in accountname",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                DoLogin(v);
-            }
+            CheckNameAndLogIn(v);
         }
     };
+
+    private void CheckNameAndLogIn(View v) {
+        if (accountnameTextView.getText().toString().contains("'")) {
+            // Single quotation marks are not allowed in accountname
+            Toast.makeText(getApplicationContext(), R.string.quotation_marks_not_allowed,
+                    Toast.LENGTH_LONG).show();
+        } else {
+            DoLogin(v);
+        }
+    }
 
     private final OnClickListener clickListenerRemove = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             // Clic on Remove Button
             accountManager.removeAccount(myAccount, null, null);
-            Toast.makeText(getApplicationContext(), "Account has been removed",
+            Toast.makeText(getApplicationContext(), R.string.account_removed,
                     Toast.LENGTH_LONG).show();
             finish();//finishing activity
         }
@@ -192,7 +187,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             action = Actions.CREATE_ACCOUNT;
         }
 
-        if (action == EDIT_ACCOUNT) {
+        if (action == Actions.EDIT_ACCOUNT) {
             // Here we have to edit an existing account
             accountnameTextView.setText(accountname);
             usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
@@ -207,17 +202,17 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             security_i = security.ordinal();
             securitySpinner.setSelection(security_i);
             Button buttonEdit = new Button(this);
-            buttonEdit.setText("Save");
+            buttonEdit.setText(R.string.save);
             buttonEdit.setOnClickListener(clickListenerEdit);
             layout.addView(buttonEdit);
             Button buttonRemove = new Button(this);
-            buttonRemove.setText("Remove");
+            buttonRemove.setText(R.string.remove);
             buttonRemove.setOnClickListener(clickListenerRemove);
             layout.addView(buttonRemove);
         } else {
             // Here we have to create a new account
             Button buttonView = new Button(this);
-            buttonView.setText("Check & Create Account");
+            buttonView.setText(R.string.check_and_create_account);
             buttonView.setOnClickListener(clickListenerLogin);
             layout.addView(buttonView);
         }
@@ -234,7 +229,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     // DoLogin method is defined in account_selection.xml (account_selection layout)
     private void DoLogin(View v) {
-        ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2", "Logging into your account... ", true);
+        ProgressDialog loadingDialog = ProgressDialog.show(this, getString(R.string.app_name),
+                getString(R.string.logging_in), true);
         imapNotes2Account.SetAccountname(accountnameTextView.getText().toString().trim());
         imapNotes2Account.SetUsername(usernameTextView.getText().toString().trim());
         imapNotes2Account.SetPassword(passwordTextView.getText().toString().trim());
@@ -291,13 +287,14 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         imapNotes2Account.GetUsesticky(),
                         imapNotes2Account.GetFoldername());
                 //accountConfigurationActivity = acountConfigurationActivity;
-                if (res.returnCode == ResultCodeSuccess) {
+                if (res.returnCode == Imaper.ResultCodeSuccess) {
+                    // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().
                     Account account = new Account(imapNotes2Account.GetAccountname(), "com.Pau.ImapNotes2");
                     //long SYNC_FREQUENCY = (long) stuffs[ParamSyncPeriod];
                     AccountManager am = AccountManager.get(accountConfigurationActivity);
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                     Bundle result;
-                    if (action == EDIT_ACCOUNT) {
+                    if (action == Actions.EDIT_ACCOUNT) {
                         result = new Bundle();
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
@@ -332,10 +329,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                             ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                            res.errorMessage = "Account has been added";
+                            res.errorMessage = getString(R.string.account_added);
                             return true;
                         } else {
-                            res.errorMessage = "Account already exists or is null";
+                            res.errorMessage = getString(R.string.account_already_exists_or_is_null);
                             return false;
                         }
                     }
@@ -372,7 +369,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     tag.show();
                 }
             }.start();
-            if (action == EDIT_ACCOUNT) {
+            if (action == Actions.EDIT_ACCOUNT) {
                 finish();
             }
         }
