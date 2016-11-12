@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.*;
+import android.support.v4.BuildConfig;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.Html;
@@ -41,8 +43,9 @@ public class NoteDetailActivity extends Activity {
     //private static final int DELETE_BUTTON = 3;
     private static final int EDIT_BUTTON = 6;
     private boolean usesticky;
-    private Colors color;
-    private int realColor = R.id.yellow;
+    @NonNull
+    private Colors color = Colors.YELLOW;
+    //private int realColor = R.id.yellow;
     private String suid; // uid as string
     private final static int ROOT_AND_NEW = 3;
     private static final String TAG = "IN_NoteDetailActivity";
@@ -75,6 +78,7 @@ public class NoteDetailActivity extends Activity {
         String stringres = sticky.text;
         String position = sticky.position;
         color = sticky.color;
+        assert (color != null);
         Spanned plainText = Html.fromHtml(stringres);
         EditText editText = ((EditText) findViewById(R.id.bodyView));
         editText.setText(plainText);
@@ -114,7 +118,7 @@ public class NoteDetailActivity extends Activity {
         bodyView.setBackgroundColor(Color.TRANSPARENT);
         bodyView.setTextColor(Color.BLACK);
         (findViewById(R.id.scrollView)).setBackgroundColor(color.colorCode);
-        realColor = color.id;
+        //realColor = color.id;
         invalidateOptionsMenu();
     }
 
@@ -129,7 +133,13 @@ public class NoteDetailActivity extends Activity {
         super.onPrepareOptionsMenu(menu);
         //depending on your conditions, either enable/disable
         item.setVisible(usesticky);
-        menu.findItem(realColor).setChecked(true);
+        Log.d(TAG, "color.id: " + Integer.toString(color.id));
+        Log.d(TAG, "mfi: " + (menu.findItem(color.id) == null));
+        if (BuildConfig.DEBUG && (color == null)) {
+            throw new AssertionError("color is null");
+        }
+        ;
+        menu.findItem(color.id).setChecked(true);
         return true;
     }
 
@@ -156,6 +166,7 @@ public class NoteDetailActivity extends Activity {
             case R.id.green:
                 item.setChecked(true);
                 color = Colors.fromId(itemId);
+                assert (color != null);
                 (findViewById(R.id.scrollView)).setBackgroundColor(color.colorCode);
                 return true;
             default:
@@ -170,6 +181,7 @@ public class NoteDetailActivity extends Activity {
         intent.putExtra(Listactivity.EDIT_ITEM_TXT,
                 Html.toHtml(((EditText) findViewById(R.id.bodyView)).getText()));
         if (!usesticky) {
+            Log.d(TAG, "not sticky so set color to none");
             color = Colors.NONE;
         }
         intent.putExtra(Listactivity.EDIT_ITEM_COLOR, color);
@@ -187,14 +199,13 @@ public class NoteDetailActivity extends Activity {
         YELLOW(R.id.yellow, 0xFFFFFFCC),
         PINK(R.id.pink, 0xFFFFCCCC),
         GREEN(R.id.green, 0xFFCCFFCC),
-        // Is NONE ever used?
-        NONE(0, 0);
+        NONE(R.id.white, 0xFFFFFFFF);
 
         public final int id;
         public final int colorCode;
 
-        private Colors(int id,
-                       int colorCode) {
+        Colors(int id,
+               int colorCode) {
             this.id = id;
             this.colorCode = colorCode;
         }
@@ -214,15 +225,15 @@ public class NoteDetailActivity extends Activity {
     private Sticky GetInfoFromMessage(@NonNull Message message) {
         ContentType contentType = null;
         String stringres = null;
-        InputStream iis = null;
+        //InputStream iis = null;
         //Colors color = NONE;
-        String charset;
+        //String charset;
         Sticky sticky = null;
         try {
 //Log.d(TAG, "Contenttype as string:"+message.getContentType());
             contentType = new ContentType(message.getContentType());
-            charset = contentType.getParameter("charset");
-            iis = (InputStream) message.getContent();
+            String charset = contentType.getParameter("charset");
+            InputStream iis = (InputStream) message.getContent();
             stringres = IOUtils.toString(iis, charset);
         } catch (Exception e) {
             // TODO Auto-generated catch block
