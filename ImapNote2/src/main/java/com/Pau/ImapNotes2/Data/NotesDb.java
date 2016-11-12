@@ -14,12 +14,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 public class NotesDb {
 
     private static final int NOTES_VERSION = 3;
     private static final String TAG = "IN_NotesDb";
-    private final Context ctx;
 
     private static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
             + "notesTable ("
@@ -35,7 +35,6 @@ public class NotesDb {
 
     public NotesDb(Context applicationContext) {
         this.defaultHelper = new NotesDbHelper(applicationContext, "NotesDb", NOTES_VERSION);
-        this.ctx = applicationContext;
 
     }
 
@@ -94,30 +93,29 @@ public class NotesDb {
         return "-1";
     }
 
-    public void GetStoredNotes(@NonNull ArrayList<OneNote> noteList, String accountname) {
+    public void GetStoredNotes(@NonNull ArrayList<OneNote> noteList,
+                               @NonNull String accountName) {
         noteList.clear();
         Date date = null;
         try (Cursor resultPointer = this.notesDb.query("notesTable", null, "accountname = ?",
-                new String[]{accountname}, null, null, "date DESC")) {
+                new String[]{accountName}, null, null, "date DESC")) {
 
             if (resultPointer.moveToFirst()) {
                 int titleIndex = resultPointer.getColumnIndex("title");
-                int bodyIndex = resultPointer.getColumnIndex("body");
+                //int bodyIndex = resultPointer.getColumnIndex("body");
                 int dateIndex = resultPointer.getColumnIndex("date");
                 int numberIndex = resultPointer.getColumnIndex("number");
-                int positionIndex = resultPointer.getColumnIndex("position");
-                int colorIndex = resultPointer.getColumnIndex("color");
+                //int positionIndex = resultPointer.getColumnIndex("position");
+                //int colorIndex = resultPointer.getColumnIndex("color");
                 do {
                     //String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
                     //SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ROOT);
                     try {
                         date = Utilities.internalDateFormat.parse(resultPointer.getString(dateIndex));
                     } catch (ParseException e) {
-                        // TODO: Exception handling
-                    } catch (Exception e) {
-                        // TODO: handle exception
+                        Log.d(TAG, "Parsing data from database failed: " + e.getMessage());
                     }
-                    DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.ctx);
+                    //DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.ctx);
                     //String sdate = dateFormat.format(date);
                     String sdate = DateFormat.getDateTimeInstance().format(date);
 
@@ -141,7 +139,7 @@ public class NotesDb {
 
     private static class NotesDbHelper extends SQLiteOpenHelper {
 
-        public NotesDbHelper(Context currentApplicationContext, String dbName, int dbVersion) {
+        NotesDbHelper(Context currentApplicationContext, String dbName, int dbVersion) {
             super(currentApplicationContext, dbName, null, dbVersion);
         }
 
