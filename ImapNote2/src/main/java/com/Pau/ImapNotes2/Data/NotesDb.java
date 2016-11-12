@@ -76,18 +76,20 @@ public class NotesDb {
           TODO: use date class.
         */
         String selectQuery = "select date from notesTable where number = '" + uid + "' and accountname='" + accountname + "'";
-        Cursor c = this.notesDb.rawQuery(selectQuery, null);
-        if (c.moveToFirst()) {
-            return c.getString(0);
+        try (Cursor c = this.notesDb.rawQuery(selectQuery, null)) {
+            if (c.moveToFirst()) {
+                return c.getString(0);
+            }
         }
         return "";
     }
 
     public String GetTempNumber(String accountname) {
         String selectQuery = "select case when cast(max(abs(number)+1) as int) > 0 then cast(max(abs(number)+1) as int)*-1 else '-1' end from notesTable where number < '0' and accountname='" + accountname + "'";
-        Cursor c = this.notesDb.rawQuery(selectQuery, null);
-        if (c.moveToFirst()) {
-            return c.getString(0);
+        try (Cursor c = this.notesDb.rawQuery(selectQuery, null)) {
+            if (c.moveToFirst()) {
+                return c.getString(0);
+            }
         }
         return "-1";
     }
@@ -95,33 +97,35 @@ public class NotesDb {
     public void GetStoredNotes(@NonNull ArrayList<OneNote> noteList, String accountname) {
         noteList.clear();
         Date date = null;
-        Cursor resultPointer = this.notesDb.query("notesTable", null, "accountname = ?", new String[]{accountname}, null, null, "date DESC");
+        try (Cursor resultPointer = this.notesDb.query("notesTable", null, "accountname = ?",
+                new String[]{accountname}, null, null, "date DESC")) {
 
-        if (resultPointer.moveToFirst()) {
-            int titleIndex = resultPointer.getColumnIndex("title");
-            int bodyIndex = resultPointer.getColumnIndex("body");
-            int dateIndex = resultPointer.getColumnIndex("date");
-            int numberIndex = resultPointer.getColumnIndex("number");
-            int positionIndex = resultPointer.getColumnIndex("position");
-            int colorIndex = resultPointer.getColumnIndex("color");
-            do {
-                //String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-                //SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ROOT);
-                try {
-                    date = Utilities.internalDateFormat.parse(resultPointer.getString(dateIndex));
-                } catch (ParseException e) {
-                    // TODO: Exception handling
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
-                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.ctx);
-                //String sdate = dateFormat.format(date);
-                String sdate = DateFormat.getDateTimeInstance().format(date);
+            if (resultPointer.moveToFirst()) {
+                int titleIndex = resultPointer.getColumnIndex("title");
+                int bodyIndex = resultPointer.getColumnIndex("body");
+                int dateIndex = resultPointer.getColumnIndex("date");
+                int numberIndex = resultPointer.getColumnIndex("number");
+                int positionIndex = resultPointer.getColumnIndex("position");
+                int colorIndex = resultPointer.getColumnIndex("color");
+                do {
+                    //String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+                    //SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ROOT);
+                    try {
+                        date = Utilities.internalDateFormat.parse(resultPointer.getString(dateIndex));
+                    } catch (ParseException e) {
+                        // TODO: Exception handling
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                    DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this.ctx);
+                    //String sdate = dateFormat.format(date);
+                    String sdate = DateFormat.getDateTimeInstance().format(date);
 
-                noteList.add(new OneNote(resultPointer.getString(titleIndex),
-                        sdate,
-                        resultPointer.getString(numberIndex)));
-            } while (resultPointer.moveToNext());
+                    noteList.add(new OneNote(resultPointer.getString(titleIndex),
+                            sdate,
+                            resultPointer.getString(numberIndex)));
+                } while (resultPointer.moveToNext());
+            }
         }
 
     }
