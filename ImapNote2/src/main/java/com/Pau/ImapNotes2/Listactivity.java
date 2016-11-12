@@ -40,6 +40,8 @@ import android.content.IntentFilter;
 import android.content.PeriodicSync;
 import android.content.pm.PackageInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,13 +91,16 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private ArrayAdapter<String> spinnerList;
 
     private Imaper imapFolder;
+    @Nullable
     private static NotesDb storedNotes = null;
     private Spinner accountSpinner;
     public static ImapNotes2Account imapNotes2Account;
     private static AccountManager accountManager;
     // Ensure that we never have to check for null by initializing reference.
+    @NonNull
     private static Account[] accounts = new Account[0];
     private static List<String> currentList;
+    @Nullable
     private TextView status = null;
     private static String OldStatus;
     private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
@@ -162,7 +167,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         // When item is clicked, we go to NoteDetailActivity
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View widget, int selectedNote, long rowId) {
+            public void onItemClick(@NonNull AdapterView<?> parent, @NonNull View widget, int selectedNote, long rowId) {
                 Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
                 toDetail.putExtra(NoteDetailActivity.selectedNote, (OneNote) parent.getItemAtPosition(selectedNote));
                 toDetail.putExtra(NoteDetailActivity.useSticky, Listactivity.imapNotes2Account.GetUsesticky());
@@ -202,8 +207,9 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         unregisterReceiver(syncFinishedReceiver);
     }
 
+    @Nullable
     private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, @NonNull Intent intent) {
             String accountname = intent.getStringExtra(ACCOUNTNAME);
             Boolean isChanged = intent.getBooleanExtra(CHANGED, false);
             Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
@@ -258,7 +264,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.list, menu);
 
         // Associate searchable configuration with the SearchView
@@ -288,7 +294,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.login:
                 Intent res = new Intent();
@@ -331,7 +337,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         switch (requestCode) {
             case Listactivity.SEE_DETAIL:
                 // Returning from NoteDetailActivity
@@ -427,7 +433,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         private ArrayList<Account> newAccounts;
 
         @Override
-        public void onAccountsUpdated(Account[] accounts) {
+        public void onAccountsUpdated(@NonNull Account[] accounts) {
             List<String> newList;
             //Integer newListSize = 0;
             //invoked when the AccountManager starts up and whenever the account set changes
@@ -527,7 +533,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
-    private static void TriggerSync(TextView statusField) {
+    private static void TriggerSync(@NonNull TextView statusField) {
         OldStatus = statusField.getText().toString();
         statusField.setText("Syncing...");
         Account mAccount = Listactivity.imapNotes2Account.GetAccount();
@@ -540,6 +546,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
     }
 
+    @Nullable
     @Override
     public Filter getFilter() {
         return null;

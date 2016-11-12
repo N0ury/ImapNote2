@@ -1,5 +1,7 @@
 package com.Pau.ImapNotes2.Sync;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,7 @@ public enum Security {
         this.acceptcrt = acceptcrt;
     }
 
+    @NonNull
     public static List<String> Printables() {
         List<String> list = new ArrayList<>();
         for (Security e : Security.values()) {

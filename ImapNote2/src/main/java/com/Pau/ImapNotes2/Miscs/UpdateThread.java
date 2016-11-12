@@ -26,6 +26,7 @@ import com.Pau.ImapNotes2.Data.NotesDb;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.text.Html;
 
 import static com.Pau.ImapNotes2.NoteDetailActivity.*;
@@ -162,7 +163,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         return -1;
     }
 
-    private void MoveMailToDeleted(String suid) {
+    private void MoveMailToDeleted(@NonNull String suid) {
         String directory = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         String positiveUid = suid.substring(1);
@@ -176,7 +177,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         }
     }
 
-    private void WriteMailToNew(OneNote note,
+    private void WriteMailToNew(@NonNull OneNote note,
                                 boolean usesticky,
                                 String noteBody) throws MessagingException, IOException {
         String body = null;

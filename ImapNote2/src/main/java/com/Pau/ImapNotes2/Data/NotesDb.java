@@ -13,6 +13,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 public class NotesDb {
 
@@ -29,6 +30,7 @@ public class NotesDb {
             + "accountname text not null);";
 
     private SQLiteDatabase notesDb;
+    @NonNull
     private final NotesDbHelper defaultHelper;
 
     public NotesDb(Context applicationContext) {
@@ -47,7 +49,7 @@ public class NotesDb {
 
     }
 
-    public void InsertANoteInDb(OneNote noteElement, String accountname) {
+    public void InsertANoteInDb(@NonNull OneNote noteElement, String accountname) {
         ContentValues tableRow = new ContentValues();
         tableRow.put("title", (noteElement.GetTitle() != null) ? noteElement.GetTitle() : "");
         tableRow.put("date", noteElement.GetDate());
@@ -90,7 +92,7 @@ public class NotesDb {
         return "-1";
     }
 
-    public void GetStoredNotes(ArrayList<OneNote> noteList, String accountname) {
+    public void GetStoredNotes(@NonNull ArrayList<OneNote> noteList, String accountname) {
         noteList.clear();
         Date date = null;
         Cursor resultPointer = this.notesDb.query("notesTable", null, "accountname = ?", new String[]{accountname}, null, null, "date DESC");
@@ -140,7 +142,7 @@ public class NotesDb {
         }
 
         @Override
-        public void onCreate(SQLiteDatabase _db) {
+        public void onCreate(@NonNull SQLiteDatabase _db) {
             _db.execSQL(NotesDb.CREATE_NOTES_DB);
         }
 
@@ -159,7 +161,7 @@ public class NotesDb {
 
         private static final Patch[] PATCHES = new Patch[]{
                 new Patch() {
-                    public void apply(SQLiteDatabase _db) {
+                    public void apply(@NonNull SQLiteDatabase _db) {
                         //Log.d(TAG,"upgrade: v2 to v3");
                         _db.execSQL("Drop table notesTable;");
                         _db.execSQL(NotesDb.CREATE_NOTES_DB);

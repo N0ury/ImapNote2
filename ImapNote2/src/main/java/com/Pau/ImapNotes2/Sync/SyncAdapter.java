@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
@@ -39,13 +40,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private NotesDb storedNotes;
     private static Account account;
     /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
+    @NonNull
     private Long UIDValidity = (long) -1;
     private final static int NEW = 1;
     private final static int DELETED = 2;
 
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(Context context,
+    public SyncAdapter(@NonNull Context context,
                        boolean autoInitialize) {
         super(context, autoInitialize);
         mContentResolver = context.getContentResolver();
@@ -53,7 +55,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         SyncAdapter.context = context;
     }
 
-    public SyncAdapter(Context context,
+    public SyncAdapter(@NonNull Context context,
                        boolean autoInitialize, // ?
                        boolean allowParallelSyncs // always false, set in syncadapter.xml
     ) {
@@ -63,7 +65,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     @Override
-    public void onPerformSync(Account account,
+    public void onPerformSync(@NonNull Account account,
                               Bundle extras,
                               String authority,
                               ContentProviderClient provider,
@@ -173,6 +175,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     the caller becomes responsible.  This is the correct approach.
 
      */
+    @NonNull
     private ImapNotes2Result ConnectToRemote() {
         AccountManager am = AccountManager.get(context);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(

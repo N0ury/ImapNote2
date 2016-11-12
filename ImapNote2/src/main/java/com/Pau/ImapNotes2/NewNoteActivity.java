@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.text.Html;
 import android.view.Menu;
@@ -17,6 +18,7 @@ public class NewNoteActivity extends Activity {
     private static final int SAVE_BUTTON = 5;
     private static final String TAG = "IN_NewNoteActivity";
     private boolean sticky;
+    @NonNull
     private Colors color = Colors.NONE;
     //region Intent item names
     public static final String usesSticky = "usesSticky";
@@ -41,7 +43,7 @@ public class NewNoteActivity extends Activity {
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
                 Intent intent = new Intent();

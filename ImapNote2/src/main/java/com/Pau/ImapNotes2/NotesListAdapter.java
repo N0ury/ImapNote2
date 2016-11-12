@@ -17,6 +17,8 @@ package com.Pau.ImapNotes2;
  */
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -63,6 +65,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
 
     private final int mResource;
     private int mDropDownResource;
+    @NonNull
     private final LayoutInflater mInflater;
 
     private SimpleFilter mFilter;
@@ -83,7 +86,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      *                 TextViews. The first N views in this list are given the values of the first N columns
      *                 in the from parameter.
      */
-    public NotesListAdapter(Context context, List<? extends Map<String, ?>> data,
+    public NotesListAdapter(@NonNull Context context, List<? extends Map<String, ?>> data,
                             int resource, String[] from, int[] to) {
         mData = data;
         mResource = mDropDownResource = resource;
@@ -117,11 +120,14 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
     /**
      * @see android.widget.Adapter#getView(int, View, ViewGroup)
      */
+    @Nullable
     public View getView(int position, View convertView, ViewGroup parent) {
         return createViewFromResource(position, convertView, parent, mResource);
     }
 
-    private View createViewFromResource(int position, View convertView,
+    // TODO: this should never return null and the convertView argument should never be null.
+    @Nullable
+    private View createViewFromResource(int position, @Nullable View convertView,
                                         ViewGroup parent, int resource) {
         View v;
         if (convertView == null) {
@@ -145,12 +151,14 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
         this.mDropDownResource = resource;
     }
 
+    // TODO: Should never return null.
+    @Nullable
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         return createViewFromResource(position, convertView, parent, mDropDownResource);
     }
 
-    private void bindView(int position, View view) {
+    private void bindView(int position, @NonNull View view) {
         final Map dataSet = mData.get(position);
         if (dataSet == null) {
             return;
@@ -240,7 +248,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @param value the value retrieved from the data set
      * @see #setViewImage(ImageView, String)
      */
-    private void setViewImage(ImageView v, int value) {
+    private void setViewImage(@NonNull ImageView v, int value) {
         v.setImageResource(value);
     }
 
@@ -260,7 +268,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @param value the value retrieved from the data set
      * @see #setViewImage(ImageView, int)
      */
-    private void setViewImage(ImageView v, String value) {
+    private void setViewImage(@NonNull ImageView v, String value) {
         try {
             v.setImageResource(Integer.parseInt(value));
         } catch (NumberFormatException nfe) {
@@ -276,7 +284,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @param v    TextView to receive text
      * @param text the text to be set for the TextView
      */
-    private void setViewText(TextView v, String text) {
+    private void setViewText(@NonNull TextView v, String text) {
         v.setText(text);
     }
 
@@ -324,8 +332,9 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      */
     private class SimpleFilter extends Filter {
 
+        @NonNull
         @Override
-        protected FilterResults performFiltering(CharSequence prefix) {
+        protected FilterResults performFiltering(@Nullable CharSequence prefix) {
             FilterResults results = new FilterResults();
 
             if (mUnfilteredData == null) {
@@ -369,7 +378,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
         }
 
         @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+        protected void publishResults(CharSequence constraint, @NonNull FilterResults results) {
             //noinspection unchecked
             mData = (List<Map<String, ?>>) results.values;
             if (results.count > 0) {

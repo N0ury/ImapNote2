@@ -3,6 +3,8 @@ package com.Pau.ImapNotes2.Sync;
 import android.accounts.Account;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.Pau.ImapNotes2.Data.NotesDb;
@@ -48,7 +50,10 @@ public class SyncUtils {
     private static Store store;
     private static final String TAG = "IN_SyncUtils";
     private static String proto;
+    // TODO: Why do we have two folder fields and why are they both nullable?
+    @Nullable
     private static String sfolder = "Notes";
+    @Nullable
     private static Folder notesFolder = null;
     private static final ImapNotes2Result res = new ImapNotes2Result();
     private static Long UIDValidity;
@@ -59,13 +64,14 @@ public class SyncUtils {
     /* This function cannot return null.  Can we mark it so that the analysers can use this
     information?
     */
+    @NonNull
     static ImapNotes2Result ConnectToRemote(String username,
                                             String password,
                                             String server,
                                             String portnum,
-                                            Security security,
+                                            @NonNull Security security,
                                             String usesticky,
-                                            String override) {
+                                            @Nullable String override) {
         if (IsConnected()) {
             try {
                 store.close();
@@ -160,10 +166,10 @@ public class SyncUtils {
     /* Copy all notes from the IMAP server to the local directory using the UID as the file name.
 
      */
-    public static void GetNotes(Account account,
-                                Folder notesFolder,
-                                Context ctx,
-                                NotesDb storedNotes) throws MessagingException {
+    public static void GetNotes(@NonNull Account account,
+                                @NonNull Folder notesFolder,
+                                @NonNull Context ctx,
+                                @NonNull NotesDb storedNotes) throws MessagingException {
         //Long UIDM;
         //Message notesMessage;
         File directory = new File(ctx.getFilesDir() + "/" + account.name);
@@ -192,7 +198,8 @@ public class SyncUtils {
     private static final Pattern patternPosition = Pattern.compile("^POSITION:(.*?)$", Pattern.MULTILINE);
     private static final Pattern patternText = Pattern.compile("TEXT:(.*?)(END:|POSITION:)", Pattern.DOTALL);
 
-    public static Sticky ReadStickynote(String stringres) {
+    @NonNull
+    public static Sticky ReadStickynote(@NonNull String stringres) {
 
         Matcher matcherColor = patternColor.matcher(stringres);
         Colors color = Colors.NONE;
@@ -244,7 +251,7 @@ public class SyncUtils {
     }
 
     // Put values in shared preferences
-    public static void SetUIDValidity(Account account, Long UIDValidity, Context ctx) {
+    public static void SetUIDValidity(@NonNull Account account, Long UIDValidity, @NonNull Context ctx) {
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Name", "valid_data");
@@ -254,7 +261,7 @@ public class SyncUtils {
     }
 
     // Retrieve values from shared preferences:
-    public static Long GetUIDValidity(Account account, Context ctx) {
+    public static Long GetUIDValidity(@NonNull Account account, @NonNull Context ctx) {
         UIDValidity = (long) -1;
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         String name = preferences.getString("Name", "");
@@ -274,7 +281,8 @@ public class SyncUtils {
         }
     }
 
-    public static Message ReadMailFromFile(String uid, int where, boolean removeMinus, String nameDir) {
+    @Nullable
+    public static Message ReadMailFromFile(@NonNull String uid, int where, boolean removeMinus, String nameDir) {
         File mailFile;
         Message message = null;
         mailFile = new File(nameDir, uid);
@@ -316,7 +324,7 @@ public class SyncUtils {
         return message;
     }
 
-    public static AppendUID[] sendMessageToRemote(Message[] message) throws MessagingException {
+    public static AppendUID[] sendMessageToRemote(@NonNull Message[] message) throws MessagingException {
         notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_WRITE) != 0)
@@ -327,7 +335,7 @@ public class SyncUtils {
         return ((IMAPFolder) notesFolder).appendUIDMessages(message);
     }
 
-    public static void ClearHomeDir(Account account, Context ctx) {
+    public static void ClearHomeDir(@NonNull Account account, @NonNull Context ctx) {
         File directory = new File(ctx.getFilesDir() + "/" + account.name);
         try {
             FileUtils.deleteDirectory(directory);
@@ -337,7 +345,7 @@ public class SyncUtils {
         }
     }
 
-    public static void CreateDirs(String accountName, Context ctx) {
+    public static void CreateDirs(String accountName, @NonNull Context ctx) {
         String stringDir = ctx.getFilesDir() + "/" + accountName;
         File directory = new File(stringDir);
         directory.mkdirs();
@@ -347,7 +355,7 @@ public class SyncUtils {
         directory.mkdirs();
     }
 
-    private static void GetOneNote(File outfile, Message notesMessage, NotesDb storedNotes, String accountName, String suid, boolean updateDb) {
+    private static void GetOneNote(@NonNull File outfile, @NonNull Message notesMessage, @NonNull NotesDb storedNotes, String accountName, String suid, boolean updateDb) {
         OutputStream str = null;
 
         try {
@@ -422,7 +430,7 @@ public class SyncUtils {
         storedNotes.InsertANoteInDb(aNote, accountName);
     }
 
-    public static boolean handleRemoteNotes(Context context, Folder notesFolder, NotesDb storedNotes, String accountName, String usesticky)
+    public static boolean handleRemoteNotes(@NonNull Context context, @NonNull Folder notesFolder, @NonNull NotesDb storedNotes, String accountName, @NonNull String usesticky)
             throws MessagingException {
 
         Message notesMessage;
@@ -496,7 +504,7 @@ public class SyncUtils {
         return result;
     }
 
-    public static void RemoveAccount(Context context, Account account) {
+    public static void RemoveAccount(@NonNull Context context, @NonNull Account account) {
         // remove Shared Preference file
         String rootString = context.getFilesDir().getParent() +
                 File.separator + "shared_prefs";

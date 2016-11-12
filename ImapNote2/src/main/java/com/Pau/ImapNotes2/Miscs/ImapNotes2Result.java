@@ -1,5 +1,7 @@
 package com.Pau.ImapNotes2.Miscs;
 
+import android.support.annotation.Nullable;
+
 import javax.mail.Folder;
 
 public class ImapNotes2Result {
@@ -8,6 +10,7 @@ public class ImapNotes2Result {
     public String errorMessage;
     public Long UIDValidity;
     public boolean hasUIDPLUS;
+    @Nullable
     public Folder notesFolder;
 
     public ImapNotes2Result() {

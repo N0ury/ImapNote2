@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ImapNotesAuthenticatorService extends Service {
 
@@ -24,7 +26,7 @@ public class ImapNotesAuthenticatorService extends Service {
         this.imapNotesAuthenticator = new Authenticator(this);
     }
 
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(@NonNull Intent intent) {
         IBinder ret = null;
         if (intent.getAction().equals(android.accounts.AccountManager.ACTION_AUTHENTICATOR_INTENT))
             ret = getAuthenticator().getIBinder();
@@ -50,7 +52,7 @@ public class ImapNotesAuthenticatorService extends Service {
 
         @Override
         public Bundle getAccountRemovalAllowed(
-                AccountAuthenticatorResponse response, Account account)
+                AccountAuthenticatorResponse response, @NonNull Account account)
                 throws NetworkErrorException {
             Bundle ret = super.getAccountRemovalAllowed(response, account);
             if (ret.getBoolean(AccountManager.KEY_BOOLEAN_RESULT))
@@ -62,6 +64,7 @@ public class ImapNotesAuthenticatorService extends Service {
             return ret;
         }
 
+        @NonNull
         @Override
         public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
 
@@ -73,36 +76,47 @@ public class ImapNotesAuthenticatorService extends Service {
             return bundle;
         }
 
+        @Nullable
         @Override
         public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) throws NetworkErrorException {
 
             return null;
         }
 
+        // TODO: Describe the purpose of this method.
+        @Nullable
         @Override
         public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
 
             return null;
         }
 
+        // TODO: Describe the purpose of this method.
+        @Nullable
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
 
             return null;
         }
 
+        // TODO: Describe the purpose of this method.
+        @Nullable
         @Override
         public String getAuthTokenLabel(String authTokenType) {
 
             return null;
         }
 
+        // TODO: Describe the purpose of this method.
+        @Nullable
         @Override
         public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) throws NetworkErrorException {
 
             return null;
         }
 
+        // TODO: Describe the purpose of this method.
+        @Nullable
         @Override
         public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
 

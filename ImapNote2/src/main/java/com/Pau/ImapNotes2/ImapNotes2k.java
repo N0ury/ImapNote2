@@ -9,6 +9,7 @@ import com.Pau.ImapNotes2.Miscs.OneNote;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 
 /*
@@ -37,6 +38,7 @@ public class ImapNotes2k extends Application {
         return ImapNotes2k.context;
     }
 
+    @NonNull
     public static String ConfigurationFilePath() {
         return ConfigurationDirPath() + "/" + configurationFileName;
     }

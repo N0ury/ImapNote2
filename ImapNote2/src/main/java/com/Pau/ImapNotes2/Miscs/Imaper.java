@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import javax.mail.Folder;
@@ -23,6 +24,7 @@ public class Imaper {
 
     private Store store;
     private static final String TAG = "IN_Imaper";
+    @NonNull
     private static String sfolder = "Notes";
     private Long UIDValidity;
     public static final String PREFS_NAME = "PrefsFile";
@@ -31,13 +33,14 @@ public class Imaper {
     public static final int ResultCodeException = -2;
     public static final int ResultCodeCantConnect = -1;
 
+    @NonNull
     public ImapNotes2Result ConnectToProvider(String username,
                                               String password,
                                               String server,
                                               String portnum,
-                                              Security security,
+                                              @NonNull Security security,
                                               boolean usesticky,
-                                              String folderoverride) throws MessagingException {
+                                              @NonNull String folderoverride) throws MessagingException {
         if (IsConnected()) {
             store.close();
         }

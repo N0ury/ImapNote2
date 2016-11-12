@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.Html;
@@ -122,7 +124,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(@NonNull Menu menu) {
         MenuItem item = menu.findItem(R.id.color);
         super.onPrepareOptionsMenu(menu);
         //depending on your conditions, either enable/disable
@@ -131,7 +133,7 @@ public class NoteDetailActivity extends Activity {
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent = new Intent();
         int itemId = item.getItemId();
         switch (itemId) {
@@ -197,6 +199,7 @@ public class NoteDetailActivity extends Activity {
             this.colorCode = colorCode;
         }
 
+        @NonNull
         public static Colors fromId(int id) {
 
             for (Colors color : Colors.values()) {
@@ -207,7 +210,8 @@ public class NoteDetailActivity extends Activity {
         }
     }
 
-    private Sticky GetInfoFromMessage(Message message) {
+    @Nullable
+    private Sticky GetInfoFromMessage(@NonNull Message message) {
         ContentType contentType = null;
         String stringres = null;
         InputStream iis = null;
@@ -246,7 +250,7 @@ public class NoteDetailActivity extends Activity {
         return sticky;
     }
 
-    private void GetPart(Part message) throws Exception {
+    private void GetPart(@NonNull Part message) throws Exception {
         if (message.isMimeType("text/plain")) {
             Log.d(TAG, "+++ isMimeType text/plain (contentType):" + message.getContentType());
         } else if (message.isMimeType("multipart/*")) {
@@ -272,6 +276,7 @@ public class NoteDetailActivity extends Activity {
         }
     }
 
+    @NonNull
     private Sticky ReadHtmlnote(String stringres) {
 //        Log.d(TAG,"From server (html):"+stringres);
         Spanned spanres = Html.fromHtml(stringres);
@@ -285,6 +290,7 @@ public class NoteDetailActivity extends Activity {
         return new Sticky(stringres, "", Colors.NONE);
     }
 
+    @NonNull
     private Sticky ReadPlainnote(String stringres) {
 //        Log.d(TAG,"From server (plain):"+stringres);
         stringres = stringres.replaceAll("\n", "<br>");
@@ -292,7 +298,7 @@ public class NoteDetailActivity extends Activity {
         return new Sticky(stringres, "", Colors.NONE);
     }
 
-    private void WriteMailToFile(String suid, Message message) {
+    private void WriteMailToFile(@NonNull String suid, @NonNull Message message) {
         String directory = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         try {

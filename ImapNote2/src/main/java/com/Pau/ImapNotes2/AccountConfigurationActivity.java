@@ -8,6 +8,8 @@ import android.content.ContentResolver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,12 +52,18 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private CheckBox stickyCheckBox;
     private Spinner securitySpinner;
     private ImapNotes2Account imapNotes2Account;
+    // TODO: This should probably be initialized to None so that it need not be nullable.
+    @Nullable
     private Security security;
     //private int security_i;
+    @Nullable
     private Actions action;
+    @Nullable
     private String accountname;
+    @NonNull
     private ConfigurationFile settings = new ConfigurationFile();
 
+    @Nullable
     private static Account myAccount = null;
     private static AccountManager accountManager;
 
@@ -165,8 +173,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         portnumTextView.setText(settings.GetPortnum());
         security = settings.GetSecurity();
         // Can never be null. if (security == null) security = "0";
-        int security_i = security.ordinal();
-        securitySpinner.setSelection(security_i);
+        //int security_i = security.ordinal();
+        securitySpinner.setSelection(security.ordinal());
         stickyCheckBox.setChecked(settings.GetUsesticky());
         syncintervalTextView.setText("15");
         folderTextView.setText(settings.GetFoldername());
@@ -199,8 +207,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
             folderTextView.setText(GetConfigValue(ConfigurationFieldNames.ImapFolder));
             //if (security == null) security = "0";
-            security_i = security.ordinal();
-            securitySpinner.setSelection(security_i);
+            //security_i = security.ordinal();
+            securitySpinner.setSelection(security.ordinal());
             Button buttonEdit = new Button(this);
             buttonEdit.setText(R.string.save);
             buttonEdit.setOnClickListener(clickListenerEdit);
@@ -227,20 +235,28 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         return accountManager.getUserData(myAccount, name);
     }
 
+    private String GetTextViewText(@NonNull TextView textView) {
+        return textView.getText().toString().trim();
+    }
+
     // DoLogin method is defined in account_selection.xml (account_selection layout)
     private void DoLogin(View v) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, getString(R.string.app_name),
                 getString(R.string.logging_in), true);
-        imapNotes2Account.SetAccountname(accountnameTextView.getText().toString().trim());
-        imapNotes2Account.SetUsername(usernameTextView.getText().toString().trim());
-        imapNotes2Account.SetPassword(passwordTextView.getText().toString().trim());
-        imapNotes2Account.SetServer(serverTextView.getText().toString().trim());
-        imapNotes2Account.SetPortnum(portnumTextView.getText().toString());
+        imapNotes2Account.SetAccountname(GetTextViewText(accountnameTextView));
+        imapNotes2Account.SetUsername(GetTextViewText(usernameTextView));
+        imapNotes2Account.SetPassword(GetTextViewText(passwordTextView));
+        imapNotes2Account.SetServer(GetTextViewText(serverTextView));
+        imapNotes2Account.SetPortnum(GetTextViewText(portnumTextView));
         imapNotes2Account.SetSecurity(security);
         imapNotes2Account.SetUsesticky(stickyCheckBox.isChecked());
-        imapNotes2Account.SetSyncinterval(syncintervalTextView.getText().toString());
-        imapNotes2Account.SetFoldername(folderTextView.getText().toString());
-        long SYNC_FREQUENCY = Long.parseLong(syncintervalTextView.getText().toString(), 10) * 60;
+        imapNotes2Account.SetSyncinterval(GetTextViewText(syncintervalTextView));
+        imapNotes2Account.SetFoldername(GetTextViewText(folderTextView));
+        // No need to check for valid numbers because the field only allows digits.  But it is
+        // possible to remove all characters which causes the program to crash.  The easiest fix is
+        // to add a zero at the beginning so that we are guaranteed to be able to parse it but that
+        // leaves us with a zero sync. interval.
+        long SYNC_FREQUENCY = Long.parseLong(GetTextViewText(syncintervalTextView), 10) * 60;
         new LoginThread(
                 imapFolder,
                 imapNotes2Account,
@@ -257,6 +273,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private final long SYNC_FREQUENCY;
 
         private final AccountConfigurationActivity accountConfigurationActivity;
+        @NonNull
         private ImapNotes2Result res = new ImapNotes2Result();
         private final Actions action;
 
@@ -274,6 +291,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         }
 
+        @NonNull
         protected Boolean doInBackground(Void... none) {
             //action = (String) stuffs[ParamAction];
             try {
@@ -293,9 +311,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     //long SYNC_FREQUENCY = (long) stuffs[ParamSyncPeriod];
                     AccountManager am = AccountManager.get(accountConfigurationActivity);
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
-                    Bundle result;
+                    //Bundle result;
                     if (action == Actions.EDIT_ACCOUNT) {
-                        result = new Bundle();
+                        Bundle result = new Bundle();
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                         setAccountAuthenticatorResult(result);
@@ -314,7 +332,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         return true;
                     } else {
                         if (am.addAccountExplicitly(account, imapNotes2Account.GetPassword(), null)) {
-                            result = new Bundle();
+                            Bundle result = new Bundle();
                             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                             setAccountAuthenticatorResult(result);
@@ -379,7 +397,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);

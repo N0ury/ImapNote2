@@ -12,6 +12,8 @@ import org.xmlpull.v1.XmlSerializer;
 
 import android.content.Context;
 //import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Xml;
 
 import com.Pau.ImapNotes2.ImapNotes2k;
@@ -24,19 +26,26 @@ public class ConfigurationFile {
 
     // TODO: make all fields final.
     // The account name is the concatenation of the username and server.
+    @Nullable
     private String accountname;
     // User name on the IMAP server.
+    @Nullable
     private String username;
+    @Nullable
     private String password;
     // Address of the IMAP server
+    @Nullable
     private String server;
     // Port number.
+    @Nullable
     private String portnum;
     // TLS, etc.
+    @Nullable
     private Security security = Security.None;
     // ?
     private boolean usesticky;
     // The name of the IMAP folder to be used.
+    @Nullable
     private String imapfolder;
 
 
@@ -82,10 +91,12 @@ public class ConfigurationFile {
         }
     }
 
+    @Nullable
     public String GetAccountname() {
         return accountname;
     }
 
+    @Nullable
     public String GetUsername() {
         return username;
     }
@@ -94,6 +105,7 @@ public class ConfigurationFile {
         username = Username;
     }
 
+    @Nullable
     public String GetPassword() {
         return password;
     }
@@ -102,6 +114,7 @@ public class ConfigurationFile {
         password = Password;
     }
 
+    @Nullable
     public String GetServer() {
         return server;
     }
@@ -110,6 +123,7 @@ public class ConfigurationFile {
         server = Server;
     }
 
+    @Nullable
     public String GetPortnum() {
         return portnum;
     }
@@ -118,6 +132,7 @@ public class ConfigurationFile {
         portnum = Portnum;
     }
 
+    @Nullable
     public Security GetSecurity() {
         return security;
     }
@@ -138,6 +153,7 @@ public class ConfigurationFile {
     }
 */
 
+    @Nullable
     public String GetFoldername() {
         return imapfolder;
     }
@@ -181,7 +197,7 @@ public class ConfigurationFile {
     }
 
     // Avoid repeated literal tag names.
-    private void SerializeText(XmlSerializer serializer,
+    private void SerializeText(@NonNull XmlSerializer serializer,
                                String tag,
                                String text)
             throws IOException {
@@ -190,13 +206,13 @@ public class ConfigurationFile {
         serializer.endTag(null, tag);
     }
 
-    private NodeList LoadItemFromXML(Document fileLoaded,
+    private NodeList LoadItemFromXML(@NonNull Document fileLoaded,
                                      String tag) {
         return fileLoaded.getElementsByTagName(tag);
     }
 
     // Reduce clutter and improve maintainability.
-    private String NodeValueFromXML(Document fileLoaded,
+    private String NodeValueFromXML(@NonNull Document fileLoaded,
                                     String tag) {
         return LoadItemFromXML(fileLoaded, tag).item(0).getChildNodes().item(0).getNodeValue();
     }

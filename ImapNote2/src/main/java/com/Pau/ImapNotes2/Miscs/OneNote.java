@@ -1,5 +1,7 @@
 package com.Pau.ImapNotes2.Miscs;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 
 /*  Represents metadata aboit a note. */
@@ -51,6 +53,7 @@ public class OneNote extends HashMap<String, String> {
         this.put("uid", uid);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return ("Title:" + this.GetTitle() +

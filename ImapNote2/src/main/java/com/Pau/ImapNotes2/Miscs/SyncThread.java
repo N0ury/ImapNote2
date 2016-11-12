@@ -10,13 +10,18 @@ import com.Pau.ImapNotes2.Data.NotesDb;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     private final ProgressDialog progressDialog;
     private NotesListAdapter adapter;
     private ArrayList<OneNote> notesList;
+    // TODO: NoteDb should probably never be null.
+    @Nullable
     private NotesDb storedNotes;
     boolean bool_to_return;
+    @NonNull
     ImapNotes2Result res = new ImapNotes2Result();
     private static final String TAG = "SyncThread";
 
@@ -26,7 +31,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
                       ArrayList<OneNote> noteList,
                       NotesListAdapter listToView,
                       ProgressDialog loadingDialog,
-                      NotesDb storedNotes,
+                      @Nullable NotesDb storedNotes,
                       Context applicationContext) {
         //this.imapFolder = imapFolder;
         //this.imapNotes2Account = imapNotes2Account;
@@ -40,6 +45,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
 
     // Do not pass arguments via execute; the object is never reused so it is quite safe to pass
     // the arguments in the constructor.
+    @NonNull
     @Override
     protected Boolean doInBackground(Object... stuffs) {
         /*String username = null;
