@@ -51,8 +51,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     Assign all fields in the constructor because we never reuse this object.  This makes the code
     typesafe.  Make them final to preven accidental reuse.
     */
-    public UpdateThread(Imaper imapFolder,
-                        ImapNotes2Account imapNotes2Account,
+    public UpdateThread(ImapNotes2Account imapNotes2Account,
                         ArrayList<OneNote> noteList,
                         NotesListAdapter listToView,
                         ProgressDialog loadingDialog,
@@ -111,7 +110,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 String noteTxt = Html.fromHtml(noteBody).toString();
                 String[] tok = noteTxt.split("\n", 2);
                 String title = tok[0];
-                String position = "0 0 0 0";
+                //String position = "0 0 0 0";
                 String body = (imapNotes2Account.GetUsesticky()) ?
                         noteTxt.replaceAll("\n", "\\\\n") :
                         "<html><head></head><body>" + noteBody + "</body></html>";
@@ -133,7 +132,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 storedNotes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountname());
                 storedNotes.CloseDb();
                 // Add note to noteList but chage date format before
-                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(ctx);
+                //DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(ctx);
                 String sdate = DateFormat.getDateTimeInstance().format(date);
                 currentNote.SetDate(sdate);
                 notesList.add(0, currentNote);
@@ -165,15 +164,19 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     }
 
     private void MoveMailToDeleted(@NonNull String suid) {
-        String directory = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
+        String directory = ImapNotes2k.getAppContext().getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
-        String positiveUid = suid.substring(1);
+        // TODO: Explain why we need to omit the first character of the UID
         File from = new File(directory, suid);
-        File to = new File(directory + "/deleted/" + suid);
         if (!from.exists()) {
+            String positiveUid = suid.substring(1);
             from = new File(directory + "/new", positiveUid);
+            // TODO: Explain why it is safe to ignore the result of delete.
             from.delete();
         } else {
+            File to = new File(directory + "/deleted/" + suid);
+            // TODO: Explain why it is safe to ignore the result of rename.
+            //noinspection ResultOfMethodCallIgnored
             from.renameTo(to);
         }
     }
@@ -181,7 +184,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private void WriteMailToNew(@NonNull OneNote note,
                                 boolean usesticky,
                                 String noteBody) throws MessagingException, IOException {
-        String body = null;
+        //String body = null;
 
         // Here we add the new note to the "new" folder
         //Log.d(TAG,"Add new note");
@@ -189,7 +192,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
         if (usesticky) {
-            body = "BEGIN:STICKYNOTE\nCOLOR:" + color.name() + "\nTEXT:" + noteBody +
+            String body = "BEGIN:STICKYNOTE\nCOLOR:" + color.name() + "\nTEXT:" + noteBody +
                     "\nPOSITION:0 0 0 0\nEND:STICKYNOTE";
             message.setText(body);
             message.setHeader("Content-Transfer-Encoding", "8bit");
@@ -198,7 +201,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
             message.setHeader("X-Uniform-Type-Identifier", "com.apple.mail-note");
             UUID uuid = UUID.randomUUID();
             message.setHeader("X-Universally-Unique-Identifier", uuid.toString());
-            body = noteBody;
+            String body = noteBody;
             body = body.replaceFirst("<p dir=ltr>", "<div>");
             body = body.replaceFirst("<p dir=\"ltr\">", "<div>");
             body = body.replaceAll("<p dir=ltr>", "<div><br></div><div>");

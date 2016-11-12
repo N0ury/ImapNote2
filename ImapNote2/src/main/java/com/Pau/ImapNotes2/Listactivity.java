@@ -258,7 +258,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                             String action) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2", "Updating notes list... ", true);
 
-        new UpdateThread(this.imapFolder, Listactivity.imapNotes2Account, this.noteList,
+        new UpdateThread(Listactivity.imapNotes2Account, this.noteList,
                 this.listToView, loadingDialog, suid, noteBody,
                 color, this.getApplicationContext(), action, storedNotes).execute();
 
