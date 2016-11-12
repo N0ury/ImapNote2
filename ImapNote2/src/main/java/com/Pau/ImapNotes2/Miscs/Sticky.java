@@ -14,7 +14,6 @@ public class Sticky {
     public Sticky(String text,
                   String position,
                   @NonNull Colors color) {
-        assert (color != null);
         this.text = text;
         this.position = position;
         this.color = color;

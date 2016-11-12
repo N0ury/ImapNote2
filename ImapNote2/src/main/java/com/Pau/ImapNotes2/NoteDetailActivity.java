@@ -78,7 +78,6 @@ public class NoteDetailActivity extends Activity {
         String stringres = sticky.text;
         String position = sticky.position;
         color = sticky.color;
-        assert (color != null);
         Spanned plainText = Html.fromHtml(stringres);
         EditText editText = ((EditText) findViewById(R.id.bodyView));
         editText.setText(plainText);
@@ -166,7 +165,6 @@ public class NoteDetailActivity extends Activity {
             case R.id.green:
                 item.setChecked(true);
                 color = Colors.fromId(itemId);
-                assert (color != null);
                 (findViewById(R.id.scrollView)).setBackgroundColor(color.colorCode);
                 return true;
             default:

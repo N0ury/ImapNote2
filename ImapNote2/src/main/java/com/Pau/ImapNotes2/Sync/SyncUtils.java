@@ -12,6 +12,7 @@ import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.OneNote;
 import com.Pau.ImapNotes2.Miscs.Sticky;
+import com.Pau.ImapNotes2.Miscs.Utilities;
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -407,7 +407,7 @@ public class SyncUtils {
         }
 
         // Get INTERNALDATE
-        String internaldate = null;
+        //String internaldate = null;
         Date MessageInternaldate = null;
         try {
             MessageInternaldate = notesMessage.getReceivedDate();
@@ -415,9 +415,9 @@ public class SyncUtils {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        String DATE_FORMAT = "yyyy-MM-dd HH:MM:ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        internaldate = sdf.format(MessageInternaldate);
+        //String DATE_FORMAT = "yyyy-MM-dd HH:MM:ss";
+        //SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ROOT);
+        String internaldate = Utilities.internalDateFormat.format(MessageInternaldate);
 
         OneNote aNote = new OneNote(
                 title,

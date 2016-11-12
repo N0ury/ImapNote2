@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -117,7 +118,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
 
                 String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
                 Date date = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ROOT);
                 String stringDate = sdf.format(date);
                 OneNote currentNote = new OneNote(title, stringDate, "");
                 // Add note to database

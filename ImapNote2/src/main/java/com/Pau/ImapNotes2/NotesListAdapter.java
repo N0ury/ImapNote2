@@ -219,7 +219,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * Returns the {@link ViewBinder} used to bind data to views.
      *
      * @return a ViewBinder or null if the binder does not exist
-     * @see #getViewBinder(android.widget.SimpleAdapter.ViewBinder)
+     * @see #getViewBinder()
      */
     public ViewBinder getViewBinder() {
         return mViewBinder;

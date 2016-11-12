@@ -2,11 +2,11 @@ package com.Pau.ImapNotes2.Data;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.ImapNotes2.Miscs.Utilities;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -105,10 +105,10 @@ public class NotesDb {
             int positionIndex = resultPointer.getColumnIndex("position");
             int colorIndex = resultPointer.getColumnIndex("color");
             do {
-                String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-                SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+                //String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+                //SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ROOT);
                 try {
-                    date = sdf.parse(resultPointer.getString(dateIndex));
+                    date = Utilities.internalDateFormat.parse(resultPointer.getString(dateIndex));
                 } catch (ParseException e) {
                     // TODO: Exception handling
                 } catch (Exception e) {
