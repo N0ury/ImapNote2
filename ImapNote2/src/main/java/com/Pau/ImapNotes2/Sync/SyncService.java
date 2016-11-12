@@ -18,7 +18,13 @@ public class SyncService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Service created");
+        // This sync lock is necessary because sSyncAdapter is static so if we have more than one
+        // SyncService object we would otherwise have a race condition
         synchronized (sSyncAdapterLock) {
+            // We check for null because the sync adapter is static and might have been created by
+            // another SyncService instance.
+            // TODO: find out if it is possible for there to be more than one SyncService object.
+            // If there cannot then we need neither the lock nor the null check.
             if (sSyncAdapter == null) {
                 sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
             }

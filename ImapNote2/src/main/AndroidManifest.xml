@@ -81,6 +81,7 @@
                 android:resource="@xml/authenticator" />
         </service>
 
+        <!-- TODO: What is StubProvider for?  This is the only reference to it. -->
         <provider
             android:name="com.Pau.ImapNotes2.Sync.StubProvider"
             android:authorities="com.Pau.ImapNotes2.provider"

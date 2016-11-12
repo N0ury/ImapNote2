@@ -51,7 +51,7 @@ public class SyncUtils {
     private static final String TAG = "IN_SyncUtils";
     private static String proto;
     // TODO: Why do we have two folder fields and why are they both nullable?
-    @Nullable
+    @NonNull
     private static String sfolder = "Notes";
     @Nullable
     private static Folder notesFolder = null;
@@ -61,17 +61,15 @@ public class SyncUtils {
     private final static int DELETED = 2;
     private final static int ROOT_AND_NEW = 3;
 
-    /* This function cannot return null.  Can we mark it so that the analysers can use this
-    information?
-    */
+
     @NonNull
-    static ImapNotes2Result ConnectToRemote(String username,
-                                            String password,
-                                            String server,
+    static ImapNotes2Result ConnectToRemote(@NonNull String username,
+                                            @NonNull String password,
+                                            @NonNull String server,
                                             String portnum,
                                             @NonNull Security security,
                                             String usesticky,
-                                            @Nullable String override) {
+                                            @NonNull String folderOverride) {
         if (IsConnected()) {
             try {
                 store.close();
@@ -81,8 +79,6 @@ public class SyncUtils {
                 Log.d(TAG, e.getMessage());
             }
         }
-
-        String folderoverride = (override == null) ? "" : override;
 
         proto = security.proto;
         boolean acceptcrt = security.acceptcrt;
@@ -139,8 +135,8 @@ public class SyncUtils {
             Folder[] folders = store.getPersonalNamespaces();
             Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-            if (folderoverride.length() > 0) {
-                sfolder = folderoverride;
+            if (folderOverride.length() > 0) {
+                sfolder = folderOverride;
             } else if (folder.getFullName().length() == 0) {
                 sfolder = "Notes";
             } else {
@@ -440,7 +436,6 @@ public class SyncUtils {
         String remoteInternaldate;
         String localInternaldate;
         Flags flags;
-        Boolean deleted;
 
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_ONLY) != 0)
@@ -466,8 +461,8 @@ public class SyncUtils {
             Long uid = ((IMAPFolder) notesFolder).getUID(notesMessage);
             // Get FLAGS
             flags = notesMessage.getFlags();
-            deleted = notesMessage.isSet(Flags.Flag.DELETED);
-            // Buils remote list while in the loop, but only if not deleted on remote
+            boolean deleted = notesMessage.isSet(Flags.Flag.DELETED);
+            // Builds remote list while in the loop, but only if not deleted on remote
             if (!deleted) {
                 uids.add(((IMAPFolder) notesFolder).getUID(notesMessage));
             }

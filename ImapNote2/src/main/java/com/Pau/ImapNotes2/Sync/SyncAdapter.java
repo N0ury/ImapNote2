@@ -74,7 +74,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         // TODO: should the account be static?  Should it be local?  If static then why do we not
         // provide it in the constructor?
         SyncAdapter.account = account;
-        Boolean isChanged = false;
         Boolean isSynced = false;
         String syncinterval;
 
@@ -95,8 +94,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             // refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra(Listactivity.ACCOUNTNAME, account.name);
-            isChanged = false;
-            isSynced = false;
             i.putExtra(Listactivity.CHANGED, false);
             i.putExtra(Listactivity.SYNCED, false);
             i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
@@ -133,6 +130,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             context.sendBroadcast(i);
             return;
         }
+
+        boolean isChanged = false;
 
         // Send new local messages to remote, move them to local folder
         // and update uids in database

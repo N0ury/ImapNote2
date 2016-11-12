@@ -24,8 +24,7 @@ public class Imaper {
 
     private Store store;
     private static final String TAG = "IN_Imaper";
-    @NonNull
-    private static String sfolder = "Notes";
+
     private Long UIDValidity;
     public static final String PREFS_NAME = "PrefsFile";
 
@@ -139,7 +138,7 @@ public class Imaper {
             Folder[] folders = store.getPersonalNamespaces();
             Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-            if (folderoverride.length() > 0) {
+            /*if (folderoverride.length() > 0) {
                 Imaper.sfolder = folderoverride;
             } else if (folder.getFullName().length() == 0) {
                 Imaper.sfolder = "Notes";
@@ -147,6 +146,7 @@ public class Imaper {
                 char separator = folder.getSeparator();
                 Imaper.sfolder = folder.getFullName() + separator + "Notes";
             }
+*/
             res.errorMessage = "";
             res.returnCode = ResultCodeSuccess;
             return res;
