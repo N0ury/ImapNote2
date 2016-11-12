@@ -86,8 +86,8 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      *                 TextViews. The first N views in this list are given the values of the first N columns
      *                 in the from parameter.
      */
-    public NotesListAdapter(@NonNull Context context, List<? extends Map<String, ?>> data,
-                            int resource, String[] from, int[] to) {
+    NotesListAdapter(@NonNull Context context, List<? extends Map<String, ?>> data,
+                     int resource, String[] from, int[] to) {
         mData = data;
         mResource = mDropDownResource = resource;
         mFrom = from;
@@ -221,7 +221,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @return a ViewBinder or null if the binder does not exist
      * @see #getViewBinder()
      */
-    public ViewBinder getViewBinder() {
+    private ViewBinder getViewBinder() {
         return mViewBinder;
     }
 
@@ -307,7 +307,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
      * @see SimpleAdapter#setViewImage(ImageView, String)
      * @see SimpleAdapter#setViewText(TextView, String)
      */
-    public interface ViewBinder {
+    interface ViewBinder {
         /**
          * Binds the specified data to the specified view.
          * <p>
