@@ -12,7 +12,7 @@
         android:id="@+id/delete"
         android:icon="@drawable/ic_action_delete"
         android:showAsAction="ifRoom"
-        android:title="Delete">
+        android:title="@string/delete">
 
     </item>
 
@@ -20,26 +20,26 @@
         android:id="@+id/color"
         android:icon="@drawable/ic_action_color"
         android:showAsAction="ifRoom"
-        android:title="Color">
+        android:title="@string/color">
         <menu>
             <group
                 android:id="@+id/color_group"
                 android:checkableBehavior="single">
                 <item
                     android:id="@+id/blue"
-                    android:title="Blue" />
+                    android:title="@string/blue" />
                 <item
                     android:id="@+id/white"
-                    android:title="White" />
+                    android:title="@string/white" />
                 <item
                     android:id="@+id/yellow"
-                    android:title="Yellow" />
+                    android:title="@string/yellow" />
                 <item
                     android:id="@+id/pink"
-                    android:title="Pink" />
+                    android:title="@string/pink" />
                 <item
                     android:id="@+id/green"
-                    android:title="Green" />
+                    android:title="@string/green" />
             </group>
         </menu>
     </item>

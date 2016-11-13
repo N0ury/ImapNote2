@@ -535,7 +535,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
     private static void TriggerSync(@NonNull TextView statusField) {
         OldStatus = statusField.getText().toString();
-        statusField.setText("Syncing...");
+        statusField.setText(R.string.syncing);
         Account mAccount = Listactivity.imapNotes2Account.GetAccount();
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(
