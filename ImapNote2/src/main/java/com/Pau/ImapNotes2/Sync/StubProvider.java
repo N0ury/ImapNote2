@@ -7,10 +7,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-/*
+/**
  * Define an implementation of ContentProvider that stubs out
  * all methods.
- * 
+ *
  * TODO: Find out what this is for and explain it in the comments.
  */
 class StubProvider extends ContentProvider {

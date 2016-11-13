@@ -4,8 +4,9 @@
     android:versionCode="40"
     android:versionName="4.9">
 
-    <!----><uses-sdk android:minSdkVersion="19" />
-
+    <!--
+    <uses-sdk android:minSdkVersion="19" />
+    -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -81,7 +82,10 @@
                 android:resource="@xml/authenticator" />
         </service>
 
-        <!-- TODO: What is StubProvider for?  This is the only reference to it. -->
+        <!-- TODO: What is StubProvider for?  This is the only reference to it.
+         Also AndroidDom Inspection complains about it not being public, yet the application still
+         works.-->
+        <!--suppress AndroidDomInspection -->
         <provider
             android:name="com.Pau.ImapNotes2.Sync.StubProvider"
             android:authorities="com.Pau.ImapNotes2.provider"

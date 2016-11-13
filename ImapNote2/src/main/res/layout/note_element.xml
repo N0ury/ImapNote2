@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="40dp"
         android:scrollHorizontally="false"
-        android:singleLine="true"
         android:text="Note Title"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:maxLines="1" />
 
     <!-- This text view is used to display the date and time of the most recent edit. -->
     <TextView

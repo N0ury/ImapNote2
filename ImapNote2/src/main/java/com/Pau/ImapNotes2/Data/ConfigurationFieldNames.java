@@ -6,7 +6,7 @@ package com.Pau.ImapNotes2.Data;
 
 public final class ConfigurationFieldNames {
     public static final String UserName = "username";
-    public static final String Password = "password";
+    static final String Password = "password";
     public static final String UseSticky = "usesticky";
     public static final String ImapFolder = "imapfolder";
     public static final String Server = "server";
