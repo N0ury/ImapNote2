@@ -5,12 +5,15 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /*
  * Define an implementation of ContentProvider that stubs out
- * all methods
+ * all methods.
+ * 
+ * TODO: Find out what this is for and explain it in the comments.
  */
-public class StubProvider extends ContentProvider {
+class StubProvider extends ContentProvider {
     /*
      * Always return true, indicating that the
      * provider loaded correctly.
@@ -22,6 +25,7 @@ public class StubProvider extends ContentProvider {
     /*
      * Return no type for MIME type
      */
+    @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
         return null;
@@ -30,6 +34,7 @@ public class StubProvider extends ContentProvider {
      * query() always returns no results
      *
      */
+    @Nullable
     @Override
     public Cursor query(
             @NonNull Uri uri,
@@ -42,6 +47,7 @@ public class StubProvider extends ContentProvider {
     /*
      * insert() always returns null (no URI)
      */
+    @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         return null;

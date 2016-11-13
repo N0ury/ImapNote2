@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.*;
 import android.support.v4.BuildConfig;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
@@ -76,7 +75,7 @@ public class NoteDetailActivity extends Activity {
         Message message = SyncUtils.ReadMailFromFile(suid, ROOT_AND_NEW, true, rootDir);
         Sticky sticky = GetInfoFromMessage(message);
         String stringres = sticky.text;
-        String position = sticky.position;
+        //String position = sticky.position;
         color = sticky.color;
         Spanned plainText = Html.fromHtml(stringres);
         EditText editText = ((EditText) findViewById(R.id.bodyView));
@@ -92,12 +91,12 @@ public class NoteDetailActivity extends Activity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-                // TODO Auto-generated method stub
+                // TODO Work in progess
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+                // TODO Work in progess
             }
 
         });

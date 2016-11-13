@@ -278,7 +278,10 @@ public class SyncUtils {
     }
 
     @Nullable
-    public static Message ReadMailFromFile(@NonNull String uid, int where, boolean removeMinus, String nameDir) {
+    public static Message ReadMailFromFile(@NonNull String uid,
+                                           int where,
+                                           boolean removeMinus,
+                                           String nameDir) {
         File mailFile;
         Message message = null;
         mailFile = new File(nameDir, uid);
