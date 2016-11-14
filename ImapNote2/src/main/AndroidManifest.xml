@@ -70,7 +70,7 @@
         </activity>
 
         <service
-            android:name="com.Pau.ImapNotes2.Miscs.ImapNotesAuthenticatorService"
+            android:name="com.Pau.ImapNotes2.Sync.ImapNotesAuthenticatorService"
             android:exported="true"
             android:permission="">
             <intent-filter>

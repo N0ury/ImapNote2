@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.ImapNotes2.Data.OneNote;
 
 import android.app.Application;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.Pau.ImapNotes2.Miscs;
+package com.Pau.ImapNotes2.Sync;
 
 import com.Pau.ImapNotes2.AccountConfigurationActivity;
 import com.Pau.ImapNotes2.Sync.SyncUtils;

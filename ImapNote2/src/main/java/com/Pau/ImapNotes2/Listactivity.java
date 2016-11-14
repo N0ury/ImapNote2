@@ -16,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Miscs.OneNote;
+import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Miscs.UpdateThread;
 import com.Pau.ImapNotes2.Miscs.SyncThread;

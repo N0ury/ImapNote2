@@ -3,6 +3,7 @@ package com.Pau.ImapNotes2.Miscs;
 import java.util.ArrayList;
 
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
+import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
 import com.Pau.ImapNotes2.Data.NotesDb;

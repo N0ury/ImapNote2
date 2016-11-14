@@ -1,4 +1,4 @@
-package com.Pau.ImapNotes2.Miscs;
+package com.Pau.ImapNotes2.Data;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

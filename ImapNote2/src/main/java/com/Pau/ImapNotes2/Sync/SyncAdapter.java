@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.mail.Flags;
 import javax.mail.Message;
@@ -23,6 +22,7 @@ import javax.mail.internet.MimeMessage;
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
+import com.Pau.ImapNotes2.Data.Security;
 import com.sun.mail.imap.AppendUID;
 
 import com.Pau.ImapNotes2.Listactivity;

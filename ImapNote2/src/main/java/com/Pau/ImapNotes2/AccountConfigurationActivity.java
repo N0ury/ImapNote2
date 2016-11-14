@@ -31,7 +31,7 @@ import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Sync.Security;
+import com.Pau.ImapNotes2.Data.Security;
 
 import java.util.List;
 

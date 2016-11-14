@@ -5,9 +5,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.Pau.ImapNotes2.Miscs.OneNote;
-import com.Pau.ImapNotes2.Miscs.Utilities;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

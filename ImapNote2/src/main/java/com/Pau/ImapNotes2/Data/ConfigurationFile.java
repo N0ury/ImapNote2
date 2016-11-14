@@ -17,7 +17,6 @@ import android.support.annotation.Nullable;
 import android.util.Xml;
 
 import com.Pau.ImapNotes2.ImapNotes2k;
-import com.Pau.ImapNotes2.Sync.Security;
 
 public class ConfigurationFile {
 

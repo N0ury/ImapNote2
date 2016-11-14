@@ -13,7 +13,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 
-import com.Pau.ImapNotes2.Sync.Security;
+import com.Pau.ImapNotes2.Data.Security;
 import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.util.MailSSLSocketFactory;
 

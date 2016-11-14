@@ -18,6 +18,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MailDateFormat;
 
+import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.ImapNotes2k;
 import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
