@@ -1,5 +1,6 @@
 package com.Pau.ImapNotes2.Data;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -11,15 +12,21 @@ import java.util.Objects;
 /**
  * Created by kj on 11/1/16.
  * <p>
- * <p>
- * Use this instead of integers in the account configuration.  Store the name of the security type instead.
+ * Use this instead of integers in the account configuration.  Store the name of the security type
+ * instead.
+ *
+ * The items annotated with @SuppressWarnings("unused") are used but only by code that calls the
+ * from method so the analyser cannot see that they are used
  */
-
 public enum Security {
     None("None", "", "imap", false),
+    @SuppressWarnings("unused")
     SSL_TLS("SSL/TLS", "993", "imaps", false),
+    @SuppressWarnings("unused")
     SSL_TLS_accept_all_certificates("SSL/TLS (accept all certificates)", "993", "imaps", true),
+    @SuppressWarnings("unused")
     STARTTLS("STARTTLS", "143", "imaps", false),
+    @SuppressWarnings("unused")
     STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)", "143", "imaps", true);
 
     public final String proto;
@@ -49,6 +56,7 @@ public enum Security {
     }
 
     // Mapping from integer.  See http://dan.clarke.name/2011/07/enum-in-java-with-int-conversion/
+    @SuppressLint("UseSparseArrays") // False positive, SparseArray cannot be used here.
     private static final Map<Integer, Security> _map = new HashMap<>();
 
     static {
