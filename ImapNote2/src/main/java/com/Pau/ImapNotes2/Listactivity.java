@@ -114,7 +114,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             String mPackage = "com.Pau.ImapNotes2";
             String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage, mPackage + mClass));
-            res.putExtra(ACTION, Actions.EDIT_ACCOUNT);
+            res.putExtra(ACTION, AccountConfigurationActivity.Actions.EDIT_ACCOUNT);
             res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountname());
             startActivity(res);
         }
@@ -255,7 +255,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private void UpdateList(String suid,
                             String noteBody,
                             Colors color,
-                            String action) {
+                            UpdateThread.Action action) {
         ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2", "Updating notes list... ", true);
 
         new UpdateThread(Listactivity.imapNotes2Account, this.noteList,
@@ -301,7 +301,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 String mPackage = "com.Pau.ImapNotes2";
                 String mClass = ".AccountConfigurationActivity";
                 res.setComponent(new ComponentName(mPackage, mPackage + mClass));
-                res.putExtra(ACTION, Actions.CREATE_ACCOUNT);
+                res.putExtra(ACTION, AccountConfigurationActivity.Actions.CREATE_ACCOUNT);
                 startActivity(res);
                 return true;
             case R.id.refresh:
@@ -345,7 +345,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     // Delete Message asked for
                     // String suid will contain the Message Imap UID to delete
                     String suid = data.getStringExtra(DELETE_ITEM_NUM_IMAP);
-                    this.UpdateList(suid, null, null, "delete");
+                    this.UpdateList(suid, null, null, UpdateThread.Action.Delete);
                 }
                 if (resultCode == Listactivity.EDIT_BUTTON) {
                     String txt = data.getStringExtra(EDIT_ITEM_TXT);
@@ -353,7 +353,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     Colors color = (Colors) data.getSerializableExtra(EDIT_ITEM_COLOR);
                     //Log.d(TAG,"Received request to delete message:"+suid);
                     //Log.d(TAG,"Received request to replace message with:"+txt);
-                    this.UpdateList(suid, txt, color, "update");
+                    this.UpdateList(suid, txt, color, UpdateThread.Action.Update);
                 }
             case Listactivity.NEW_BUTTON:
                 // Returning from NewNoteActivity
@@ -361,7 +361,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     String res = data.getStringExtra(SAVE_ITEM);
                     //Log.d(TAG,"Received request to save message:"+res);
                     Colors color = (Colors) data.getSerializableExtra(SAVE_ITEM_COLOR);
-                    this.UpdateList(null, res, color, "insert");
+                    this.UpdateList(null, res, color, UpdateThread.Action.Insert);
                 }
         }
     }

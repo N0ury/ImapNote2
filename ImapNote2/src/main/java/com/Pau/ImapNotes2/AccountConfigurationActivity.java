@@ -277,12 +277,12 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private ImapNotes2Result res = new ImapNotes2Result();
         private final Actions action;
 
-        public LoginThread(Imaper mapFolder,
-                           ImapNotes2Account imapNotes2Account,
-                           ProgressDialog loadingDialog,
-                           AccountConfigurationActivity accountConfigurationActivity,
-                           Actions action,
-                           long SYNC_FREQUENCY) {
+        LoginThread(Imaper mapFolder,
+                    ImapNotes2Account imapNotes2Account,
+                    ProgressDialog loadingDialog,
+                    AccountConfigurationActivity accountConfigurationActivity,
+                    Actions action,
+                    long SYNC_FREQUENCY) {
             this.imapNotes2Account = imapNotes2Account;
             this.progressDialog = loadingDialog;
             this.accountConfigurationActivity = accountConfigurationActivity;

@@ -74,7 +74,7 @@ public enum Security {
                 return security;
             }
         }
-        // Wasn't recognized, try using the ordinal instead
+        // Wasn't recognized, try using the ordinal instead, backwards compatibility.
         int i = Integer.parseInt(name);
         return from(i);
     }

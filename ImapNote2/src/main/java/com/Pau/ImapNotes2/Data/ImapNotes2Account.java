@@ -16,8 +16,8 @@ public class ImapNotes2Account {
     private String server = "";
     @Nullable
     private String portnum = "";
-    @Nullable
-    private Security security = null;
+    @NonNull
+    private Security security = Security.None;
     private boolean usesticky = false;
     private String syncinterval = "15";
     @Nullable
@@ -92,7 +92,7 @@ public class ImapNotes2Account {
         this.portnum = Portnum;
     }
 
-    @Nullable
+    @NonNull
     public Security GetSecurity() {
         return security;
     }
@@ -124,15 +124,18 @@ public class ImapNotes2Account {
     public void SetaccountHasChanged() {
         this.accountHasChanged = true;
     }
-
+/*
     public void SetaccountHasNotChanged() {
         this.accountHasChanged = false;
     }
+    */
+/*
 
     @NonNull
     public Boolean GetaccountHasChanged() {
         return this.accountHasChanged;
     }
+*/
 
     @Nullable
     public String GetFoldername() {
@@ -142,15 +145,15 @@ public class ImapNotes2Account {
     public void SetFoldername(String folder) {
         this.imapfolder = folder;
     }
-
+/*
     public void Clear() {
         this.username = null;
         this.password = null;
         this.server = null;
         this.portnum = null;
-        this.security = null;
+        this.security = Security.None;
         this.usesticky = false;
         this.imapfolder = null;
         this.accountHasChanged = false;
-    }
+    }*/
 }

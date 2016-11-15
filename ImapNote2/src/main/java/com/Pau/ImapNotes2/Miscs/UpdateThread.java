@@ -45,8 +45,14 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private boolean bool_to_return;
     private NotesDb storedNotes;
     private final Context ctx;
-    private final String action;
+    private final Action action;
     private static final String TAG = "UpdateThread";
+
+    public enum Action {
+        Update,
+        Insert,
+        Delete
+    }
 
     /*
     Assign all fields in the constructor because we never reuse this object.  This makes the code
@@ -60,7 +66,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                         String noteBody,
                         Colors color,
                         Context applicationContext,
-                        String action,
+                        Action action,
                         NotesDb storedNotes) {
 
         this.imapNotes2Account = imapNotes2Account;
@@ -77,21 +83,10 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     }
     @Override
     protected Boolean doInBackground(Object... stuffs) {
-/*
-        this.adapter = ((NotesListAdapter) stuffs[3]);
-        this.notesList = ((ArrayList<OneNote>) stuffs[2]);
-        this.suid = ((String) stuffs[5]);
-        this.noteBody = ((String) stuffs[6]);
-        this.color = ((String) stuffs[7]);
-        this.imapFolder = ((Imaper) stuffs[0]);
-        this.ctx = (Context) stuffs[8];
-        this.action = (String) stuffs[9];
-        this.storedNotes = (NotesDb) stuffs[10];
-*/
 
         try {
             // Do we have a note to remove?
-            if (action.equals("delete") || action.equals("update")) {
+            if ((action == Action.Delete) || (action == Action.Update)) {
                 //Log.d(TAG,"Received request to delete message #"+suid);
                 // Here we delete the note from the local notes list
                 //Log.d(TAG,"Delete note in Listview");
@@ -104,7 +99,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
             }
 
             // Do we have a note to add?
-            if (action.equals("insert") || action.equals("update")) {
+            if ((action == Action.Insert) || (action == Action.Update)) {
 //Log.d(TAG,"Sticky ? "+((ImapNotes2Account)stuffs[1]).GetUsesticky());
 //Log.d(TAG,"Color:"+color);
                 //Log.d(TAG,"Received request to add new message"+noteBody+"===");
@@ -164,6 +159,9 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         return -1;
     }
 
+    /**
+     * @param suid IMAP ID of the note.
+     */
     private void MoveMailToDeleted(@NonNull String suid) {
         String directory = ImapNotes2k.getAppContext().getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
