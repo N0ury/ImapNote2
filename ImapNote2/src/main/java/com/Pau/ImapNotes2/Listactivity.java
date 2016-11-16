@@ -240,28 +240,35 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     };
 
     private void RefreshList() {
-        ProgressDialog loadingDialog = ProgressDialog.show(this, "ImapNotes2", "Refreshing notes list... ", true);
-
         new SyncThread(this.imapFolder,
                 Listactivity.imapNotes2Account,
                 this.noteList,
                 this.listToView,
-                loadingDialog,
+                ShowProgress(R.string.refreshing_notes_list),
                 storedNotes,
                 this.getApplicationContext()).execute();
-        status.setText("Welcome");
+        status.setText(R.string.welcome);
     }
 
     private void UpdateList(String suid,
                             String noteBody,
                             Colors color,
                             UpdateThread.Action action) {
-        ProgressDialog loadingDialog = ProgressDialog.show(this, "imapnote2", "Updating notes list... ", true);
+        new UpdateThread(Listactivity.imapNotes2Account,
+                this.noteList,
+                this.listToView,
+                ShowProgress(R.string.updating_notes_list),
+                suid,
+                noteBody,
+                color,
+                this.getApplicationContext(),
+                action,
+                storedNotes).execute();
+    }
 
-        new UpdateThread(Listactivity.imapNotes2Account, this.noteList,
-                this.listToView, loadingDialog, suid, noteBody,
-                color, this.getApplicationContext(), action, storedNotes).execute();
-
+    private ProgressDialog ShowProgress(int detailId) {
+        return ProgressDialog.show(this, getString(R.string.app_name),
+                getString(detailId), true);
     }
 
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
