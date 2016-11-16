@@ -84,7 +84,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Login Button
-            CheckNameAndLogIn(v);
+            CheckNameAndLogIn();
         }
     };
 
@@ -92,17 +92,17 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Edit Button
-            CheckNameAndLogIn(v);
+            CheckNameAndLogIn();
         }
     };
 
-    private void CheckNameAndLogIn(View v) {
+    private void CheckNameAndLogIn() {
         if (accountnameTextView.getText().toString().contains("'")) {
             // Single quotation marks are not allowed in accountname
             Toast.makeText(getApplicationContext(), R.string.quotation_marks_not_allowed,
                     Toast.LENGTH_LONG).show();
         } else {
-            DoLogin(v);
+            DoLogin();
         }
     }
 
@@ -176,7 +176,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         //int security_i = security.ordinal();
         securitySpinner.setSelection(security.ordinal());
         stickyCheckBox.setChecked(settings.GetUsesticky());
-        syncintervalTextView.setText("15");
+        syncintervalTextView.setText(R.string.default_sync_interval);
         folderTextView.setText(settings.GetFoldername());
         //}
 
@@ -231,7 +231,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         );
     }
 
-    private String GetConfigValue(String name) {
+    private String GetConfigValue(@NonNull String name) {
         return accountManager.getUserData(myAccount, name);
     }
 
@@ -240,7 +240,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     }
 
     // DoLogin method is defined in account_selection.xml (account_selection layout)
-    private void DoLogin(View v) {
+    private void DoLogin() {
         ProgressDialog loadingDialog = ProgressDialog.show(this, getString(R.string.app_name),
                 getString(R.string.logging_in), true);
         imapNotes2Account.SetAccountname(GetTextViewText(accountnameTextView));
@@ -258,7 +258,6 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         // leaves us with a zero sync. interval.
         long SYNC_FREQUENCY = Long.parseLong(GetTextViewText(syncintervalTextView), 10) * 60;
         new LoginThread(
-                imapFolder,
                 imapNotes2Account,
                 loadingDialog,
                 this,
@@ -277,8 +276,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private ImapNotes2Result res = new ImapNotes2Result();
         private final Actions action;
 
-        LoginThread(Imaper mapFolder,
-                    ImapNotes2Account imapNotes2Account,
+        LoginThread(ImapNotes2Account imapNotes2Account,
                     ProgressDialog loadingDialog,
                     AccountConfigurationActivity accountConfigurationActivity,
                     Actions action,
@@ -371,7 +369,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 accountConfigurationActivity.passwordTextView.setText("");
                 accountConfigurationActivity.serverTextView.setText("");
                 accountConfigurationActivity.portnumTextView.setText("");
-                accountConfigurationActivity.syncintervalTextView.setText("15");
+                accountConfigurationActivity.syncintervalTextView.setText(R.string.default_sync_interval);
                 accountConfigurationActivity.securitySpinner.setSelection(0);
                 accountConfigurationActivity.folderTextView.setText("");
                 accountConfigurationActivity.stickyCheckBox.setChecked(false);

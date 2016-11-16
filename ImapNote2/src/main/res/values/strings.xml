@@ -11,7 +11,7 @@
     <string name="remove">Remove</string>
     <string name="save">Save</string>
     <string name="check_and_create_account"><![CDATA[Check & Create Account]]></string>
-    <string name="logging_in">"Logging into your account... "</string>
+    <string name="logging_in">"Logging into your account… "</string>
     <string name="account_already_exists_or_is_null">Account already exists or is null</string>
     <string name="account_added">Account has been added</string>
     <string name="add_account">Add Account</string>
@@ -42,4 +42,5 @@
     <string name="syncing">Syncing...</string>
     <string name="refreshing_notes_list">"Refreshing notes list... "</string>
     <string name="updating_notes_list">"Updating notes list... "</string>
+    <string name="default_sync_interval">15</string>
 </resources>
