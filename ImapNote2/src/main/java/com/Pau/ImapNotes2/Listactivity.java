@@ -210,11 +210,11 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     @Nullable
     private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, @NonNull Intent intent) {
-            String accountname = intent.getStringExtra(ACCOUNTNAME);
+            String accountName = intent.getStringExtra(ACCOUNTNAME);
             Boolean isChanged = intent.getBooleanExtra(CHANGED, false);
             Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
             String syncInterval = intent.getStringExtra(SYNCINTERVAL);
-            if (accountname.equals(Listactivity.imapNotes2Account.GetAccountname())) {
+            if (accountName.equals(Listactivity.imapNotes2Account.GetAccountname())) {
                 if (isSynced) {
                     // Display last sync date
                     //DateFormat dateFormat =
@@ -231,7 +231,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     if (Listactivity.storedNotes == null)
                         storedNotes = new NotesDb(getApplicationContext());
                     storedNotes.OpenDb();
-                    storedNotes.GetStoredNotes(noteList, accountname);
+                    storedNotes.GetStoredNotes(noteList, accountName);
                     listToView.notifyDataSetChanged();
                     storedNotes.CloseDb();
                 }

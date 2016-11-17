@@ -1,5 +1,10 @@
 * To do
 
+** Synchronize when user brings app to foreground
+
+It's annoying to have to wait.
+
+
 ** Add configuration for directory synchronization.
 
 ** Implement synchronization.
@@ -92,14 +97,15 @@ convert fields to local variables, etc.
 Ran whole project default profile to get an overview and then picked
 one analysis at a time to be fixed, tested and committed.
 
-| Group            | Analysis                         | Synopsis                                                                                               | Notes                                                                  |
-|------------------+----------------------------------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------|
-|                  | Field can be local               |                                                                                                        | Some of these seem to be work in progress so have been left unfixed.   |
-|                  | Parameter can be local           |                                                                                                        | No suspicious code found.                                              |
-| Probable bugs    | Constant conditions & exceptions | Method invocation 'setDisplayHomeAsUpEnabled' at line 106 may produce 'java.lang.NullPointerException' | Suppressed because result is not used.                                 |
-|                  | ConstantConditions               |                                                                                                        | Some possible null pointers remain.                                    |
-| Data flow issues | Missing return statement         | Not all execution paths return a value                                                                 | Very odd the, the file in question is build.gradle.  What should I do? |
-|                  |                                  |                                                                                                        |                                                                        |
+| Group             | Analysis                         | Synopsis                                                                                               | Notes                                                                  |
+|-------------------+----------------------------------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+|                   | Field can be local               |                                                                                                        | Some of these seem to be work in progress so have been left unfixed.   |
+|                   | Parameter can be local           |                                                                                                        | No suspicious code found.                                              |
+| Probable bugs     | Constant conditions & exceptions | Method invocation 'setDisplayHomeAsUpEnabled' at line 106 may produce 'java.lang.NullPointerException' | Suppressed because result is not used.                                 |
+|                   | ConstantConditions               |                                                                                                        | Some possible null pointers remain.                                    |
+| Data flow issues  | Missing return statement         | Not all execution paths return a value                                                                 | Very odd the, the file in question is build.gradle.  What should I do? |
+|                   |                                  |                                                                                                        |                                                                        |
+| Infer Nullability | Added @Nullable, @NonNull        |                                                                                                        |                                                                        |
 
 
 * Intents

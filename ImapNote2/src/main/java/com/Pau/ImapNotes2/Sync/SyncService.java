@@ -6,6 +6,11 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+
+/**
+ * There can be as many SyncService instances as you like but they all return the same statically
+ * allocated SyncAdapter.
+ */
 public class SyncService extends Service {
     public static final String SYNC_FINISHED = "SYNC_FINISHED";
     private static final String TAG = "SyncService";
@@ -25,6 +30,8 @@ public class SyncService extends Service {
             // another SyncService instance.
             // TODO: find out if it is possible for there to be more than one SyncService object.
             // If there cannot then we need neither the lock nor the null check.
+            // TODO: find out why we do not do this in the constructor.
+            // We could then annotate sSyncAdapter as @NonNull.
             if (sSyncAdapter == null) {
                 sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
             }

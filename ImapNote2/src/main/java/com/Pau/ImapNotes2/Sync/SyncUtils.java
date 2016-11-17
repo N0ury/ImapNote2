@@ -345,6 +345,12 @@ public class SyncUtils {
         }
     }
 
+    /**
+     * Do we really need the Context argument or could we call getApplicationContext instead?
+     *
+     * @param accountName
+     * @param ctx
+     */
     public static void CreateDirs(String accountName, @NonNull Context ctx) {
         String stringDir = ctx.getFilesDir() + "/" + accountName;
         File directory = new File(stringDir);

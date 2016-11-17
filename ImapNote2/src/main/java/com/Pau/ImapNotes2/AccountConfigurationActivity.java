@@ -51,6 +51,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private TextView folderTextView;
     private CheckBox stickyCheckBox;
     private Spinner securitySpinner;
+    // TODO: move this to dologin becauae it is the only use.
     private ImapNotes2Account imapNotes2Account;
     // TODO: This should probably be initialized to None so that it need not be nullable.
     @Nullable

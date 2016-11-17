@@ -8,22 +8,21 @@ public class ImapNotes2Account {
 
     private String accountname = "";
     // TODO: Why are the username, password, etc. nullable?
-    @Nullable
+    @NonNull
     private String username = "";
-    @Nullable
+    @NonNull
     private String password = "";
-    @Nullable
+    @NonNull
     private String server = "";
-    @Nullable
+    @NonNull
     private String portnum = "";
     @NonNull
     private Security security = Security.None;
     private boolean usesticky = false;
     private String syncinterval = "15";
-    @Nullable
-    private String imapfolder = "";
     @NonNull
-    private Boolean accountHasChanged = false;
+    private String imapfolder = "";
+    private boolean accountHasChanged = false;
     @Nullable
     private Account account = null;
 
@@ -35,7 +34,7 @@ public class ImapNotes2Account {
     public String toString() {
         return this.accountname + ":" + this.username + ":" + this.password + ":"
                 + this.server + ":" + this.portnum + ":" + this.security + ":"
-                + this.usesticky + ":" + this.imapfolder + ":" + this.accountHasChanged.toString();
+                + this.usesticky + ":" + this.imapfolder + ":" + Boolean.toString(this.accountHasChanged);
     }
 
     public String GetAccountname() {
@@ -56,39 +55,41 @@ public class ImapNotes2Account {
         this.accountname = Accountname;
     }
 
-    @Nullable
+    @NonNull
     public String GetUsername() {
         return this.username;
     }
 
-    public void SetUsername(String Username) {
+    public void SetUsername(@NonNull String Username) {
         this.username = Username;
     }
 
-    @Nullable
+    @NonNull
     public String GetPassword() {
         return this.password;
     }
 
-    public void SetPassword(String Password) {
+    public void SetPassword(@NonNull String Password) {
+
         this.password = Password;
     }
 
-    @Nullable
+    @NonNull
     public String GetServer() {
         return this.server;
     }
 
-    public void SetServer(String Server) {
+    public void SetServer(@NonNull String Server) {
         this.server = Server;
     }
 
-    @Nullable
+    @NonNull
     public String GetPortnum() {
         return this.portnum;
     }
 
-    public void SetPortnum(String Portnum) {
+    public void SetPortnum(@NonNull String Portnum) {
+
         this.portnum = Portnum;
     }
 
@@ -97,7 +98,8 @@ public class ImapNotes2Account {
         return security;
     }
 
-    public void SetSecurity(Security security) {
+    public void SetSecurity(@NonNull Security security) {
+
         this.security = security;
     }
 

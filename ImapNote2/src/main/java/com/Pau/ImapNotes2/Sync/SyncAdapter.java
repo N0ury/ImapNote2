@@ -36,7 +36,7 @@ import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 /// of the application.
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
-    private static Context context;
+    private static Context applicationContext;
     private NotesDb storedNotes;
     private static Account account;
     /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
@@ -47,21 +47,29 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(@NonNull Context context,
+    public SyncAdapter(@NonNull Context applicationContext,
                        boolean autoInitialize) {
-        super(context, autoInitialize);
-        mContentResolver = context.getContentResolver();
-        // TODO: do we really need a copy of the context reference?
-        SyncAdapter.context = context;
+        super(applicationContext, autoInitialize);
+        mContentResolver = applicationContext.getContentResolver();
+        // TODO: do we really need a copy of the applicationContext reference?
+        SyncAdapter.applicationContext = applicationContext;
     }
 
-    public SyncAdapter(@NonNull Context context,
+
+    /**
+     * TODO: What does allowParallelSyncs do and is it useful to us?
+     *
+     * @param applicationContext
+     * @param autoInitialize
+     * @param allowParallelSyncs
+     */
+    public SyncAdapter(@NonNull Context applicationContext,
                        boolean autoInitialize, // ?
                        boolean allowParallelSyncs // always false, set in syncadapter.xml
     ) {
-        super(context, autoInitialize, allowParallelSyncs);
-        mContentResolver = context.getContentResolver();
-        SyncAdapter.context = context;
+        super(applicationContext, autoInitialize, allowParallelSyncs);
+        mContentResolver = applicationContext.getContentResolver();
+        SyncAdapter.applicationContext = applicationContext;
     }
 
     @Override
@@ -77,12 +85,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Boolean isSynced = false;
         String syncinterval;
 
-        SyncUtils.CreateDirs(account.name, context);
+        SyncUtils.CreateDirs(account.name, applicationContext);
 
-        storedNotes = new NotesDb(context);
+        storedNotes = new NotesDb(applicationContext);
         storedNotes.OpenDb();
 
-        AccountManager am = AccountManager.get(context);
+        AccountManager am = AccountManager.get(applicationContext);
         syncinterval = am.getUserData(account, "syncinterval");
 
         // Connect to remote and get UIDValidity
@@ -97,37 +105,37 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             i.putExtra(Listactivity.CHANGED, false);
             i.putExtra(Listactivity.SYNCED, false);
             i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
-            context.sendBroadcast(i);
+            applicationContext.sendBroadcast(i);
             return;
         }
         // Compare UIDValidity to old saved one
         //
         if (!(res.UIDValidity.equals
-                (SyncUtils.GetUIDValidity(SyncAdapter.account, context)))) {
+                (SyncUtils.GetUIDValidity(SyncAdapter.account, applicationContext)))) {
             // Replace local data by remote
             try {
                 // delete notes in NotesDb for this account
                 storedNotes.ClearDb(account.name);
                 // delete notes in folders for this account and recreate dirs
-                SyncUtils.ClearHomeDir(account, context);
-                SyncUtils.CreateDirs(account.name, context);
+                SyncUtils.ClearHomeDir(account, applicationContext);
+                SyncUtils.CreateDirs(account.name, applicationContext);
                 // Get all notes from remote and replace local
                 SyncUtils.GetNotes(account,
                         res.notesFolder,
-                        context, storedNotes);
+                        applicationContext, storedNotes);
                 storedNotes.CloseDb();
             } catch (MessagingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            SyncUtils.SetUIDValidity(account, res.UIDValidity, context);
+            SyncUtils.SetUIDValidity(account, res.UIDValidity, applicationContext);
             // Notify Listactivity that it's finished, and that it can refresh display
             Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra(Listactivity.ACCOUNTNAME, account.name);
             i.putExtra(Listactivity.CHANGED, true);
             i.putExtra(Listactivity.SYNCED, true);
             i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
-            context.sendBroadcast(i);
+            applicationContext.sendBroadcast(i);
             return;
         }
 
@@ -146,7 +154,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         boolean remoteNotesManaged = false;
         String usesticky = am.getUserData(account, ConfigurationFieldNames.UseSticky);
         try {
-            remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
+            remoteNotesManaged = SyncUtils.handleRemoteNotes(applicationContext, res.notesFolder, storedNotes, account.name, usesticky);
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -165,7 +173,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         isSynced = true;
         i.putExtra(Listactivity.SYNCED, isSynced);
         i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
-        context.sendBroadcast(i);
+        applicationContext.sendBroadcast(i);
     }
 
     /* It is possible for this function to throw exceptions; the original code caught
@@ -176,7 +184,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     @NonNull
     private ImapNotes2Result ConnectToRemote() {
-        AccountManager am = AccountManager.get(context);
+        AccountManager am = AccountManager.get(applicationContext);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
                     am.getUserData(account, ConfigurationFieldNames.UserName),
                     am.getPassword(account),
@@ -195,7 +203,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Message message = null;
         boolean newNotesManaged = false;
         AppendUID[] uids = null;
-        String rootString = context.getFilesDir() + "/" + account.name;
+        String rootString = applicationContext.getFilesDir() + "/" + account.name;
         File rootDir = new File(rootString);
         File dirNew = new File(rootDir + "/new");
         String[] listOfNew = dirNew.list();
@@ -233,7 +241,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private boolean handleDeletedNotes() {
         Message message = null;
         boolean deletedNotesManaged = false;
-        String rootString = context.getFilesDir() + "/" + account.name;
+        String rootString = applicationContext.getFilesDir() + "/" + account.name;
         File rootDir = new File(rootString);
         File dirDeleted = new File(rootDir + "/deleted");
         String[] listOfDeleted = dirDeleted.list();
