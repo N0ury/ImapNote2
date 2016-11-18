@@ -4,53 +4,51 @@ import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 
-/*  Represents metadata aboit a note. */
+/**
+ * Represents metadata about a note in a way that can be used by a ListAdapter.  The list adapter
+ * needs objects that have a map interface because it must fetch the items by string name.
+ */
 public class OneNote extends HashMap<String, String> {
+    public static final String TITLE = "title";
+    public static final String DATE = "date";
+    public static final String UID = "uid";
+
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    /*    public OneNote() {
-            super();
-            this.put("title", "No Title");
-            this.put("date", "No Date");
-            this.put("uid", "0");
 
-        }
-    */
     public OneNote(String title, String date, String uid) {
         super();
-        this.put("title", title);
-        this.put("date", date);
-        this.put("uid", uid);
-
+        put(TITLE, title);
+        put(DATE, date);
+        put(UID, uid);
     }
 
+    @NonNull
     public String GetTitle() {
-        return this.get("title");
+        return this.get(TITLE);
     }
 
-    public String GetDate() {
-        return this.get("date");
+    @NonNull
+    String GetDate() {
+        return this.get(DATE);
     }
 
+    @NonNull
     public String GetUid() {
-        return this.get("uid");
+        return this.get(UID);
     }
 
-    /*
-        public void SetTitle(String title) {
-            this.put("title", title);
-        }
-    */
+
     public void SetDate(String date) {
-        this.put("date", date);
+        this.put(DATE, date);
     }
 
     public void SetUid(String uid) {
-        this.put("uid", uid);
+        this.put(UID, uid);
     }
 
     @NonNull

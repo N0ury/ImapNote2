@@ -18,20 +18,27 @@ public class NotesDb {
     private static final int NOTES_VERSION = 3;
     private static final String TAG = "IN_NotesDb";
 
+    private static final String COL_TITLE = "title";
+    private static final String COL_DATE = "date";
+    private static final String COL_NUMBER = "number";
+    private static final String COL_ACCOUNT_NAME = "accountname";
+    private static final String TABLE_NAME = "notesTable";
+    private static final String DATABASE_NAME = "NotesDb";
+
     private static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
-            + "notesTable ("
-            + "pk integer primary key autoincrement, "
-            + "title text not null, "
-            + "date text not null, "
-            + "number text not null, "
-            + "accountname text not null);";
+            + TABLE_NAME
+            + " (pk integer primary key autoincrement, "
+            + COL_TITLE + " text not null, "
+            + COL_DATE + " text not null, "
+            + COL_NUMBER + " text not null, "
+            + COL_ACCOUNT_NAME + " text not null);";
 
     private SQLiteDatabase notesDb;
     @NonNull
     private final NotesDbHelper defaultHelper;
 
     public NotesDb(Context applicationContext) {
-        this.defaultHelper = new NotesDbHelper(applicationContext, "NotesDb", NOTES_VERSION);
+        this.defaultHelper = new NotesDbHelper(applicationContext, DATABASE_NAME, NOTES_VERSION);
 
     }
 
@@ -47,11 +54,11 @@ public class NotesDb {
 
     public void InsertANoteInDb(@NonNull OneNote noteElement, String accountname) {
         ContentValues tableRow = new ContentValues();
-        tableRow.put("title", (noteElement.GetTitle() != null) ? noteElement.GetTitle() : "");
-        tableRow.put("date", noteElement.GetDate());
-        tableRow.put("number", noteElement.GetUid());
-        tableRow.put("accountname", accountname);
-        this.notesDb.insert("notesTable", null, tableRow);
+        tableRow.put(COL_TITLE, (noteElement.GetTitle() != null) ? noteElement.GetTitle() : "");
+        tableRow.put(COL_DATE, noteElement.GetDate());
+        tableRow.put(COL_NUMBER, noteElement.GetUid());
+        tableRow.put(COL_ACCOUNT_NAME, accountname);
+        this.notesDb.insert(TABLE_NAME, null, tableRow);
         //Log.d(TAG, "note inserted");
     }
 
@@ -94,14 +101,14 @@ public class NotesDb {
                                @NonNull String accountName) {
         noteList.clear();
         Date date = null;
-        try (Cursor resultPointer = this.notesDb.query("notesTable", null, "accountname = ?",
+        try (Cursor resultPointer = this.notesDb.query(TABLE_NAME, null, "accountname = ?",
                 new String[]{accountName}, null, null, "date DESC")) {
 
             if (resultPointer.moveToFirst()) {
-                int titleIndex = resultPointer.getColumnIndex("title");
+                int titleIndex = resultPointer.getColumnIndex(COL_TITLE);
                 //int bodyIndex = resultPointer.getColumnIndex("body");
-                int dateIndex = resultPointer.getColumnIndex("date");
-                int numberIndex = resultPointer.getColumnIndex("number");
+                int dateIndex = resultPointer.getColumnIndex(COL_DATE);
+                int numberIndex = resultPointer.getColumnIndex(COL_NUMBER);
                 //int positionIndex = resultPointer.getColumnIndex("position");
                 //int colorIndex = resultPointer.getColumnIndex("color");
                 do {

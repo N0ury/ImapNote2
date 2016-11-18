@@ -348,31 +348,29 @@ public class SyncUtils {
     /**
      * Do we really need the Context argument or could we call getApplicationContext instead?
      *
-     * @param accountName
-     * @param ctx
+     * @param accountName Name of the account as defined by the user, this is not the email address.
+     * @param applicationContext Global context not an activity context.
      */
-    public static void CreateDirs(String accountName, @NonNull Context ctx) {
-        String stringDir = ctx.getFilesDir() + "/" + accountName;
-        File directory = new File(stringDir);
-        directory.mkdirs();
-        directory = new File(stringDir + "/new");
-        directory.mkdirs();
-        directory = new File(stringDir + "/deleted");
-        directory.mkdirs();
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void CreateDirs(String accountName, @NonNull Context applicationContext) {
+        String stringDir = applicationContext.getFilesDir() + "/" + accountName;
+        //File directory = new File(stringDir);
+        //directory.mkdirs();
+        (new File(stringDir + File.pathSeparator + "new")).mkdirs();
+        (new File(stringDir + File.pathSeparator + "deleted")).mkdirs();
     }
 
-    private static void GetOneNote(@NonNull File outfile, @NonNull Message notesMessage, @NonNull NotesDb storedNotes, String accountName, String suid, boolean updateDb) {
-        OutputStream str = null;
+    private static void GetOneNote(@NonNull File outfile,
+                                   @NonNull Message notesMessage,
+                                   @NonNull NotesDb storedNotes,
+                                   String accountName,
+                                   String suid, boolean updateDb) {
 
-        try {
-            str = new FileOutputStream(outfile);
+        try (OutputStream str = new FileOutputStream(outfile)) {
+            notesMessage.writeTo(str);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-
-        try {
-            notesMessage.writeTo(str);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -381,7 +379,7 @@ public class SyncUtils {
             e.printStackTrace();
         }
 
-        if (!(updateDb)) return;
+        if (!updateDb) return;
 
         String title = null;
         String[] rawvalue = null;

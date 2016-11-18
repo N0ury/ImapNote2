@@ -80,10 +80,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                               SyncResult syncResult) {
         //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
         // TODO: should the account be static?  Should it be local?  If static then why do we not
-        // provide it in the constructor?
+        // provide it in the constructor?  What happens if we allow parallel syncs?
         SyncAdapter.account = account;
-        Boolean isSynced = false;
-        String syncinterval;
 
         SyncUtils.CreateDirs(account.name, applicationContext);
 
@@ -91,7 +89,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         storedNotes.OpenDb();
 
         AccountManager am = AccountManager.get(applicationContext);
-        syncinterval = am.getUserData(account, "syncinterval");
+        String syncinterval = am.getUserData(account, "syncinterval");
 
         // Connect to remote and get UIDValidity
         ImapNotes2Result res = ConnectToRemote();
@@ -110,7 +108,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         // Compare UIDValidity to old saved one
         //
-        if (!(res.UIDValidity.equals
+        if ((res.UIDValidity !=
                 (SyncUtils.GetUIDValidity(SyncAdapter.account, applicationContext)))) {
             // Replace local data by remote
             try {
@@ -170,8 +168,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Intent i = new Intent(SyncService.SYNC_FINISHED);
         i.putExtra(Listactivity.ACCOUNTNAME, account.name);
         i.putExtra(Listactivity.CHANGED, isChanged);
-        isSynced = true;
-        i.putExtra(Listactivity.SYNCED, isSynced);
+        i.putExtra(Listactivity.SYNCED, true);
         i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
         applicationContext.sendBroadcast(i);
     }
