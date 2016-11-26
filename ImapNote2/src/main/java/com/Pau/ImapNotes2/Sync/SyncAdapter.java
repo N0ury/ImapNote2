@@ -88,7 +88,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         storedNotes.OpenDb();
 
         AccountManager am = AccountManager.get(applicationContext);
-        String syncinterval = am.getUserData(account, "syncinterval");
+        String syncInterval = am.getUserData(account, "syncinterval");
 
         // Connect to remote and get UIDValidity
         ImapNotes2Result res = ConnectToRemote();
@@ -97,12 +97,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             // Notify Listactivity that it's finished, but it can't
             // refresh display
-            Intent i = new Intent(SyncService.SYNC_FINISHED);
+            /*Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra(Listactivity.ACCOUNTNAME, account.name);
             i.putExtra(Listactivity.CHANGED, false);
             i.putExtra(Listactivity.SYNCED, false);
-            i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
+            i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
             applicationContext.sendBroadcast(i);
+            */
+            NotifySyncFinished(false, false, syncInterval);
             return;
         }
         // Compare UIDValidity to old saved one
@@ -127,12 +129,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             SyncUtils.SetUIDValidity(account, res.UIDValidity, applicationContext);
             // Notify Listactivity that it's finished, and that it can refresh display
-            Intent i = new Intent(SyncService.SYNC_FINISHED);
+            /*Intent i = new Intent(SyncService.SYNC_FINISHED);
             i.putExtra(Listactivity.ACCOUNTNAME, account.name);
             i.putExtra(Listactivity.CHANGED, true);
             i.putExtra(Listactivity.SYNCED, true);
-            i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
+            i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
             applicationContext.sendBroadcast(i);
+            */
+            NotifySyncFinished(true, true, syncInterval);
             return;
         }
 
@@ -165,12 +169,28 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         SyncUtils.DisconnectFromRemote();
         //Log.d(TAG, "Network synchronization complete of account: "+account.name);
         // Notify Listactivity that it's finished, and that it can refresh display
+/*
         Intent i = new Intent(SyncService.SYNC_FINISHED);
         i.putExtra(Listactivity.ACCOUNTNAME, account.name);
         i.putExtra(Listactivity.CHANGED, isChanged);
         i.putExtra(Listactivity.SYNCED, true);
-        i.putExtra(Listactivity.SYNCINTERVAL, syncinterval);
+        i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
         applicationContext.sendBroadcast(i);
+*/
+
+        NotifySyncFinished(isChanged, true, syncInterval);
+    }
+
+    private void NotifySyncFinished(boolean isChanged,
+                                    boolean isSynced,
+                                    String syncInterval) {
+        Intent i = new Intent(SyncService.SYNC_FINISHED);
+        i.putExtra(Listactivity.ACCOUNTNAME, account.name);
+        i.putExtra(Listactivity.CHANGED, isChanged);
+        i.putExtra(Listactivity.SYNCED, isSynced);
+        i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
+        applicationContext.sendBroadcast(i);
+
     }
 
     /* It is possible for this function to throw exceptions; the original code caught

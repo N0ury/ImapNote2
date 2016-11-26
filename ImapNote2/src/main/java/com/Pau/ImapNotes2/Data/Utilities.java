@@ -1,5 +1,7 @@
 package com.Pau.ImapNotes2.Data;
 
+import android.support.annotation.NonNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -14,6 +16,8 @@ public class Utilities {
      * The notes have a time stamp associated with thme and this is stored as a string on the
      * server so we must define a fixed format for it.
      */
+    @NonNull
     private static String internalDateFormatString = "yyyy-MM-dd HH:mm:ss";
+    @NonNull
     public static SimpleDateFormat internalDateFormat = new SimpleDateFormat(internalDateFormatString, Locale.ROOT);
 }

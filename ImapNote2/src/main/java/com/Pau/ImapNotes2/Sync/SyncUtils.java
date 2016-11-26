@@ -455,7 +455,7 @@ public class SyncUtils {
      * @param applicationContext Global context not an activity context.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void CreateDirs(String accountName, @NonNull Context applicationContext) {
+    public static void CreateDirs(@NonNull String accountName, @NonNull Context applicationContext) {
         Log.d(TAG, "CreateDirs(String: " + accountName);
         File dir = new File(applicationContext.getFilesDir(), accountName);
         //File directory = new File(stringDir);

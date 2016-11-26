@@ -147,7 +147,7 @@ public class ImapNotes2Account {
         return this.imapfolder;
     }
 
-    public void SetFoldername(String folder) {
+    public void SetFoldername(@NonNull String folder) {
         this.imapfolder = folder;
     }
 /*

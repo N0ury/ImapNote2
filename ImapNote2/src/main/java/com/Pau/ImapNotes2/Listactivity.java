@@ -1,28 +1,5 @@
 package com.Pau.ImapNotes2;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
-
-import org.apache.commons.io.FileUtils;
-
-//import com.Pau.ImapNotes2.R;
-import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
-import com.Pau.ImapNotes2.Data.NotesDb;
-import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Data.OneNote;
-import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Miscs.UpdateThread;
-import com.Pau.ImapNotes2.Miscs.SyncThread;
-import com.Pau.ImapNotes2.Sync.SyncService;
-import com.Pau.ImapNotes2.Sync.SyncUtils;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
@@ -56,13 +33,37 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.SearchView;
-//import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.Pau.ImapNotes2.AccountConfigurationActivity.*;
-import static com.Pau.ImapNotes2.NoteDetailActivity.*;
+import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
+import com.Pau.ImapNotes2.Data.ImapNotes2Account;
+import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Data.OneNote;
+import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Miscs.SyncThread;
+import com.Pau.ImapNotes2.Miscs.UpdateThread;
+import com.Pau.ImapNotes2.Sync.SyncService;
+import com.Pau.ImapNotes2.Sync.SyncUtils;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
+
+import static com.Pau.ImapNotes2.AccountConfigurationActivity.ACTION;
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
+
+//import com.Pau.ImapNotes2.R;
+//import android.widget.SimpleAdapter;
 
 
 public class Listactivity extends Activity implements OnItemSelectedListener, Filterable {
@@ -207,7 +208,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         unregisterReceiver(syncFinishedReceiver);
     }
 
-    @Nullable
+    @NonNull
     private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, @NonNull Intent intent) {
             String accountName = intent.getStringExtra(ACCOUNTNAME);
@@ -215,6 +216,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
             String syncInterval = intent.getStringExtra(SYNCINTERVAL);
             if (accountName.equals(Listactivity.imapNotes2Account.GetAccountname())) {
+                String statusText;
                 if (isSynced) {
                     // Display last sync date
                     //DateFormat dateFormat =
@@ -222,10 +224,11 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     Date date = new Date();
                     String sdate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date);
                     String sinterval = " (interval:" + String.valueOf(syncInterval) + " min)";
-                    status.setText("Last sync: " + sdate + sinterval);
+                    statusText = "Last sync: " + sdate + sinterval;
                 } else {
-                    status.setText(OldStatus);
+                    statusText = OldStatus;
                 }
+                status.setText(statusText);
 
                 if (isChanged) {
                     if (Listactivity.storedNotes == null)
