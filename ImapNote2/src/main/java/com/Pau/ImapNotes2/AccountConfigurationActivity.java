@@ -39,7 +39,7 @@ import java.util.List;
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
     private static final int TO_REFRESH = 999;
     private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
-    private static final String TAG = "AccountConfigurationActivity";
+    private static final String TAG = "IN_AccountConfActivity";
 
     private Imaper imapFolder;
 

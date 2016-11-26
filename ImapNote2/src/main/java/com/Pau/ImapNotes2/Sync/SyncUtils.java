@@ -50,7 +50,6 @@ public class SyncUtils {
 
     private static Store store;
     private static final String TAG = "IN_SyncUtils";
-    private static String proto;
     // TODO: Why do we have two folder fields and why are they both nullable?
     @NonNull
     private static String sfolder = "Notes";
@@ -84,7 +83,7 @@ public class SyncUtils {
             }
         }
 
-        proto = security.proto;
+        String proto = security.proto;
         boolean acceptcrt = security.acceptcrt;
 
         MailSSLSocketFactory sf = null;
@@ -597,8 +596,8 @@ public class SyncUtils {
 
         // Remove from local device, notes removed from remote
         for (String suid : localListOfNotes) {
-            int uid = Integer.valueOf(suid);
-            if (!(uids.contains(new Long(uid)))) {
+            Long uid = Long.valueOf(suid);
+            if (!(uids.contains(uid))) {
                 // remove file from deleted
                 File toDelete = new File(rootDir, suid);
                 toDelete.delete();

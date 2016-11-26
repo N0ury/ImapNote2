@@ -19,9 +19,10 @@
     <string name="about">Om</string>
     <string name="account">Konto</string>
     <string name="account_added">Kontoen er lagt</string>
-    <string name="account_already_exists_or_is_null"></string>
+    <string name="account_already_exists_or_is_null">Kontoen eksisterer eller er null</string>
     <string name="account_name">Konto navn</string>
     <string name="account_removed">Kontoen er fjernet</string>
     <string name="add_account">Legge til konto</string>
     <string name="blue">Bl</string>
+    <string name="check_and_create_account">Kontollerer og lag kontoen</string>
 </resources>
