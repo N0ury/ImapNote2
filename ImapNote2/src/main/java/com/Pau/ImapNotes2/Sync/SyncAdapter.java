@@ -12,20 +12,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
+import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Data.Security;
+import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
+import com.sun.mail.imap.AppendUID;
+
 import java.io.File;
 
 import javax.mail.Flags;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-
-import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
-import com.Pau.ImapNotes2.Data.NotesDb;
-import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
-import com.Pau.ImapNotes2.Data.Security;
-import com.sun.mail.imap.AppendUID;
-
-import com.Pau.ImapNotes2.Listactivity;
 
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 
@@ -108,8 +107,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         // Compare UIDValidity to old saved one
         //
-        if ((res.UIDValidity !=
-                (SyncUtils.GetUIDValidity(SyncAdapter.account, applicationContext)))) {
+        if (!(res.UIDValidity.equals(
+                SyncUtils.GetUIDValidity(SyncAdapter.account, applicationContext)))) {
             // Replace local data by remote
             try {
                 // delete notes in NotesDb for this account
@@ -197,18 +196,21 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private boolean handleNewNotes() {
-        Message message = null;
+        //Message message = null;
         boolean newNotesManaged = false;
         AppendUID[] uids = null;
-        String rootString = applicationContext.getFilesDir() + "/" + account.name;
-        File rootDir = new File(rootString);
-        File dirNew = new File(rootDir + "/new");
+        //String rootString = applicationContext.getFilesDir() + File.separator + account.name;
+        //File rootDir = new File(rootString);
+        File accountDir = new File(applicationContext.getFilesDir(), account.name);
+        File dirNew = new File(accountDir, "new");
+        Log.d(TAG, "dn path: " + dirNew.getAbsolutePath());
+        Log.d(TAG, "dn exists: " + Boolean.toString(dirNew.exists()));
         String[] listOfNew = dirNew.list();
         for (String fileNew : listOfNew) {
             //Log.d(TAG,"New Note to process:"+fileNew);
             newNotesManaged = true;
             // Read local new message from file
-            message = SyncUtils.ReadMailFromFile(fileNew, NEW, false, rootString);
+            Message message = SyncUtils.ReadMailFromFileWhereNew(fileNew, false, dirNew);
             try {
                 message.setFlag(Flags.Flag.SEEN, true); // set message as seen
             } catch (MessagingException e) {
@@ -225,7 +227,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 storedNotes.UpdateANote(fileNew, newuid, account.name);
                 // move new note from new dir, one level up
                 File fileInNew = new File(dirNew, fileNew);
-                File to = new File(rootDir, newuid);
+                File to = new File(accountDir, newuid);
                 fileInNew.renameTo(to);
             } catch (Exception e) {
                 // TODO: Handle message properly.
@@ -246,6 +248,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             try {
                 SyncUtils.DeleteNote(Integer.parseInt(fileDeleted));
             } catch (Exception e) {
+                Log.d(TAG, "DeletNote failed:");
                 e.printStackTrace();
             }
 

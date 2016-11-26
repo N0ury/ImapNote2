@@ -1,22 +1,24 @@
 package com.Pau.ImapNotes2.Data;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.util.Xml;
+
+import com.Pau.ImapNotes2.ImapNotes2k;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xmlpull.v1.XmlSerializer;
-
-import android.content.Context;
 //import android.util.Log;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Xml;
-
-import com.Pau.ImapNotes2.ImapNotes2k;
 
 public class ConfigurationFile {
 
@@ -60,6 +62,7 @@ public class ConfigurationFile {
             // All of these can be simplified by initializing the fields to the default values and
             // only setting when the value exists in the file.
             if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.Security).getLength() != 0) {
+                Log.d(TAG, "nfx: " + NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Security));
                 security = Security.from(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Security));
             }
             if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.PortNumber).getLength() == 0) {

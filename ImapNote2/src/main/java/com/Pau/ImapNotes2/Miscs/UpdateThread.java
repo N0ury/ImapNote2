@@ -1,5 +1,19 @@
 package com.Pau.ImapNotes2.Miscs;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.text.Html;
+import android.util.Log;
+
+import com.Pau.ImapNotes2.Data.ImapNotes2Account;
+import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Data.OneNote;
+import com.Pau.ImapNotes2.ImapNotes2k;
+import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.NotesListAdapter;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,23 +29,10 @@ import java.util.UUID;
 import javax.mail.Flags;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MailDateFormat;
+import javax.mail.internet.MimeMessage;
 
-import com.Pau.ImapNotes2.Data.OneNote;
-import com.Pau.ImapNotes2.ImapNotes2k;
-import com.Pau.ImapNotes2.Listactivity;
-import com.Pau.ImapNotes2.NotesListAdapter;
-import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Data.NotesDb;
-
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.text.Html;
-
-import static com.Pau.ImapNotes2.NoteDetailActivity.*;
+import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 
 // TODO: move arguments from execute to constructor.
 public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
@@ -46,7 +47,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private NotesDb storedNotes;
     private final Context ctx;
     private final Action action;
-    private static final String TAG = "UpdateThread";
+    private static final String TAG = "IN_UpdateThread";
 
     public enum Action {
         Update,
@@ -132,12 +133,13 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 String sdate = DateFormat.getDateTimeInstance().format(date);
                 currentNote.SetDate(sdate);
                 notesList.add(0, currentNote);
-                bool_to_return = true;
+                return true;
             }
 
         } catch (Exception e) {
+            Log.d(TAG, "Action: " + action.toString());
             e.printStackTrace();
-            bool_to_return = false;
+            return false;
         } finally {
             progressDialog.dismiss();
         }

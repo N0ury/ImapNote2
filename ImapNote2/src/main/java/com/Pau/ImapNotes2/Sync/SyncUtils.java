@@ -8,12 +8,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.Pau.ImapNotes2.Data.NotesDb;
-import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
-import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Data.Security;
-import com.Pau.ImapNotes2.Miscs.Sticky;
 import com.Pau.ImapNotes2.Data.Utilities;
+import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
+import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Miscs.Sticky;
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
@@ -58,10 +58,13 @@ public class SyncUtils {
     private static Folder notesFolder = null;
     private static final ImapNotes2Result res = new ImapNotes2Result();
     private static Long UIDValidity;
-    private final static int NEW = 1;
-    private final static int DELETED = 2;
-    private final static int ROOT_AND_NEW = 3;
+    //private final static int NEW = 1;
+    //private final static int DELETED = 2;
+    //private final static int ROOT_AND_NEW = 3;
 
+    public enum Where {
+        NEW, DELETED, ROOT_AND_NEW
+    }
 
     @NonNull
     static ImapNotes2Result ConnectToRemote(@NonNull String username,
@@ -277,12 +280,23 @@ public class SyncUtils {
             e.printStackTrace();
         }
     }
+/*
+
+    */
+/**
+ * @param uid ID of the message as created by the IMAP server
+ * @param where TODO: what is this?
+ * @param removeMinus TODO: Why?
+ * @param nameDir Name of the account with which this message is associated, used to create the
+ *                directory in which to store it.
+ * @return A Java mail message object.
+ *//*
 
     @Nullable
     public static Message ReadMailFromFile(@NonNull String uid,
-                                           int where,
+                                           Where where,
                                            boolean removeMinus,
-                                           String nameDir) {
+                                           @NonNull String nameDir) {
         File mailFile;
         Message message = null;
         mailFile = new File(nameDir, uid);
@@ -302,7 +316,7 @@ public class SyncUtils {
                 }
                 break;
             default:
-                break;
+                throw new UnsupportedOperationException("Unrecognized value for where argument: " + where);
         }
 
         mailFile = new File(nameDir, uid);
@@ -322,6 +336,95 @@ public class SyncUtils {
             e.printStackTrace();
         }
         return message;
+    }
+*/
+
+    /**
+     * @param uid         ID of the message as created by the IMAP server
+     * @param removeMinus TODO: Why?
+     * @param newFilesDir Directory in which it is stored.
+     * @return A Java mail message object.
+     */
+    @Nullable
+    public static Message ReadMailFromFileWhereNew(@NonNull String uid,
+                                                   boolean removeMinus,
+                                                   @NonNull File newFilesDir) {
+        //File mailFile;
+        //Message message = null;
+        //mailFile = new File(nameDir, uid);
+
+        if (removeMinus) {
+            uid = uid.substring(1);
+        }
+        return ReadMailFromFile(newFilesDir, uid);
+    }
+
+    /**
+     * @param uid         ID of the message as created by the IMAP server
+     * @param removeMinus TODO: Why?
+     * @param fileDir     Name of the account with which this message is associated, used to find the
+     *                    directory in which it is stored.
+     * @return A Java mail message object.
+     */
+    @Nullable
+    public static Message ReadMailFromFileWhereRootAndNew(@NonNull String uid,
+                                                          boolean removeMinus,
+                                                          @NonNull File fileDir) {
+        //File mailFile;
+        //Message message = null;
+        File mailFile = new File(fileDir, uid);
+
+        if (!mailFile.exists()) {
+            fileDir = new File(fileDir, "new");
+            if (removeMinus) uid = uid.substring(1);
+        }
+
+        return ReadMailFromFile(fileDir, uid);
+    }
+
+    /**
+     * @param uid         ID of the message as created by the IMAP server
+     * @param removeMinus TODO: Why?
+     * @param nameDir     Name of the account with which this message is associated, used to find the
+     *                    directory in which it is stored.
+     * @return A Java mail message object.
+     */
+    @Nullable
+    public static Message ReadMailFromFileWhereDeleted(@NonNull String uid,
+                                                       boolean removeMinus,
+                                                       @NonNull String nameDir) {
+        return ReadMailFromFile(new File(nameDir, "deleted"), uid);
+    }
+
+
+    /**
+     * @param uid     ID of the message as created by the IMAP server
+     * @param nameDir Name of the account with which this message is associated, used to find the
+     *                directory in which it is stored.
+     * @return A Java mail message object.
+     */
+    @Nullable
+    private static Message ReadMailFromFile(@NonNull File nameDir,
+                                            @NonNull String uid) {
+        File mailFile = new File(nameDir, uid);
+        InputStream mailFileInputStream = null;
+        try {
+            mailFileInputStream = new FileInputStream(mailFile);
+        } catch (FileNotFoundException e1) {
+            // TODO Auto-generated catch block
+            Log.d(TAG, "Exception opening mailFile: " + mailFile.getAbsolutePath());
+            e1.printStackTrace();
+        }
+        try {
+            Properties props = new Properties();
+            Session session = Session.getDefaultInstance(props, null);
+            return new MimeMessage(session, mailFileInputStream);
+        } catch (MessagingException e) {
+            // TODO Auto-generated catch block
+            Log.d(TAG, "Exception getting MimeMessage.");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static AppendUID[] sendMessageToRemote(@NonNull Message[] message) throws MessagingException {

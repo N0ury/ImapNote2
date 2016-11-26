@@ -70,9 +70,9 @@ public class NoteDetailActivity extends Activity {
         usesticky = (boolean) extras.get(useSticky);
         assert hm != null;
         suid = hm.get("uid").toString();
-        String rootDir = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
-                Listactivity.imapNotes2Account.GetAccountname();
-        Message message = SyncUtils.ReadMailFromFile(suid, ROOT_AND_NEW, true, rootDir);
+        File rootDir = new File(ImapNotes2k.getAppContext().getFilesDir(),
+                Listactivity.imapNotes2Account.GetAccountname());
+        Message message = SyncUtils.ReadMailFromFileWhereRootAndNew(suid, true, rootDir);
         Sticky sticky = GetInfoFromMessage(message);
         String stringres = sticky.text;
         //String position = sticky.position;
@@ -227,14 +227,16 @@ public class NoteDetailActivity extends Activity {
         //String charset;
         Sticky sticky = null;
         try {
-//Log.d(TAG, "Contenttype as string:"+message.getContentType());
+            Log.d(TAG, "message :" + message.toString());
+
             contentType = new ContentType(message.getContentType());
             String charset = contentType.getParameter("charset");
             InputStream iis = (InputStream) message.getContent();
             stringres = IOUtils.toString(iis, charset);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.d(TAG, "Exception:");
+            Log.d(TAG, e.toString());
         }
 
 //Log.d(TAG,"contentType:"+contentType);

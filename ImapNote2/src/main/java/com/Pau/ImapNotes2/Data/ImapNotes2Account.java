@@ -3,9 +3,11 @@ package com.Pau.ImapNotes2.Data;
 import android.accounts.Account;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class ImapNotes2Account {
 
+    private static final String TAG = "IN_ImapNotes2Account";
     private String accountname = "";
     // TODO: Why are the username, password, etc. nullable?
     @NonNull
@@ -104,6 +106,7 @@ public class ImapNotes2Account {
     }
 
     public void SetSecurity(String security) {
+        Log.d(TAG, "Set: " + security);
         SetSecurity(Security.from(security));
     }
 

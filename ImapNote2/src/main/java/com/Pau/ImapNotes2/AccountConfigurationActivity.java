@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,9 +30,9 @@ import android.widget.Toast;
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
+import com.Pau.ImapNotes2.Data.Security;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Data.Security;
 
 import java.util.List;
 
@@ -203,6 +204,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             passwordTextView.setText(accountManager.getPassword(myAccount));
             serverTextView.setText(GetConfigValue(ConfigurationFieldNames.Server));
             portnumTextView.setText(GetConfigValue(ConfigurationFieldNames.PortNumber));
+            Log.d(TAG, "Security: " + GetConfigValue(ConfigurationFieldNames.Security));
             security = Security.from(GetConfigValue(ConfigurationFieldNames.Security));
             stickyCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseSticky)));
             syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));

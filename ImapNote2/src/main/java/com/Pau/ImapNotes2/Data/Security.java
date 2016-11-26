@@ -2,6 +2,7 @@ package com.Pau.ImapNotes2.Data;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public enum Security {
     @SuppressWarnings("unused")
     STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)", "143", "imaps", true);
 
+    static String TAG = "In_Security";
     public final String proto;
     public final boolean acceptcrt;
 
@@ -69,6 +71,7 @@ public enum Security {
     }
 
     public static Security from(String name) {
+        Log.d(TAG, "from: <" + name + ">");
         for (Security security : Security.values()) {
             if (Objects.equals(security.name(), name)) {
                 return security;
