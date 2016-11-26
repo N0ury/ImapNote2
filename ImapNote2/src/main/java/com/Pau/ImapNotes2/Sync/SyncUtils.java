@@ -346,9 +346,9 @@ public class SyncUtils {
      * @return A Java mail message object.
      */
     @Nullable
-    public static Message ReadMailFromFileWhereNew(@NonNull String uid,
-                                                   boolean removeMinus,
-                                                   @NonNull File newFilesDir) {
+    public static Message ReadMailFromFileNew(@NonNull String uid,
+                                              boolean removeMinus,
+                                              @NonNull File newFilesDir) {
         //File mailFile;
         //Message message = null;
         //mailFile = new File(nameDir, uid);
@@ -367,9 +367,9 @@ public class SyncUtils {
      * @return A Java mail message object.
      */
     @Nullable
-    public static Message ReadMailFromFileWhereRootAndNew(@NonNull String uid,
-                                                          boolean removeMinus,
-                                                          @NonNull File fileDir) {
+    public static Message ReadMailFromFileRootAndNew(@NonNull String uid,
+                                                     boolean removeMinus,
+                                                     @NonNull File fileDir) {
         //File mailFile;
         //Message message = null;
         File mailFile = new File(fileDir, uid);
@@ -390,9 +390,9 @@ public class SyncUtils {
      * @return A Java mail message object.
      */
     @Nullable
-    public static Message ReadMailFromFileWhereDeleted(@NonNull String uid,
-                                                       boolean removeMinus,
-                                                       @NonNull String nameDir) {
+    public static Message ReadMailFromFileDeleted(@NonNull String uid,
+                                                  boolean removeMinus,
+                                                  @NonNull String nameDir) {
         return ReadMailFromFile(new File(nameDir, "deleted"), uid);
     }
 
@@ -456,11 +456,12 @@ public class SyncUtils {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void CreateDirs(String accountName, @NonNull Context applicationContext) {
-        String stringDir = applicationContext.getFilesDir() + "/" + accountName;
+        Log.d(TAG, "CreateDirs(String: " + accountName);
+        File dir = new File(applicationContext.getFilesDir(), accountName);
         //File directory = new File(stringDir);
         //directory.mkdirs();
-        (new File(stringDir + File.pathSeparator + "new")).mkdirs();
-        (new File(stringDir + File.pathSeparator + "deleted")).mkdirs();
+        (new File(dir, "new")).mkdirs();
+        (new File(dir, "deleted")).mkdirs();
     }
 
     private static void GetOneNote(@NonNull File outfile,

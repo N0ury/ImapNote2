@@ -31,8 +31,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 
 import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.internet.ContentType;
 
 
@@ -72,7 +70,9 @@ public class NoteDetailActivity extends Activity {
         suid = hm.get("uid").toString();
         File rootDir = new File(ImapNotes2k.getAppContext().getFilesDir(),
                 Listactivity.imapNotes2Account.GetAccountname());
-        Message message = SyncUtils.ReadMailFromFileWhereRootAndNew(suid, true, rootDir);
+        Message message = SyncUtils.ReadMailFromFileRootAndNew(suid, true, rootDir);
+        Log.d(TAG, "rootDir is null: " + (rootDir == null));
+        Log.d(TAG, "rootDir: " + rootDir.toString());
         Sticky sticky = GetInfoFromMessage(message);
         String stringres = sticky.text;
         //String position = sticky.position;
@@ -235,8 +235,9 @@ public class NoteDetailActivity extends Activity {
             stringres = IOUtils.toString(iis, charset);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "Exception:");
+            Log.d(TAG, "Exception GetInfoFromMessage:");
             Log.d(TAG, e.toString());
+            e.printStackTrace();
         }
 
 //Log.d(TAG,"contentType:"+contentType);
@@ -260,17 +261,17 @@ public class NoteDetailActivity extends Activity {
         return sticky;
     }
 
-    private void GetPart(@NonNull Part message) throws Exception {
-        if (message.isMimeType("text/plain")) {
-            Log.d(TAG, "+++ isMimeType text/plain (contentType):" + message.getContentType());
-        } else if (message.isMimeType("multipart/*")) {
-            Log.d(TAG, "+++ isMimeType multipart/* (contentType):" + message.getContentType());
+    /*  private void GetPart(@NonNull Part message) throws Exception {
+          if (message.isMimeType("text/plain")) {
+              Log.d(TAG, "+++ isMimeType text/plain (contentType):" + message.getContentType());
+          } else if (message.isMimeType("multipart*//*")) {
+            Log.d(TAG, "+++ isMimeType multipart*//* (contentType):" + message.getContentType());
             Object content = message.getContent();
             Multipart mp = (Multipart) content;
             int count = mp.getCount();
             for (int i = 0; i < count; i++) GetPart(mp.getBodyPart(i));
         } else if (message.isMimeType("message/rfc822")) {
-            Log.d(TAG, "+++ isMimeType message/rfc822/* (contentType):" + message.getContentType());
+            Log.d(TAG, "+++ isMimeType message/rfc822*//* (contentType):" + message.getContentType());
             GetPart((Part) message.getContent());
         } else if (message.isMimeType("image/jpeg")) {
             Log.d(TAG, "+++ isMimeType image/jpeg (contentType):" + message.getContentType());
@@ -285,7 +286,7 @@ public class NoteDetailActivity extends Activity {
             } else Log.d(TAG, "+++ instanceof ???");
         }
     }
-
+*/
     @NonNull
     private Sticky ReadHtmlnote(String stringres) {
 //        Log.d(TAG,"From server (html):"+stringres);

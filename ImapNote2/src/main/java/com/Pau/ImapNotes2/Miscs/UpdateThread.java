@@ -122,7 +122,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 storedNotes.OpenDb();
                 suid = storedNotes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountname());
                 currentNote.SetUid(suid);
-                // Here we ask to add the new note to the "new" folder
+                // Here we ask to add the new note to the new note folder
                 // Must be done AFTER uid has been set in currenteNote
                 WriteMailToNew(currentNote,
                         imapNotes2Account.GetUsesticky(), body);
@@ -187,7 +187,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                                 String noteBody) throws MessagingException, IOException {
         //String body = null;
 
-        // Here we add the new note to the "new" folder
+        // Here we add the new note to the new note folder
         //Log.d(TAG,"Add new note");
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);

@@ -151,7 +151,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         boolean remoteNotesManaged = false;
         String usesticky = am.getUserData(account, ConfigurationFieldNames.UseSticky);
         try {
-            remoteNotesManaged = SyncUtils.handleRemoteNotes(applicationContext, res.notesFolder, storedNotes, account.name, usesticky);
+            remoteNotesManaged = SyncUtils.handleRemoteNotes(applicationContext, res.notesFolder,
+                    storedNotes, account.name, usesticky);
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -210,7 +211,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             //Log.d(TAG,"New Note to process:"+fileNew);
             newNotesManaged = true;
             // Read local new message from file
-            Message message = SyncUtils.ReadMailFromFileWhereNew(fileNew, false, dirNew);
+            Message message = SyncUtils.ReadMailFromFileNew(fileNew, false, dirNew);
             try {
                 message.setFlag(Flags.Flag.SEEN, true); // set message as seen
             } catch (MessagingException e) {
