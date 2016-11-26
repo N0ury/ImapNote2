@@ -63,7 +63,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     @Nullable
     private String accountname;
     @NonNull
-    private ConfigurationFile settings = new ConfigurationFile();
+    private final ConfigurationFile settings = new ConfigurationFile();
 
     @Nullable
     private static Account myAccount = null;
@@ -302,9 +302,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         imapNotes2Account.GetPassword(),
                         imapNotes2Account.GetServer(),
                         imapNotes2Account.GetPortnum(),
-                        imapNotes2Account.GetSecurity(),
-                        imapNotes2Account.GetUsesticky(),
-                        imapNotes2Account.GetFoldername());
+                        imapNotes2Account.GetSecurity()
+                );
                 //accountConfigurationActivity = acountConfigurationActivity;
                 if (res.returnCode == Imaper.ResultCodeSuccess) {
                     // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().

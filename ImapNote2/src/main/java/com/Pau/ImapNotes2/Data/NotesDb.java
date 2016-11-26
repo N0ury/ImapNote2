@@ -1,10 +1,5 @@
 package com.Pau.ImapNotes2.Data;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class NotesDb {
 
@@ -38,7 +38,7 @@ public class NotesDb {
     private final NotesDbHelper defaultHelper;
 
     public NotesDb(Context applicationContext) {
-        this.defaultHelper = new NotesDbHelper(applicationContext, DATABASE_NAME, NOTES_VERSION);
+        this.defaultHelper = new NotesDbHelper(applicationContext);
 
     }
 
@@ -143,8 +143,8 @@ public class NotesDb {
 
     private static class NotesDbHelper extends SQLiteOpenHelper {
 
-        NotesDbHelper(Context currentApplicationContext, String dbName, int dbVersion) {
-            super(currentApplicationContext, dbName, null, dbVersion);
+        NotesDbHelper(Context currentApplicationContext) {
+            super(currentApplicationContext, NotesDb.DATABASE_NAME, null, NotesDb.NOTES_VERSION);
         }
 
         @Override

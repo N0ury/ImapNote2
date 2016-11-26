@@ -1,35 +1,32 @@
 package com.Pau.ImapNotes2.Miscs;
 
-import java.util.ArrayList;
-
-import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Data.OneNote;
-import com.Pau.ImapNotes2.Listactivity;
-import com.Pau.ImapNotes2.NotesListAdapter;
-import com.Pau.ImapNotes2.Data.NotesDb;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Data.OneNote;
+import com.Pau.ImapNotes2.Listactivity;
+import com.Pau.ImapNotes2.NotesListAdapter;
+
+import java.util.ArrayList;
+
 public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     private final ProgressDialog progressDialog;
-    private NotesListAdapter adapter;
-    private ArrayList<OneNote> notesList;
+    private final NotesListAdapter adapter;
+    private final ArrayList<OneNote> notesList;
     // TODO: NoteDb should probably never be null.
     @Nullable
-    private NotesDb storedNotes;
+    private final NotesDb storedNotes;
     boolean bool_to_return;
     @NonNull
     ImapNotes2Result res = new ImapNotes2Result();
     private static final String TAG = "SyncThread";
 
     // TODO: remove unused arguments.
-    public SyncThread(Object imapFolder,
-                      ImapNotes2Account imapNotes2Account,
-                      ArrayList<OneNote> noteList,
+    public SyncThread(ArrayList<OneNote> noteList,
                       NotesListAdapter listToView,
                       ProgressDialog loadingDialog,
                       @Nullable NotesDb storedNotes,

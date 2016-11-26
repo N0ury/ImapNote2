@@ -46,9 +46,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(@NonNull Context applicationContext,
-                       boolean autoInitialize) {
-        super(applicationContext, autoInitialize);
+    public SyncAdapter(@NonNull Context applicationContext) {
+        super(applicationContext, true);
         mContentResolver = applicationContext.getContentResolver();
         // TODO: do we really need a copy of the applicationContext reference?
         SyncAdapter.applicationContext = applicationContext;
@@ -208,8 +207,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     am.getUserData(account, ConfigurationFieldNames.Server),
                     am.getUserData(account, ConfigurationFieldNames.PortNumber),
                     Security.from(am.getUserData(account, ConfigurationFieldNames.Security)),
-                    am.getUserData(account, ConfigurationFieldNames.UseSticky),
-                    am.getUserData(account, ConfigurationFieldNames.ImapFolder));
+                am.getUserData(account, ConfigurationFieldNames.ImapFolder));
         if (res.returnCode != ResultCodeSuccess) {
             Log.d(TAG, "Connection problem: " + res.errorMessage);
         }
@@ -231,7 +229,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             //Log.d(TAG,"New Note to process:"+fileNew);
             newNotesManaged = true;
             // Read local new message from file
-            Message message = SyncUtils.ReadMailFromFileNew(fileNew, false, dirNew);
+            Message message = SyncUtils.ReadMailFromFileNew(fileNew, dirNew);
             try {
                 message.setFlag(Flags.Flag.SEEN, true); // set message as seen
             } catch (MessagingException e) {

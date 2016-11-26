@@ -31,7 +31,7 @@ public enum Security {
     STARTTLS_accept_all_certificates("STARTTLS (accept all certificates)", "143", "imaps", true);
 
     @NonNull
-    static String TAG = "In_Security";
+    static final String TAG = "In_Security";
     public final String proto;
     public final boolean acceptcrt;
 

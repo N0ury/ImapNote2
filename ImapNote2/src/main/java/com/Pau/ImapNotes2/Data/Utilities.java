@@ -17,7 +17,7 @@ public class Utilities {
      * server so we must define a fixed format for it.
      */
     @NonNull
-    private static String internalDateFormatString = "yyyy-MM-dd HH:mm:ss";
+    private static final String internalDateFormatString = "yyyy-MM-dd HH:mm:ss";
     @NonNull
-    public static SimpleDateFormat internalDateFormat = new SimpleDateFormat(internalDateFormatString, Locale.ROOT);
+    public static final SimpleDateFormat internalDateFormat = new SimpleDateFormat(internalDateFormatString, Locale.ROOT);
 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class OneNote extends HashMap<String, String> {
     public static final String TITLE = "title";
     public static final String DATE = "date";
-    public static final String UID = "uid";
+    private static final String UID = "uid";
 
 
     /**

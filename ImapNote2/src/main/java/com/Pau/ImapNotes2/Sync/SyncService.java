@@ -33,7 +33,7 @@ public class SyncService extends Service {
             // TODO: find out why we do not do this in the constructor.
             // We could then annotate sSyncAdapter as @NonNull.
             if (sSyncAdapter == null) {
-                sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
+                sSyncAdapter = new SyncAdapter(getApplicationContext());
             }
         }
     }

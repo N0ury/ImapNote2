@@ -71,7 +71,6 @@ public class SyncUtils {
                                             @NonNull String server,
                                             String portnum,
                                             @NonNull Security security,
-                                            String usesticky,
                                             @NonNull String folderOverride) {
         if (IsConnected()) {
             try {
@@ -340,19 +339,17 @@ public class SyncUtils {
 
     /**
      * @param uid         ID of the message as created by the IMAP server
-     * @param removeMinus TODO: Why?
      * @param newFilesDir Directory in which it is stored.
      * @return A Java mail message object.
      */
     @Nullable
     public static Message ReadMailFromFileNew(@NonNull String uid,
-                                              boolean removeMinus,
                                               @NonNull File newFilesDir) {
         //File mailFile;
         //Message message = null;
         //mailFile = new File(nameDir, uid);
 
-        if (removeMinus) {
+        if (false) {
             uid = uid.substring(1);
         }
         return ReadMailFromFile(newFilesDir, uid);
@@ -360,14 +357,12 @@ public class SyncUtils {
 
     /**
      * @param uid         ID of the message as created by the IMAP server
-     * @param removeMinus TODO: Why?
      * @param fileDir     Name of the account with which this message is associated, used to find the
      *                    directory in which it is stored.
      * @return A Java mail message object.
      */
     @Nullable
     public static Message ReadMailFromFileRootAndNew(@NonNull String uid,
-                                                     boolean removeMinus,
                                                      @NonNull File fileDir) {
         //File mailFile;
         //Message message = null;
@@ -375,7 +370,7 @@ public class SyncUtils {
 
         if (!mailFile.exists()) {
             fileDir = new File(fileDir, "new");
-            if (removeMinus) uid = uid.substring(1);
+            if (true) uid = uid.substring(1);
         }
 
         return ReadMailFromFile(fileDir, uid);
@@ -383,14 +378,12 @@ public class SyncUtils {
 
     /**
      * @param uid         ID of the message as created by the IMAP server
-     * @param removeMinus TODO: Why?
      * @param nameDir     Name of the account with which this message is associated, used to find the
      *                    directory in which it is stored.
      * @return A Java mail message object.
      */
     @Nullable
     public static Message ReadMailFromFileDeleted(@NonNull String uid,
-                                                  boolean removeMinus,
                                                   @NonNull String nameDir) {
         return ReadMailFromFile(new File(nameDir, "deleted"), uid);
     }

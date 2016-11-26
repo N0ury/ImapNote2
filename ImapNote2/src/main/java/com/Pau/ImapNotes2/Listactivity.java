@@ -78,8 +78,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     public static final String EDIT_ITEM_NUM_IMAP = "EDIT_ITEM_NUM_IMAP";
     public static final String EDIT_ITEM_TXT = "EDIT_ITEM_TXT";
     public static final String EDIT_ITEM_COLOR = "EDIT_ITEM_COLOR";
-    public static final String SAVE_ITEM_COLOR = "SAVE_ITEM_COLOR";
-    public static final String SAVE_ITEM = "SAVE_ITEM";
+    private static final String SAVE_ITEM_COLOR = "SAVE_ITEM_COLOR";
+    private static final String SAVE_ITEM = "SAVE_ITEM";
     public static final String DELETE_ITEM_NUM_IMAP = "DELETE_ITEM_NUM_IMAP";
     public static final String ACCOUNTNAME = "ACCOUNTNAME";
     public static final String SYNCINTERVAL = "SYNCINTERVAL";
@@ -152,7 +152,6 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         this.listToView = new NotesListAdapter(
                 getApplicationContext(),
                 this.noteList,
-                R.layout.note_element,
                 new String[]{OneNote.TITLE, OneNote.DATE},
                 new int[]{R.id.noteTitle, R.id.noteInformation});
         ListView listview = (ListView) findViewById(R.id.notesList);
@@ -243,8 +242,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     };
 
     private void RefreshList() {
-        new SyncThread(this.imapFolder,
-                Listactivity.imapNotes2Account,
+        new SyncThread(
                 this.noteList,
                 this.listToView,
                 ShowProgress(R.string.refreshing_notes_list),

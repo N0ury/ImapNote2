@@ -7,7 +7,7 @@ import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 public class Sticky {
 
     public final String text;
-    public final String position;
+    private final String position;
     @NonNull
     public final Colors color;
 

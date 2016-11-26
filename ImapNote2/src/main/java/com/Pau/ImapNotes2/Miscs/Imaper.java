@@ -1,24 +1,23 @@
 package com.Pau.ImapNotes2.Miscs;
 
-import java.security.GeneralSecurityException;
-import java.util.Properties;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.Pau.ImapNotes2.Data.Security;
+import com.Pau.ImapNotes2.ImapNotes2k;
+import com.Pau.ImapNotes2.Listactivity;
+import com.sun.mail.imap.IMAPStore;
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import java.security.GeneralSecurityException;
+import java.util.Properties;
+
 import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
-
-import com.Pau.ImapNotes2.Data.Security;
-import com.sun.mail.imap.IMAPStore;
-import com.sun.mail.util.MailSSLSocketFactory;
-
-import com.Pau.ImapNotes2.ImapNotes2k;
-import com.Pau.ImapNotes2.Listactivity;
 
 public class Imaper {
 
@@ -37,9 +36,7 @@ public class Imaper {
                                               String password,
                                               String server,
                                               String portnum,
-                                              @NonNull Security security,
-                                              boolean usesticky,
-                                              @NonNull String folderoverride) throws MessagingException {
+                                              @NonNull Security security) throws MessagingException {
         if (IsConnected()) {
             store.close();
         }

@@ -15,7 +15,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
@@ -70,7 +69,7 @@ public class NoteDetailActivity extends Activity {
         suid = hm.get("uid").toString();
         File rootDir = new File(ImapNotes2k.getAppContext().getFilesDir(),
                 Listactivity.imapNotes2Account.GetAccountname());
-        Message message = SyncUtils.ReadMailFromFileRootAndNew(suid, true, rootDir);
+        Message message = SyncUtils.ReadMailFromFileRootAndNew(suid, rootDir);
         Log.d(TAG, "rootDir is null: " + (rootDir == null));
         Log.d(TAG, "rootDir: " + rootDir.toString());
         Sticky sticky = GetInfoFromMessage(message);
@@ -105,7 +104,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     // TODO: delete this?
-    public void onClick(View v) {
+    public void onClick() {
         Boolean isClicked = true;
     }
 
@@ -136,7 +135,7 @@ public class NoteDetailActivity extends Activity {
         if (BuildConfig.DEBUG && (color == null)) {
             throw new AssertionError("color is null");
         }
-        ;
+
         menu.findItem(color.id).setChecked(true);
         return true;
     }
