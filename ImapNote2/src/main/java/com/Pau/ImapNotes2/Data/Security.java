@@ -67,10 +67,12 @@ public enum Security {
             _map.put(security.ordinal(), security);
     }
 
+    @NonNull
     public static Security from(int ordinal) {
         return _map.get(ordinal);
     }
 
+    @NonNull
     public static Security from(String name) {
         Log.d(TAG, "from: <" + name + ">");
         for (Security security : Security.values()) {

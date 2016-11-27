@@ -191,7 +191,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
     public void onStart() {
         super.onStart();
-        int len = accounts == null ? 0 : accounts.length;
+        int len = accounts.length;
         if (len > 0) updateAccountSpinner();
     }
 

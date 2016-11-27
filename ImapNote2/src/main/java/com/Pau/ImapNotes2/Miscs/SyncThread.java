@@ -20,9 +20,12 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     // TODO: NoteDb should probably never be null.
     @Nullable
     private final NotesDb storedNotes;
-    boolean bool_to_return;
-    @NonNull
-    ImapNotes2Result res = new ImapNotes2Result();
+    // --Commented out by Inspection (11/26/16 11:48 PM):boolean bool_to_return;
+// --Commented out by Inspection START (11/26/16 11:48 PM):
+//    @NonNull
+//    ImapNotes2Result res = new ImapNotes2Result();
+// --Commented out by Inspection STOP (11/26/16 11:48 PM)
+    @SuppressWarnings("unused")
     private static final String TAG = "SyncThread";
 
     // TODO: remove unused arguments.

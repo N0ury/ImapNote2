@@ -9,7 +9,7 @@ public class ImapNotes2Result {
     public int returnCode;
     public String errorMessage;
     public Long UIDValidity;
-    public boolean hasUIDPLUS;
+    // --Commented out by Inspection (11/26/16 11:45 PM):public boolean hasUIDPLUS;
     @Nullable
     public Folder notesFolder;
 
@@ -17,7 +17,7 @@ public class ImapNotes2Result {
         returnCode = -1;
         errorMessage = "";
         UIDValidity = (long) -1;
-        hasUIDPLUS = true;
+        //hasUIDPLUS = true;
         notesFolder = null;
     }
 }

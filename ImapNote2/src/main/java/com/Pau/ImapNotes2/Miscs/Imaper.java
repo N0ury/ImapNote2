@@ -1,20 +1,14 @@
 package com.Pau.ImapNotes2.Miscs;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.Pau.ImapNotes2.Data.Security;
-import com.Pau.ImapNotes2.ImapNotes2k;
-import com.Pau.ImapNotes2.Listactivity;
-import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.util.MailSSLSocketFactory;
 
 import java.security.GeneralSecurityException;
 import java.util.Properties;
 
-import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -25,7 +19,7 @@ public class Imaper {
     private static final String TAG = "IN_Imaper";
 
     private Long UIDValidity;
-    public static final String PREFS_NAME = "PrefsFile";
+    // --Commented out by Inspection (11/26/16 11:43 PM):public static final String PREFS_NAME = "PrefsFile";
 
     public static final int ResultCodeSuccess = 0;
     public static final int ResultCodeException = -2;
@@ -113,6 +107,7 @@ public class Imaper {
         Boolean useProxy = false;
         //noinspection ConstantConditions
         // TODO: implement proxy handling properly.
+        //noinspection ConstantConditions
         if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");
@@ -129,11 +124,11 @@ public class Imaper {
         store = session.getStore(proto);
         try {
             store.connect(server, username, password);
-            Boolean hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
+            //Boolean hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
 //Log.d(TAG, "has UIDPLUS="+hasUIDPLUS);
 
-            Folder[] folders = store.getPersonalNamespaces();
-            Folder folder = folders[0];
+            //Folder[] folders = store.getPersonalNamespaces();
+            //Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
             /*if (folderoverride.length() > 0) {
                 Imaper.sfolder = folderoverride;
@@ -161,21 +156,25 @@ public class Imaper {
         return store != null && store.isConnected();
     }
 
-    // Put values in shared preferences:
-    public void SetPrefs() {
-        SharedPreferences preferences = ImapNotes2k.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("Name", "valid_data");
-        editor.putLong("UIDValidity", UIDValidity);
-        editor.apply();
-    }
+// --Commented out by Inspection START (11/26/16 11:44 PM):
+//    // Put values in shared preferences:
+//    public void SetPrefs() {
+//        SharedPreferences preferences = ImapNotes2k.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putString("Name", "valid_data");
+//        editor.putLong("UIDValidity", UIDValidity);
+//        editor.apply();
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:44 PM)
 
-    // Retrieve values from shared preferences:
-    public void GetPrefs() {
-        SharedPreferences preferences = (ImapNotes2k.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
-        String name = preferences.getString("Name", "");
-        if (!name.equalsIgnoreCase("")) {
-            UIDValidity = preferences.getLong("UIDValidity", -1);
-        }
-    }
+// --Commented out by Inspection START (11/26/16 11:44 PM):
+//    // Retrieve values from shared preferences:
+//    public void GetPrefs() {
+//        SharedPreferences preferences = (ImapNotes2k.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
+//        String name = preferences.getString("Name", "");
+//        if (!name.equalsIgnoreCase("")) {
+//            UIDValidity = preferences.getLong("UIDValidity", -1);
+//        }
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:44 PM)
 }

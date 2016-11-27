@@ -54,9 +54,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private Spinner securitySpinner;
     // TODO: move this to dologin becauae it is the only use.
     private ImapNotes2Account imapNotes2Account;
-    // TODO: This should probably be initialized to None so that it need not be nullable.
-    @Nullable
-    private Security security;
+    @NonNull
+    private Security security = Security.None;
     //private int security_i;
     @Nullable
     private Actions action;

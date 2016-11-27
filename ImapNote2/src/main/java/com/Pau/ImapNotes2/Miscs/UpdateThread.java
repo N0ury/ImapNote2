@@ -173,7 +173,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
             String positiveUid = suid.substring(1);
             from = new File(directory + "/new", positiveUid);
             // TODO: Explain why it is safe to ignore the result of delete.
-            from.delete();
+            final boolean delete = from.delete();
         } else {
             File to = new File(directory + "/deleted/" + suid);
             // TODO: Explain why it is safe to ignore the result of rename.

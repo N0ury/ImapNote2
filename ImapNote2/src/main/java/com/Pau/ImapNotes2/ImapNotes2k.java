@@ -1,15 +1,15 @@
 package com.Pau.ImapNotes2;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import com.Pau.ImapNotes2.Data.ConfigurationFile;
-import com.Pau.ImapNotes2.Miscs.Imaper;
-import com.Pau.ImapNotes2.Data.OneNote;
-
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
+
+import com.Pau.ImapNotes2.Data.ConfigurationFile;
+import com.Pau.ImapNotes2.Data.OneNote;
+import com.Pau.ImapNotes2.Miscs.Imaper;
+
+import java.io.File;
+import java.util.ArrayList;
 
 
 /*
@@ -51,15 +51,19 @@ public class ImapNotes2k extends Application {
         return ImapNotes2k.getAppContext().getFilesDir();
     }
 
-    // ?
-    public void SetConfigurationFile(ConfigurationFile currentSettings) {
-        this.thisSessionConfigurationFile = currentSettings;
-    }
+// --Commented out by Inspection START (11/26/16 11:44 PM):
+//    // ?
+//    public void SetConfigurationFile(ConfigurationFile currentSettings) {
+//        this.thisSessionConfigurationFile = currentSettings;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:44 PM)
 
-    // ?
-    public ConfigurationFile GetConfigurationFile() {
-        return this.thisSessionConfigurationFile;
-    }
+// --Commented out by Inspection START (11/26/16 11:44 PM):
+//    // ?
+//    public ConfigurationFile GetConfigurationFile() {
+//        return this.thisSessionConfigurationFile;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:44 PM)
 
     // ?
     public void SetImaper(Imaper currentImaper) {
@@ -76,9 +80,11 @@ public class ImapNotes2k extends Application {
         this.noteList = currentNotesList;
     }
 
-    // ?
-    public ArrayList<OneNote> GetNotesList() {
-        return this.noteList;
-    }
+// --Commented out by Inspection START (11/26/16 11:44 PM):
+//    // ?
+//    public ArrayList<OneNote> GetNotesList() {
+//        return this.noteList;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:44 PM)
 
 }

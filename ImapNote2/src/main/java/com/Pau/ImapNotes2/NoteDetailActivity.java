@@ -43,7 +43,7 @@ public class NoteDetailActivity extends Activity {
     private Colors color = Colors.YELLOW;
     //private int realColor = R.id.yellow;
     private String suid; // uid as string
-    private final static int ROOT_AND_NEW = 3;
+    // --Commented out by Inspection (11/26/16 11:52 PM):private final static int ROOT_AND_NEW = 3;
     private static final String TAG = "IN_NoteDetailActivity";
 
     //region Intent item names
@@ -70,7 +70,7 @@ public class NoteDetailActivity extends Activity {
         File rootDir = new File(ImapNotes2k.getAppContext().getFilesDir(),
                 Listactivity.imapNotes2Account.GetAccountname());
         Message message = SyncUtils.ReadMailFromFileRootAndNew(suid, rootDir);
-        Log.d(TAG, "rootDir is null: " + (rootDir == null));
+        //Log.d(TAG, "rootDir is null: " + (rootDir == null));
         Log.d(TAG, "rootDir: " + rootDir.toString());
         Sticky sticky = GetInfoFromMessage(message);
         String stringres = sticky.text;

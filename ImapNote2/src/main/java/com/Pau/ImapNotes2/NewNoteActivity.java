@@ -16,6 +16,7 @@ import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 public class NewNoteActivity extends Activity {
 
     private static final int SAVE_BUTTON = 5;
+    @SuppressWarnings("unused")
     private static final String TAG = "IN_NewNoteActivity";
     private boolean sticky;
     @NonNull

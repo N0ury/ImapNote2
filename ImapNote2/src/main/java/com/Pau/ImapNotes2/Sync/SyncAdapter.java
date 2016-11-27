@@ -38,11 +38,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static Context applicationContext;
     private NotesDb storedNotes;
     private static Account account;
-    /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
-    @NonNull
-    private Long UIDValidity = (long) -1;
-    private final static int NEW = 1;
-    private final static int DELETED = 2;
+// --Commented out by Inspection START (11/26/16 11:49 PM):
+//    /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
+//    @NonNull
+//    private Long UIDValidity = (long) -1;
+// --Commented out by Inspection STOP (11/26/16 11:49 PM)
+    // --Commented out by Inspection (11/26/16 11:49 PM):private final static int NEW = 1;
+    // --Commented out by Inspection (11/26/16 11:49 PM):private final static int DELETED = 2;
 
     private final ContentResolver mContentResolver;
 

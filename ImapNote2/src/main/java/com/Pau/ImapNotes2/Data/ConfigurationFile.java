@@ -1,10 +1,8 @@
 package com.Pau.ImapNotes2.Data;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.Xml;
 
 import com.Pau.ImapNotes2.ImapNotes2k;
 
@@ -13,7 +11,6 @@ import org.w3c.dom.NodeList;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +38,7 @@ public class ConfigurationFile {
     @Nullable
     private String portnum;
     // TLS, etc.
-    @Nullable
+    @NonNull
     private Security security = Security.None;
     // ?
     private boolean usesticky;
@@ -71,11 +68,9 @@ public class ConfigurationFile {
             } else {
                 portnum = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.PortNumber);
             }
-            if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.UseSticky).getLength() == 0)
-                // usesticky option doesn't exist, say no
-                usesticky = false;
-            else
-                usesticky = Boolean.parseBoolean(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UseSticky));
+            // usesticky option doesn't exist, say no
+            usesticky = LoadItemFromXML(fileToLoad, ConfigurationFieldNames.UseSticky).getLength() != 0 &&
+                    Boolean.parseBoolean(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UseSticky));
 
 //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
@@ -103,38 +98,46 @@ public class ConfigurationFile {
         return username;
     }
 
-    public void SetUsername(String Username) {
-        username = Username;
-    }
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetUsername(String Username) {
+//        username = Username;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
 
     @Nullable
     public String GetPassword() {
         return password;
     }
 
-    public void SetPassword(String Password) {
-        password = Password;
-    }
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetPassword(String Password) {
+//        password = Password;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
 
     @Nullable
     public String GetServer() {
         return server;
     }
 
-    public void SetServer(String Server) {
-        server = Server;
-    }
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetServer(String Server) {
+//        server = Server;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
 
     @Nullable
     public String GetPortnum() {
         return portnum;
     }
 
-    public void SetPortnum(String Portnum) {
-        portnum = Portnum;
-    }
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetPortnum(String Portnum) {
+//        portnum = Portnum;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
 
-    @Nullable
+    @NonNull
     public Security GetSecurity() {
         return security;
     }
@@ -173,30 +176,32 @@ public class ConfigurationFile {
         imapfolder = null;
     }
 
-    // This function could take the context as an argument.
-    // In addition the name of the file should be a named constant
-    // because it is used elewhere.
-    public void SaveConfigurationToXML()
-            throws IllegalArgumentException, IllegalStateException, IOException {
-        FileOutputStream configurationFile
-                = ImapNotes2k.getAppContext().openFileOutput(ImapNotes2k.ConfigurationFilePath(),
-                Context.MODE_PRIVATE);
-        XmlSerializer serializer = Xml.newSerializer();
-        serializer.setOutput(configurationFile, "UTF-8");
-        serializer.startDocument(null, true);
-        serializer.startTag(null, "Configuration");
-        SerializeText(serializer, ConfigurationFieldNames.UserName, username);
-        SerializeText(serializer, ConfigurationFieldNames.Password, password);
-        SerializeText(serializer, ConfigurationFieldNames.Server, server);
-        SerializeText(serializer, ConfigurationFieldNames.PortNumber, portnum);
-        SerializeText(serializer, ConfigurationFieldNames.Security, security.name());
-        SerializeText(serializer, ConfigurationFieldNames.ImapFolder, imapfolder);
-        SerializeText(serializer, ConfigurationFieldNames.UseSticky, String.valueOf(usesticky));
-        serializer.endTag(null, "Configuration");
-        serializer.endDocument();
-        serializer.flush();
-        configurationFile.close();
-    }
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    // This function could take the context as an argument.
+//    // In addition the name of the file should be a named constant
+//    // because it is used elewhere.
+//    public void SaveConfigurationToXML()
+//            throws IllegalArgumentException, IllegalStateException, IOException {
+//        FileOutputStream configurationFile
+//                = ImapNotes2k.getAppContext().openFileOutput(ImapNotes2k.ConfigurationFilePath(),
+//                Context.MODE_PRIVATE);
+//        XmlSerializer serializer = Xml.newSerializer();
+//        serializer.setOutput(configurationFile, "UTF-8");
+//        serializer.startDocument(null, true);
+//        serializer.startTag(null, "Configuration");
+//        SerializeText(serializer, ConfigurationFieldNames.UserName, username);
+//        SerializeText(serializer, ConfigurationFieldNames.Password, password);
+//        SerializeText(serializer, ConfigurationFieldNames.Server, server);
+//        SerializeText(serializer, ConfigurationFieldNames.PortNumber, portnum);
+//        SerializeText(serializer, ConfigurationFieldNames.Security, security.name());
+//        SerializeText(serializer, ConfigurationFieldNames.ImapFolder, imapfolder);
+//        SerializeText(serializer, ConfigurationFieldNames.UseSticky, String.valueOf(usesticky));
+//        serializer.endTag(null, "Configuration");
+//        serializer.endDocument();
+//        serializer.flush();
+//        configurationFile.close();
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
 
     // Avoid repeated literal tag names.
     private void SerializeText(@NonNull XmlSerializer serializer,

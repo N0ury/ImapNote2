@@ -16,7 +16,6 @@ import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.Sticky;
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
-import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.util.MailSSLSocketFactory;
 
 import org.apache.commons.io.FileUtils;
@@ -62,7 +61,7 @@ public class SyncUtils {
     //private final static int ROOT_AND_NEW = 3;
 
     public enum Where {
-        NEW, DELETED, ROOT_AND_NEW
+        // --Commented out by Inspection (11/26/16 11:46 PM):NEW, DELETED, ROOT_AND_NEW
     }
 
     @NonNull
@@ -131,7 +130,7 @@ public class SyncUtils {
 //this.session.setDebug(true);
             store = session.getStore(proto);
             store.connect(server, username, password);
-            res.hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
+            //res.hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
 //Log.d(TAG, "has UIDPLUS="+res.hasUIDPLUS);
 
             Folder[] folders = store.getPersonalNamespaces();
@@ -376,17 +375,19 @@ public class SyncUtils {
         return ReadMailFromFile(fileDir, uid);
     }
 
-    /**
-     * @param uid         ID of the message as created by the IMAP server
-     * @param nameDir     Name of the account with which this message is associated, used to find the
-     *                    directory in which it is stored.
-     * @return A Java mail message object.
-     */
-    @Nullable
-    public static Message ReadMailFromFileDeleted(@NonNull String uid,
-                                                  @NonNull String nameDir) {
-        return ReadMailFromFile(new File(nameDir, "deleted"), uid);
-    }
+// --Commented out by Inspection START (11/26/16 11:46 PM):
+//    /**
+//     * @param uid         ID of the message as created by the IMAP server
+//     * @param nameDir     Name of the account with which this message is associated, used to find the
+//     *                    directory in which it is stored.
+//     * @return A Java mail message object.
+//     */
+//    @Nullable
+//    public static Message ReadMailFromFileDeleted(@NonNull String uid,
+//                                                  @NonNull String nameDir) {
+//        return ReadMailFromFile(new File(nameDir, "deleted"), uid);
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:46 PM)
 
 
     /**
