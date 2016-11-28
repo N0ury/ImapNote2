@@ -107,7 +107,7 @@ public class Imaper {
         Boolean useProxy = false;
         //noinspection ConstantConditions
         // TODO: implement proxy handling properly.
-        //noinspection ConstantConditions
+        //noinspection ConstantConditions,ConstantConditions
         if (useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");

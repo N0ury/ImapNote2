@@ -369,7 +369,7 @@ public class SyncUtils {
 
         if (!mailFile.exists()) {
             fileDir = new File(fileDir, "new");
-            if (true) uid = uid.substring(1);
+            uid = uid.substring(1);
         }
 
         return ReadMailFromFile(fileDir, uid);
@@ -400,22 +400,25 @@ public class SyncUtils {
     private static Message ReadMailFromFile(@NonNull File nameDir,
                                             @NonNull String uid) {
         File mailFile = new File(nameDir, uid);
-        InputStream mailFileInputStream = null;
-        try {
-            mailFileInputStream = new FileInputStream(mailFile);
+
+        try (InputStream mailFileInputStream = new FileInputStream(mailFile)) {
+            try {
+                Properties props = new Properties();
+                Session session = Session.getDefaultInstance(props, null);
+                return new MimeMessage(session, mailFileInputStream);
+            } catch (MessagingException e) {
+                // TODO Auto-generated catch block
+                Log.d(TAG, "Exception getting MimeMessage.");
+                e.printStackTrace();
+            }
         } catch (FileNotFoundException e1) {
             // TODO Auto-generated catch block
-            Log.d(TAG, "Exception opening mailFile: " + mailFile.getAbsolutePath());
+            Log.d(TAG, "File not found opening mailFile: " + mailFile.getAbsolutePath());
             e1.printStackTrace();
-        }
-        try {
-            Properties props = new Properties();
-            Session session = Session.getDefaultInstance(props, null);
-            return new MimeMessage(session, mailFileInputStream);
-        } catch (MessagingException e) {
-            // TODO Auto-generated catch block
-            Log.d(TAG, "Exception getting MimeMessage.");
-            e.printStackTrace();
+        } catch (IOException exIO) {
+            //TODO: handle this properly
+            Log.d(TAG, "IO exception opening mailFile: " + mailFile.getAbsolutePath());
+            exIO.printStackTrace();
         }
         return null;
     }

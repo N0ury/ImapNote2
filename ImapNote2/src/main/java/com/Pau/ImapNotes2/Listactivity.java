@@ -243,8 +243,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
     private void RefreshList() {
         new SyncThread(
-                this.noteList,
-                this.listToView,
+                noteList,
+                listToView,
                 ShowProgress(R.string.refreshing_notes_list),
                 storedNotes,
                 this.getApplicationContext()).execute();
@@ -256,13 +256,13 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                             Colors color,
                             UpdateThread.Action action) {
         new UpdateThread(Listactivity.imapNotes2Account,
-                this.noteList,
-                this.listToView,
+                noteList,
+                listToView,
                 ShowProgress(R.string.updating_notes_list),
                 suid,
                 noteBody,
                 color,
-                this.getApplicationContext(),
+                getApplicationContext(),
                 action,
                 storedNotes).execute();
     }
@@ -313,7 +313,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 startActivity(res);
                 return true;
             case R.id.refresh:
-                TriggerSync(this.status);
+                assert this.status != null;
+                TriggerSync(status);
                 return true;
             case R.id.newnote:
                 Intent toNew = new Intent(this, NewNoteActivity.class);

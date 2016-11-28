@@ -17,8 +17,11 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     private final ProgressDialog progressDialog;
     private final NotesListAdapter adapter;
     private final ArrayList<OneNote> notesList;
+    /**
+     * SQLite database that holds status information about the notes.
+     */
     // TODO: NoteDb should probably never be null.
-    @Nullable
+    @NonNull
     private final NotesDb storedNotes;
     // --Commented out by Inspection (11/26/16 11:48 PM):boolean bool_to_return;
 // --Commented out by Inspection START (11/26/16 11:48 PM):

@@ -42,6 +42,10 @@ public class NotesDb {
 
     }
 
+    /**
+     * TODO: can we make this implement closeable?
+     */
+    @NonNull
     public void OpenDb() {
         this.notesDb = this.defaultHelper.getWritableDatabase();
 
@@ -52,7 +56,8 @@ public class NotesDb {
 
     }
 
-    public void InsertANoteInDb(@NonNull OneNote noteElement, String accountname) {
+    public void InsertANoteInDb(@NonNull OneNote noteElement,
+                                @NonNull String accountname) {
         ContentValues tableRow = new ContentValues();
         tableRow.put(COL_TITLE, noteElement.GetTitle());
         tableRow.put(COL_DATE, noteElement.GetDate());
