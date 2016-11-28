@@ -1,5 +1,9 @@
 * To do
 
+** Consider dropping mime and using attachments directly.
+
+Consider also using HTML: github: AvinashSKaranth/android-summernotesummernote
+
 ** Synchronize when user brings app to foreground
 
 It's annoying to have to wait.
@@ -7,7 +11,7 @@ It's annoying to have to wait.
 
 ** Add configuration for directory synchronization.
 
-** Implement synchronization.
+** Implement general filesynchronization.
 
 ** Implement text file merging
 

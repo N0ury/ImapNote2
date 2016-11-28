@@ -274,8 +274,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private final long SYNC_FREQUENCY;
 
         private final AccountConfigurationActivity accountConfigurationActivity;
-        @NonNull
-        private ImapNotes2Result res = new ImapNotes2Result();
+        //@NonNull
+        //private ImapNotes2Result res = new ImapNotes2Result();
+        private String statusMessage = "";
         private final Actions action;
 
         LoginThread(ImapNotes2Account imapNotes2Account,
@@ -296,7 +297,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             //action = (String) stuffs[ParamAction];
             try {
                 //ImapNotes2Account imapNotes2Account= ((ImapNotes2Account) stuffs[ParamImapNotes2Account]);
-                res = imapFolder.ConnectToProvider(
+                ImapNotes2Result res = imapFolder.ConnectToProvider(
                         imapNotes2Account.GetUsername(),
                         imapNotes2Account.GetPassword(),
                         imapNotes2Account.GetServer(),
@@ -327,7 +328,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                         ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                         ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                        res.errorMessage = "Account has been modified";
+                        statusMessage = "Account has been modified";
                         return true;
                     } else {
                         if (am.addAccountExplicitly(account, imapNotes2Account.GetPassword(), null)) {
@@ -346,10 +347,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                             ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                            res.errorMessage = getString(R.string.account_added);
+                            statusMessage = getString(R.string.account_added);
                             return true;
                         } else {
-                            res.errorMessage = getString(R.string.account_already_exists_or_is_null);
+                            statusMessage = getString(R.string.account_already_exists_or_is_null);
                             return false;
                         }
                     }
@@ -375,7 +376,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 accountConfigurationActivity.folderTextView.setText("");
                 accountConfigurationActivity.stickyCheckBox.setChecked(false);
             }
-            final Toast tag = Toast.makeText(getApplicationContext(), res.errorMessage, Toast.LENGTH_LONG);
+            final Toast tag = Toast.makeText(getApplicationContext(), statusMessage, Toast.LENGTH_LONG);
             tag.show();
             new CountDownTimer(5000, 1000) {
                 public void onTick(long millisUntilFinished) {
