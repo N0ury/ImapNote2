@@ -196,7 +196,7 @@ public class SyncUtils {
     private static final Pattern patternText = Pattern.compile("TEXT:(.*?)(END:|POSITION:)", Pattern.DOTALL);
 
     @NonNull
-    public static Sticky ReadStickynote(@NonNull String stringres) {
+    public static Sticky ReadStickyNote(@NonNull String stringres) {
 /*
         Matcher matcherColor = patternColor.matcher(stringres);
         Colors color = Colors.NONE;
@@ -227,8 +227,9 @@ public class SyncUtils {
             text = text.replaceAll("\\\\n", "<br>");
         }
         */
-        return new Sticky(getText(stringres),
-                getPosition(stringres), getColor(stringres));
+        return new Sticky(
+                getText(stringres),
+                getColor(stringres));
     }
 
     private static String getPosition(String stringres) {

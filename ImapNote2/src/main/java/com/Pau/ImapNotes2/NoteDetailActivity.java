@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
@@ -102,13 +103,14 @@ public class NoteDetailActivity extends Activity {
         ResetColors();
         //invalidateOptionsMenu();
     }
-/*
+
 
     // TODO: delete this?
-    public void onClick() {
-        Boolean isClicked = true;
+    public void onClick(View view) {
+        Log.d(TAG, "onClick");
+        //Boolean isClicked = true;
     }
-*/
+
 
     // realColor is misnamed.  It is the ID of the radio button widget that chooses the background
     // colour.
@@ -243,7 +245,7 @@ public class NoteDetailActivity extends Activity {
 
 //Log.d(TAG,"contentType:"+contentType);
         if (contentType.match("text/x-stickynote")) {
-            sticky = SyncUtils.ReadStickynote(stringres);
+            sticky = SyncUtils.ReadStickyNote(stringres);
         } else if (contentType.match("TEXT/HTML")) {
             sticky = ReadHtmlnote(stringres);
         } else if (contentType.match("TEXT/PLAIN")) {
@@ -299,7 +301,7 @@ public class NoteDetailActivity extends Activity {
         stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
         stringres = stringres.replaceAll("</p>", "");
 
-        return new Sticky(stringres, "", Colors.NONE);
+        return new Sticky(stringres, Colors.NONE);
     }
 
     @NonNull
@@ -307,7 +309,7 @@ public class NoteDetailActivity extends Activity {
 //        Log.d(TAG,"From server (plain):"+stringres);
         stringres = stringres.replaceAll("\n", "<br>");
 
-        return new Sticky(stringres, "", Colors.NONE);
+        return new Sticky(stringres, Colors.NONE);
     }
 
     private void WriteMailToFile(@NonNull String suid, @NonNull Message message) {

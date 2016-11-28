@@ -59,9 +59,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * TODO: What does allowParallelSyncs do and is it useful to us?
      *
-     * @param applicationContext
-     * @param autoInitialize
-     * @param allowParallelSyncs
+     * @param applicationContext In our case this is always the global application context but it
+     *                           might not need to be.
+     * @param autoInitialize     I've read the documentation for this argument and am no wiser.
+     * @param allowParallelSyncs Allow sync for different accounts to run at the same time.
      */
     public SyncAdapter(@NonNull Context applicationContext,
                        boolean autoInitialize, // ?

@@ -12,7 +12,6 @@ public class Sticky {
     public final Colors color;
 
     public Sticky(String text,
-                  String position,
                   @NonNull Colors color) {
         this.text = text;
         // this.position = position;
