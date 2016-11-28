@@ -317,13 +317,15 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                         setAccountAuthenticatorResult(result);
-                        am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
+                        setUserData(am, account);
+                        /*am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
                         am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
                         am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
                         am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
                         am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
                         am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
                         am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
+                        */
                         // Run the Sync Adapter Periodically
                         ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                         ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
@@ -336,13 +338,15 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                             setAccountAuthenticatorResult(result);
-                            am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
+                            setUserData(am, account);
+                            /*am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
                             am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
                             am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
                             am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
                             am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
                             am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
                             am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
+                            */
                             // Run the Sync Adapter Periodically
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
@@ -361,6 +365,17 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 progressDialog.dismiss();
             }
             return false;
+        }
+
+        private void setUserData(AccountManager am,
+                                 Account account) {
+            am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
+            am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
+            am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
+            am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
+            am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
+            am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
+            am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
         }
 
         protected void onPostExecute(Boolean result) {
