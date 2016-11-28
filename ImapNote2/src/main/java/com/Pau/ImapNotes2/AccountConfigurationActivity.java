@@ -334,6 +334,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         return true;
                     } else {
                         if (am.addAccountExplicitly(account, imapNotes2Account.GetPassword(), null)) {
+                            // TODO: make function for these repeated lines.
                             Bundle result = new Bundle();
                             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);

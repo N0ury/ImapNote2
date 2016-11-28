@@ -219,7 +219,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private boolean handleNewNotes() {
         //Message message = null;
         boolean newNotesManaged = false;
-        AppendUID[] uids = null;
+        //AppendUID[] uids = null;
         //String rootString = applicationContext.getFilesDir() + File.separator + account.name;
         //File rootDir = new File(rootString);
         File accountDir = new File(applicationContext.getFilesDir(), account.name);
@@ -242,7 +242,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             final MimeMessage[] msg = {(MimeMessage) message};
 
             try {
-                uids = SyncUtils.sendMessageToRemote(msg);
+                AppendUID[] uids = SyncUtils.sendMessageToRemote(msg);
                 // Update uid in database entry
                 String newuid = Long.toString(uids[0].uid);
                 storedNotes.UpdateANote(fileNew, newuid, account.name);
@@ -259,7 +259,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private boolean handleDeletedNotes() {
-        Message message = null;
+        //Message message = null;
         boolean deletedNotesManaged = false;
         String rootString = applicationContext.getFilesDir() + "/" + account.name;
         File rootDir = new File(rootString);

@@ -102,11 +102,13 @@ public class NoteDetailActivity extends Activity {
         ResetColors();
         //invalidateOptionsMenu();
     }
+/*
 
     // TODO: delete this?
     public void onClick() {
         Boolean isClicked = true;
     }
+*/
 
     // realColor is misnamed.  It is the ID of the radio button widget that chooses the background
     // colour.

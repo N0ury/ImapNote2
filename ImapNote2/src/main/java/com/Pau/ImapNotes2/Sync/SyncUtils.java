@@ -197,7 +197,7 @@ public class SyncUtils {
 
     @NonNull
     public static Sticky ReadStickynote(@NonNull String stringres) {
-
+/*
         Matcher matcherColor = patternColor.matcher(stringres);
         Colors color = Colors.NONE;
         if (matcherColor.find()) {
@@ -207,13 +207,39 @@ public class SyncUtils {
                     Colors.valueOf(colorName);
         } else {
             color = Colors.NONE;
-        }
+        }*/
+/*
 
         Matcher matcherPosition = patternPosition.matcher(stringres);
         String position = matcherPosition.find() ?
                 matcherPosition.group(1) :
                 "";
+*/
 
+        /*Matcher matcherText = patternText.matcher(stringres);
+        String text = "";
+        if (matcherText.find()) {
+            text = matcherText.group(1);
+            // Kerio Connect puts CR+LF+space every 78 characters from line 2
+            // first line seem to be smaller. We remove these characters
+            text = text.replaceAll("\r\n ", "");
+            // newline in Kerio is the string (not the character) "\n"
+            text = text.replaceAll("\\\\n", "<br>");
+        }
+        */
+        return new Sticky(getText(stringres),
+                getPosition(stringres), getColor(stringres));
+    }
+
+    private static String getPosition(String stringres) {
+
+        Matcher matcherPosition = patternPosition.matcher(stringres);
+        return matcherPosition.find() ?
+                matcherPosition.group(1) :
+                "";
+    }
+
+    private static String getText(String stringres) {
         Matcher matcherText = patternText.matcher(stringres);
         String text = "";
         if (matcherText.find()) {
@@ -224,7 +250,21 @@ public class SyncUtils {
             // newline in Kerio is the string (not the character) "\n"
             text = text.replaceAll("\\\\n", "<br>");
         }
-        return new Sticky(text, position, color);
+        return text;
+    }
+
+    private static Colors getColor(String stringres) {
+        Matcher matcherColor = patternColor.matcher(stringres);
+        Colors color = Colors.NONE;
+        if (matcherColor.find()) {
+            String colorName = matcherColor.group(1);
+            return ((colorName == null) || colorName.equals("null")) ?
+                    Colors.NONE :
+                    Colors.valueOf(colorName);
+        } else {
+            return Colors.NONE;
+        }
+
     }
 
     private static boolean IsConnected() {
