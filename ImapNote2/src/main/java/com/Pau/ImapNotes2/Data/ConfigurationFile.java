@@ -171,7 +171,7 @@ public class ConfigurationFile {
         password = null;
         server = null;
         portnum = null;
-        security = null;
+        security = Security.None;
         usesticky = false;
         imapfolder = null;
     }
