@@ -20,6 +20,7 @@ import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.sun.mail.imap.AppendUID;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.mail.Flags;
 import javax.mail.Message;
@@ -84,7 +85,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         // provide it in the constructor?  What happens if we allow parallel syncs?
         SyncAdapter.account = account;
 
-        SyncUtils.CreateDirs(account.name, applicationContext);
+        SyncUtils.CreateLocalDirectories(account.name, applicationContext);
 
         storedNotes = new NotesDb(applicationContext);
         storedNotes.OpenDb();
@@ -113,19 +114,22 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //
         if (!(res.UIDValidity.equals(
                 SyncUtils.GetUIDValidity(SyncAdapter.account, applicationContext)))) {
-            // Replace local data by remote
+            // Replace local data by remote.  UIDs are no longer valid.
             try {
                 // delete notes in NotesDb for this account
                 storedNotes.ClearDb(account.name);
                 // delete notes in folders for this account and recreate dirs
                 SyncUtils.ClearHomeDir(account, applicationContext);
-                SyncUtils.CreateDirs(account.name, applicationContext);
+                SyncUtils.CreateLocalDirectories(account.name, applicationContext);
                 // Get all notes from remote and replace local
                 SyncUtils.GetNotes(account,
                         res.notesFolder,
                         applicationContext, storedNotes);
                 storedNotes.CloseDb();
             } catch (MessagingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -160,6 +164,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             remoteNotesManaged = SyncUtils.handleRemoteNotes(applicationContext, res.notesFolder,
                     storedNotes, account.name, usesticky);
         } catch (MessagingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

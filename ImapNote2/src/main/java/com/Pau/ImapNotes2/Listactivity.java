@@ -486,7 +486,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 for (String accountName : newList) {
                     if (!(Listactivity.currentList.contains(accountName))) {
                         Listactivity.currentList.add(accountName);
-                        SyncUtils.CreateDirs(accountName, ImapNotes2k.getAppContext());
+                        SyncUtils.CreateLocalDirectories(accountName, ImapNotes2k.getAppContext());
 
                         equalLists = false;
                     }

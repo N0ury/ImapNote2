@@ -163,31 +163,32 @@ public class SyncUtils {
     /* Copy all notes from the IMAP server to the local directory using the UID as the file name.
 
      */
-    public static void GetNotes(@NonNull Account account,
-                                @NonNull Folder notesFolder,
-                                @NonNull Context ctx,
-                                @NonNull NotesDb storedNotes) throws MessagingException {
+    static void GetNotes(@NonNull Account account,
+                         @NonNull Folder imapNotesFolder,
+                         @NonNull Context applicationContext,
+                         @NonNull NotesDb storedNotes) throws MessagingException, IOException {
         //Long UIDM;
         //Message notesMessage;
-        File directory = new File(ctx.getFilesDir() + "/" + account.name);
-        if (notesFolder.isOpen()) {
-            if ((notesFolder.getMode() & Folder.READ_ONLY) != 0)
-                notesFolder.open(Folder.READ_ONLY);
+        File directory = new File(applicationContext.getFilesDir(), account.name);
+        if (imapNotesFolder.isOpen()) {
+            if ((imapNotesFolder.getMode() & Folder.READ_ONLY) != 0)
+                imapNotesFolder.open(Folder.READ_ONLY);
         } else {
-            notesFolder.open(Folder.READ_ONLY);
+            imapNotesFolder.open(Folder.READ_ONLY);
         }
-        UIDValidity = GetUIDValidity(account, ctx);
-        SetUIDValidity(account, UIDValidity, ctx);
-        Message[] notesMessages = notesFolder.getMessages();
+        UIDValidity = GetUIDValidity(account, applicationContext);
+        SetUIDValidity(account, UIDValidity, applicationContext);
+        Message[] notesMessages = imapNotesFolder.getMessages();
         //Log.d(TAG,"number of messages in folder="+(notesMessages.length));
+        // TODO: explain why we enumerate the messages in descending order of index.
         for (int index = notesMessages.length - 1; index >= 0; index--) {
             Message notesMessage = notesMessages[index];
             // write every message in files/{accountname} directory
             // filename is the original message uid
-            Long UIDM = ((IMAPFolder) notesFolder).getUID(notesMessage);
+            Long UIDM = ((IMAPFolder) imapNotesFolder).getUID(notesMessage);
             String suid = UIDM.toString();
             File outfile = new File(directory, suid);
-            GetOneNote(outfile, notesMessage, storedNotes, account.name, suid, true);
+            SaveNoteAndUpdatDatabase(outfile, notesMessage, storedNotes, account.name, suid);
         }
     }
 
@@ -289,7 +290,9 @@ public class SyncUtils {
     }
 
     // Put values in shared preferences
-    public static void SetUIDValidity(@NonNull Account account, Long UIDValidity, @NonNull Context ctx) {
+    public static void SetUIDValidity(@NonNull Account account,
+                                      Long UIDValidity,
+                                      @NonNull Context ctx) {
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Name", "valid_data");
@@ -299,7 +302,8 @@ public class SyncUtils {
     }
 
     // Retrieve values from shared preferences:
-    public static Long GetUIDValidity(@NonNull Account account, @NonNull Context ctx) {
+    public static Long GetUIDValidity(@NonNull Account account,
+                                      @NonNull Context ctx) {
         UIDValidity = (long) -1;
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         String name = preferences.getString("Name", "");
@@ -396,9 +400,9 @@ public class SyncUtils {
     }
 
     /**
-     * @param uid         ID of the message as created by the IMAP server
-     * @param fileDir     Name of the account with which this message is associated, used to find the
-     *                    directory in which it is stored.
+     * @param uid     ID of the message as created by the IMAP server
+     * @param fileDir Name of the account with which this message is associated, used to find the
+     *                directory in which it is stored.
      * @return A Java mail message object.
      */
     @Nullable
@@ -488,11 +492,11 @@ public class SyncUtils {
     /**
      * Do we really need the Context argument or could we call getApplicationContext instead?
      *
-     * @param accountName Name of the account as defined by the user, this is not the email address.
+     * @param accountName        Name of the account as defined by the user, this is not the email address.
      * @param applicationContext Global context not an activity context.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void CreateDirs(@NonNull String accountName, @NonNull Context applicationContext) {
+    public static void CreateLocalDirectories(@NonNull String accountName, @NonNull Context applicationContext) {
         Log.d(TAG, "CreateDirs(String: " + accountName);
         File dir = new File(applicationContext.getFilesDir(), accountName);
         //File directory = new File(stringDir);
@@ -501,14 +505,17 @@ public class SyncUtils {
         (new File(dir, "deleted")).mkdirs();
     }
 
-    private static void GetOneNote(@NonNull File outfile,
-                                   @NonNull Message notesMessage,
-                                   @NonNull NotesDb storedNotes,
-                                   String accountName,
-                                   String suid, boolean updateDb) {
+
+    /**
+     * @param outfile      Name of local file in which to store the note.
+     * @param notesMessage The note in the form of a mail message.
+     */
+    private static void SaveNote(@NonNull File outfile,
+                                 @NonNull Message notesMessage) throws IOException, MessagingException {
 
         try (OutputStream str = new FileOutputStream(outfile)) {
             notesMessage.writeTo(str);
+/*
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -518,9 +525,20 @@ public class SyncUtils {
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+*/
         }
 
-        if (!updateDb) return;
+    }
+
+    private static void SaveNoteAndUpdatDatabase(@NonNull File outfile,
+                                                 @NonNull Message notesMessage,
+                                                 @NonNull NotesDb storedNotes,
+                                                 @NonNull String accountName,
+                                                 @NonNull String suid) throws IOException, MessagingException {
+
+        SaveNote(outfile, notesMessage);
+
+        // Now update or save the metadata about the message
 
         String title = null;
         String[] rawvalue = null;
@@ -575,8 +593,12 @@ public class SyncUtils {
         storedNotes.InsertANoteInDb(aNote, accountName);
     }
 
-    public static boolean handleRemoteNotes(@NonNull Context context, @NonNull Folder notesFolder, @NonNull NotesDb storedNotes, String accountName, @NonNull String usesticky)
-            throws MessagingException {
+    static boolean handleRemoteNotes(@NonNull Context context,
+                                     @NonNull Folder notesFolder,
+                                     @NonNull NotesDb storedNotes,
+                                     @NonNull String accountName,
+                                     @NonNull String usesticky)
+            throws MessagingException, IOException {
 
         Message notesMessage;
         boolean result = false;
@@ -617,8 +639,8 @@ public class SyncUtils {
             }
             String suid = uid.toString();
             if (!(localListOfNotes.contains(suid))) {
-                File outfile = new File (rootDir, suid);
-                GetOneNote(outfile, notesMessage, storedNotes, accountName, suid, true);
+                File outfile = new File(rootDir, suid);
+                SaveNoteAndUpdatDatabase(outfile, notesMessage, storedNotes, accountName, suid);
                 result = true;
             } else if (usesticky.equals("true")) {
                 //Log.d (TAG,"MANAGE STICKY");
@@ -626,7 +648,7 @@ public class SyncUtils {
                 localInternaldate = storedNotes.GetDate(suid, accountName);
                 if (!(remoteInternaldate.equals(localInternaldate))) {
                     File outfile = new File(rootDir, suid);
-                    GetOneNote(outfile, notesMessage, storedNotes, accountName, suid, false);
+                    SaveNote(outfile, notesMessage);
                     result = true;
                 }
             }
@@ -652,8 +674,8 @@ public class SyncUtils {
         // remove Shared Preference file
         String rootString = context.getFilesDir().getParent() +
                 File.separator + "shared_prefs";
-        File rootDir = new File (rootString);
-        File toDelete = new File (rootDir, account.name + ".xml");
+        File rootDir = new File(rootString);
+        File toDelete = new File(rootDir, account.name + ".xml");
         toDelete.delete();
         // Remove all files and sub directories
         File filesDir = context.getFilesDir();

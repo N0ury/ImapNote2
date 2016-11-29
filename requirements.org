@@ -1,0 +1,42 @@
+* Requirements
+
+This document is meant to record the intended effect of future changes and the tasks that have to be
+performed to bring them to fruition.
+
+* Automatic conflict resolution
+
+If a given note is changed on two devices while they are offline then
+when they go online one of them might discover that it has changes
+that are newer than the supposedly new  version the server.
+
+We can reconcile many such changes automatically if we maintain a copy
+of the file as it existed before both sets of changes.  We can then do
+a three way merge on the using the ancestor file the most recent file
+uploaded to the server and the local file.  The result replaces the
+local file.  The most recent server file replaces the ancestor and the
+new local file replaces the server file.
+
+To make this happen we need the following:
+
+- Save the ancestor file,
+
+- Add a library that can do a three way textual merge.
+
+In addition we should implement some way of locking the files so that
+two devices attempting to synchronize simultaneously will not
+interfere with each other.  This can probably be left to a later time
+on the grounds that such collisions will be rare.
+
+To connect ancestor files and current files we will need either to
+maintain the uid of the ancestor in the database record or abandon the
+use of uid and give the files names that can be discovered from the
+subject lines.  That way we can store the same message in two folders
+on the server, one for the ancestors and one for current files.
+
+** Tasks to do
+
+*** Find a suitable three way merge
+
+*** Implement the ancestor file
+
+
