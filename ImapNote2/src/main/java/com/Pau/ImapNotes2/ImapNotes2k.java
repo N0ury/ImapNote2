@@ -22,34 +22,42 @@ public class ImapNotes2k extends Application {
     private Imaper thisSessionImapFolder;
     private ArrayList<OneNote> noteList;
 
-    private static Context context;
+    //private Context context;
     private static final String configurationFileName = "ImapNotes2.conf";
 
     // Called when starting the application.
     public void onCreate() {
         super.onCreate();
         // Save the context in a static so that it is easy to access everywhere.
-        ImapNotes2k.context = getApplicationContext();
+        //ImapNotes2k.context = getApplicationContext();
     }
+/*
 
     // Simplify access to the application context.  But why not just use getApplicationContext
     // everywhere?
     public static Context getAppContext() {
         return ImapNotes2k.context;
     }
+*/
+
 
     @NonNull
-    public static String ConfigurationFilePath() {
-        return ConfigurationDirPath() + "/" + configurationFileName;
+    public static String ConfigurationFilePath(Context applicationContext) {
+        return ConfigurationDirPath(applicationContext) + "/" + configurationFileName;
     }
 
-    public static String ConfigurationDirPath() {
-        return ImapNotes2k.ConfigurationDir().getPath();
+
+    public static String ConfigurationDirPath(Context applicationContext) {
+
+        return ConfigurationDir(applicationContext).getPath();
     }
 
-    public static File ConfigurationDir() {
-        return ImapNotes2k.getAppContext().getFilesDir();
+
+    public static File ConfigurationDir(Context applicationContext) {
+
+        return applicationContext.getFilesDir();
     }
+
 
 // --Commented out by Inspection START (11/26/16 11:44 PM):
 //    // ?

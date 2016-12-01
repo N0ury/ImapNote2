@@ -10,7 +10,6 @@ import android.util.Log;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Data.OneNote;
-import com.Pau.ImapNotes2.ImapNotes2k;
 import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
 
@@ -45,7 +44,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private final Colors color;
     private boolean bool_to_return;
     private NotesDb storedNotes;
-    private final Context ctx;
+    private final Context applicationContext;
     private final Action action;
     private static final String TAG = "IN_UpdateThread";
 
@@ -77,7 +76,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         this.suid = suid;
         this.noteBody = noteBody;
         this.color = color;
-        this.ctx = applicationContext;
+        this.applicationContext = applicationContext;
         this.action = action;
         this.storedNotes = storedNotes;
 
@@ -118,7 +117,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 String stringDate = sdf.format(date);
                 OneNote currentNote = new OneNote(title, stringDate, "");
                 // Add note to database
-                if (storedNotes == null) storedNotes = new NotesDb(ctx);
+                if (storedNotes == null) storedNotes = new NotesDb(applicationContext);
                 storedNotes.OpenDb();
                 suid = storedNotes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountname());
                 currentNote.SetUid(suid);
@@ -129,7 +128,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 storedNotes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountname());
                 storedNotes.CloseDb();
                 // Add note to noteList but chage date format before
-                //DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(ctx);
+                //DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(applicationContext);
                 String sdate = DateFormat.getDateTimeInstance().format(date);
                 currentNote.SetDate(sdate);
                 notesList.add(0, currentNote);
@@ -165,7 +164,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
      * @param suid IMAP ID of the note.
      */
     private void MoveMailToDeleted(@NonNull String suid) {
-        String directory = ImapNotes2k.getAppContext().getFilesDir() + "/" +
+        String directory = applicationContext.getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         // TODO: Explain why we need to omit the first character of the UID
         File from = new File(directory, suid);
@@ -219,8 +218,9 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         message.addHeader("Date", headerDate);
         // Get temporary UID
         String uid = Integer.toString(Math.abs(Integer.parseInt(note.GetUid())));
-        File directory = new File((ImapNotes2k.getAppContext()).getFilesDir() + "/" +
-                Listactivity.imapNotes2Account.GetAccountname() + "/new");
+        File accountDirectory = new File(applicationContext.getFilesDir(),
+                Listactivity.imapNotes2Account.GetAccountname());
+        File directory = new File(accountDirectory, "new");
         //message.setFrom(new InternetAddress("ImapNotes2", Listactivity.imapNotes2Account.GetAccountname()));
         message.setFrom(Listactivity.imapNotes2Account.GetAccountname());
         File outfile = new File(directory, uid);

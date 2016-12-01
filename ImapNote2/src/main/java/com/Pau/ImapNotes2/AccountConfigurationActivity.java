@@ -62,7 +62,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     @Nullable
     private String accountname;
     @NonNull
-    private final ConfigurationFile settings = new ConfigurationFile();
+    private final ConfigurationFile settings = new ConfigurationFile(getApplicationContext());
 
     @Nullable
     private static Account myAccount = null;
@@ -80,6 +80,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         CREATE_ACCOUNT,
         EDIT_ACCOUNT
     }
+
 
     private final OnClickListener clickListenerLogin = new View.OnClickListener() {
         @Override

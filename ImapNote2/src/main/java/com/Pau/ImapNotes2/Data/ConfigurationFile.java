@@ -1,5 +1,6 @@
 package com.Pau.ImapNotes2.Data;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -46,11 +47,15 @@ public class ConfigurationFile {
     @Nullable
     private String imapfolder;
 
+    @NonNull
+    private Context applicationContext;
 
-    public ConfigurationFile() {
+
+    public ConfigurationFile(@NonNull Context applicationContext) {
+        this.applicationContext = applicationContext;
         try {
             Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                    new File(ImapNotes2k.ConfigurationFilePath()));
+                    new File(ImapNotes2k.ConfigurationFilePath(applicationContext)));
             username = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UserName);
             password = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Password);
             server = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Server);
@@ -166,7 +171,7 @@ public class ConfigurationFile {
 
     public void Clear() {
         //noinspection ResultOfMethodCallIgnored
-        new File(ImapNotes2k.ConfigurationFilePath()).delete();
+        new File(ImapNotes2k.ConfigurationFilePath(applicationContext)).delete();
         username = null;
         password = null;
         server = null;

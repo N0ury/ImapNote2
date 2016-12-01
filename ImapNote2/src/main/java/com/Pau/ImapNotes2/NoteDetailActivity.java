@@ -68,7 +68,7 @@ public class NoteDetailActivity extends Activity {
         usesticky = (boolean) extras.get(useSticky);
         assert hm != null;
         suid = hm.get("uid").toString();
-        File rootDir = new File(ImapNotes2k.getAppContext().getFilesDir(),
+        File rootDir = new File(getApplicationContext().getFilesDir(),
                 Listactivity.imapNotes2Account.GetAccountname());
         Message message = SyncUtils.ReadMailFromFileRootAndNew(suid, rootDir);
         //Log.d(TAG, "rootDir is null: " + (rootDir == null));
@@ -243,7 +243,7 @@ public class NoteDetailActivity extends Activity {
             e.printStackTrace();
         }
 
-//Log.d(TAG,"contentType:"+contentType);
+        Log.d(TAG,"contentType:"+contentType);
         if (contentType.match("text/x-stickynote")) {
             sticky = SyncUtils.ReadStickyNote(stringres);
         } else if (contentType.match("TEXT/HTML")) {
@@ -313,7 +313,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     private void WriteMailToFile(@NonNull String suid, @NonNull Message message) {
-        String directory = (ImapNotes2k.getAppContext()).getFilesDir() + "/" +
+        String directory = getApplicationContext().getFilesDir() + "/" +
                 Listactivity.imapNotes2Account.GetAccountname();
         try {
             File outfile = new File(directory, suid);

@@ -474,7 +474,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                         iter.remove();
                         // Why try here?
                         try {
-                            String stringDir = ImapNotes2k.ConfigurationDirPath() + "/" + s;
+                            String stringDir = ImapNotes2k.ConfigurationDirPath(getApplicationContext()) + "/" + s;
                             FileUtils.deleteDirectory(new File(stringDir));
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
@@ -486,7 +486,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 for (String accountName : newList) {
                     if (!(Listactivity.currentList.contains(accountName))) {
                         Listactivity.currentList.add(accountName);
-                        SyncUtils.CreateLocalDirectories(accountName, ImapNotes2k.getAppContext());
+                        SyncUtils.CreateLocalDirectories(accountName, getApplicationContext());
 
                         equalLists = false;
                     }
@@ -494,7 +494,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 if (equalLists) return;
                 updateAccountSpinner();
             } else {
-                File filesDir = ImapNotes2k.ConfigurationDir();
+                File filesDir = ImapNotes2k.ConfigurationDir(getApplicationContext());
                 try {
                     FileUtils.cleanDirectory(filesDir);
                 } catch (IOException e) {
