@@ -91,7 +91,6 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private NotesListAdapter listToView;
     private ArrayAdapter<String> spinnerList;
 
-    private Imaper imapFolder;
     @Nullable
     private static NotesDb storedNotes = null;
     private Spinner accountSpinner;
@@ -101,8 +100,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     @NonNull
     private static Account[] accounts = new Account[0];
     private static List<String> currentList;
-    @Nullable
-    private TextView status = null;
+    //@Nullable
+    //private TextView status;
     private static String OldStatus;
     private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
@@ -120,6 +119,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             startActivity(res);
         }
     };
+
 
     /**
      * Called when the activity is first created.
@@ -139,7 +139,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         Listactivity.accountManager.addOnAccountsUpdatedListener(
                 new AccountsUpdateListener(), null, true);
 
-        status = (TextView) findViewById(R.id.status);
+        //TextView status = (TextView) findViewById(R.id.status);
 
         this.spinnerList = new ArrayAdapter<>
                 (this, android.R.layout.simple_spinner_item, Listactivity.currentList);
@@ -159,8 +159,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         listview.setTextFilterEnabled(true);
 
-        this.imapFolder = new Imaper();
-        ((ImapNotes2k) this.getApplicationContext()).SetImaper(this.imapFolder);
+        Imaper imapFolder = new Imaper();
+        ((ImapNotes2k) this.getApplicationContext()).SetImaper(imapFolder);
 
         if (Listactivity.storedNotes == null)
             storedNotes = new NotesDb(getApplicationContext());
@@ -207,6 +207,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         unregisterReceiver(syncFinishedReceiver);
     }
 
+
     @NonNull
     private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, @NonNull Intent intent) {
@@ -227,6 +228,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 } else {
                     statusText = OldStatus;
                 }
+                TextView status = (TextView) findViewById(R.id.status);
                 status.setText(statusText);
 
                 if (isChanged) {
@@ -248,6 +250,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 ShowProgress(R.string.refreshing_notes_list),
                 storedNotes,
                 this.getApplicationContext()).execute();
+        TextView status = (TextView) findViewById(R.id.status);
         status.setText(R.string.welcome);
     }
 
@@ -313,7 +316,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 startActivity(res);
                 return true;
             case R.id.refresh:
-                assert this.status != null;
+                TextView status = (TextView) findViewById(R.id.status);
                 TriggerSync(status);
                 return true;
             case R.id.newnote:
