@@ -36,7 +36,7 @@ import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 /// of the application.
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
-    private static Context applicationContext;
+    private Context applicationContext;
     private NotesDb storedNotes;
     private static Account account;
 // --Commented out by Inspection START (11/26/16 11:49 PM):
@@ -49,11 +49,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(@NonNull Context applicationContext) {
+    SyncAdapter(@NonNull Context applicationContext) {
         super(applicationContext, true);
         mContentResolver = applicationContext.getContentResolver();
         // TODO: do we really need a copy of the applicationContext reference?
-        SyncAdapter.applicationContext = applicationContext;
+        this.applicationContext = applicationContext;
     }
 
 
@@ -71,7 +71,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     ) {
         super(applicationContext, autoInitialize, allowParallelSyncs);
         mContentResolver = applicationContext.getContentResolver();
-        SyncAdapter.applicationContext = applicationContext;
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -283,6 +283,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             // remove file from deleted
             File toDelete = new File(dirDeleted, fileDeleted);
+            //noinspection ResultOfMethodCallIgnored
             toDelete.delete();
             deletedNotesManaged = true;
         }

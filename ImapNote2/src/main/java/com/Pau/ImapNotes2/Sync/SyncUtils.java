@@ -60,10 +60,6 @@ public class SyncUtils {
     //private final static int DELETED = 2;
     //private final static int ROOT_AND_NEW = 3;
 
-    public enum Where {
-        // --Commented out by Inspection (11/26/16 11:46 PM):NEW, DELETED, ROOT_AND_NEW
-    }
-
     @NonNull
     static ImapNotes2Result ConnectToRemote(@NonNull String username,
                                             @NonNull String password,
@@ -232,14 +228,14 @@ public class SyncUtils {
                 getText(stringres),
                 getColor(stringres));
     }
-
+/*
     private static String getPosition(String stringres) {
 
         Matcher matcherPosition = patternPosition.matcher(stringres);
         return matcherPosition.find() ?
                 matcherPosition.group(1) :
                 "";
-    }
+    }*/
 
     private static String getText(String stringres) {
         Matcher matcherText = patternText.matcher(stringres);
@@ -257,7 +253,6 @@ public class SyncUtils {
 
     private static Colors getColor(String stringres) {
         Matcher matcherColor = patternColor.matcher(stringres);
-        Colors color = Colors.NONE;
         if (matcherColor.find()) {
             String colorName = matcherColor.group(1);
             return ((colorName == null) || colorName.equals("null")) ?
@@ -273,7 +268,7 @@ public class SyncUtils {
         return store != null && store.isConnected();
     }
 
-    public static void DeleteNote(int numMessage) throws MessagingException {
+    static void DeleteNote(int numMessage) throws MessagingException {
         Folder notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_WRITE) != 0) {
@@ -290,9 +285,9 @@ public class SyncUtils {
     }
 
     // Put values in shared preferences
-    public static void SetUIDValidity(@NonNull Account account,
-                                      Long UIDValidity,
-                                      @NonNull Context ctx) {
+    static void SetUIDValidity(@NonNull Account account,
+                               Long UIDValidity,
+                               @NonNull Context ctx) {
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Name", "valid_data");
@@ -302,8 +297,8 @@ public class SyncUtils {
     }
 
     // Retrieve values from shared preferences:
-    public static Long GetUIDValidity(@NonNull Account account,
-                                      @NonNull Context ctx) {
+    static Long GetUIDValidity(@NonNull Account account,
+                               @NonNull Context ctx) {
         UIDValidity = (long) -1;
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         String name = preferences.getString("Name", "");
@@ -387,8 +382,8 @@ public class SyncUtils {
      * @return A Java mail message object.
      */
     @Nullable
-    public static Message ReadMailFromFileNew(@NonNull String uid,
-                                              @NonNull File newFilesDir) {
+    static Message ReadMailFromFileNew(@NonNull String uid,
+                                       @NonNull File newFilesDir) {
         //File mailFile;
         //Message message = null;
         //mailFile = new File(nameDir, uid);
@@ -468,7 +463,7 @@ public class SyncUtils {
         return null;
     }
 
-    public static AppendUID[] sendMessageToRemote(@NonNull Message[] message) throws MessagingException {
+    static AppendUID[] sendMessageToRemote(@NonNull Message[] message) throws MessagingException {
         notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_WRITE) != 0)
@@ -606,7 +601,7 @@ public class SyncUtils {
         ArrayList<String> localListOfNotes = new ArrayList<>();
         String remoteInternaldate;
         String localInternaldate;
-        Flags flags;
+        //Flags flags;
 
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_ONLY) != 0)
@@ -631,7 +626,7 @@ public class SyncUtils {
             notesMessage = notesMessages[index];
             Long uid = ((IMAPFolder) notesFolder).getUID(notesMessage);
             // Get FLAGS
-            flags = notesMessage.getFlags();
+            //flags = notesMessage.getFlags();
             boolean deleted = notesMessage.isSet(Flags.Flag.DELETED);
             // Builds remote list while in the loop, but only if not deleted on remote
             if (!deleted) {
@@ -660,6 +655,7 @@ public class SyncUtils {
             if (!(uids.contains(uid))) {
                 // remove file from deleted
                 File toDelete = new File(rootDir, suid);
+                //noinspection ResultOfMethodCallIgnored
                 toDelete.delete();
                 // Remove note from database
                 storedNotes.DeleteANote(suid, accountName);
@@ -670,17 +666,19 @@ public class SyncUtils {
         return result;
     }
 
-    public static void RemoveAccount(@NonNull Context context, @NonNull Account account) {
+    static void RemoveAccount(@NonNull Context context, @NonNull Account account) {
         // remove Shared Preference file
         String rootString = context.getFilesDir().getParent() +
                 File.separator + "shared_prefs";
         File rootDir = new File(rootString);
         File toDelete = new File(rootDir, account.name + ".xml");
+        //noinspection ResultOfMethodCallIgnored
         toDelete.delete();
         // Remove all files and sub directories
         File filesDir = context.getFilesDir();
         File[] files = filesDir.listFiles();
         for (File file : files) {
+            //noinspection ResultOfMethodCallIgnored
             file.delete();
         }
         // Delete account name entries in database

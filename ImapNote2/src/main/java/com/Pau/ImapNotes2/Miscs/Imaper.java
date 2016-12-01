@@ -18,7 +18,6 @@ public class Imaper {
     private Store store;
     private static final String TAG = "IN_Imaper";
 
-    private Long UIDValidity;
     // --Commented out by Inspection (11/26/16 11:43 PM):public static final String PREFS_NAME = "PrefsFile";
 
     public static final int ResultCodeSuccess = 0;
@@ -70,7 +69,7 @@ public class Imaper {
                 proto = "Invalid proto";
                 break;
         }*/
-        MailSSLSocketFactory sf = null;
+        MailSSLSocketFactory sf;
         try {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {

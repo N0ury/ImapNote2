@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 
@@ -18,9 +17,7 @@ perhaps.
  */
 public class ImapNotes2k extends Application {
 
-    private ConfigurationFile thisSessionConfigurationFile;
     private Imaper thisSessionImapFolder;
-    private ArrayList<OneNote> noteList;
 
     //private Context context;
     private static final String configurationFileName = "ImapNotes2.conf";
@@ -85,7 +82,6 @@ public class ImapNotes2k extends Application {
 
     // ?
     public void SetNotesList(ArrayList<OneNote> currentNotesList) {
-        this.noteList = currentNotesList;
     }
 
 // --Commented out by Inspection START (11/26/16 11:44 PM):

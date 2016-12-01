@@ -9,10 +9,8 @@ import com.Pau.ImapNotes2.ImapNotes2k;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -207,7 +205,7 @@ public class ConfigurationFile {
 //        configurationFile.close();
 //    }
 // --Commented out by Inspection STOP (11/26/16 11:42 PM)
-
+/*
     // Avoid repeated literal tag names.
     private void SerializeText(@NonNull XmlSerializer serializer,
                                String tag,
@@ -216,7 +214,7 @@ public class ConfigurationFile {
         serializer.startTag(null, tag);
         serializer.text(text);
         serializer.endTag(null, tag);
-    }
+    }*/
 
     private NodeList LoadItemFromXML(@NonNull Document fileLoaded,
                                      String tag) {

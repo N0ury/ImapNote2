@@ -45,7 +45,6 @@ public class NotesDb {
     /**
      * TODO: can we make this implement closeable?
      */
-    @NonNull
     public void OpenDb() {
         this.notesDb = this.defaultHelper.getWritableDatabase();
 
