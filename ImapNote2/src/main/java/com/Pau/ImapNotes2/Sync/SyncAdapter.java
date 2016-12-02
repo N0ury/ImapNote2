@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
@@ -47,32 +46,34 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     // --Commented out by Inspection (11/26/16 11:49 PM):private final static int NEW = 1;
     // --Commented out by Inspection (11/26/16 11:49 PM):private final static int DELETED = 2;
 
-    private final ContentResolver mContentResolver;
+    // --Commented out by Inspection (12/2/16 8:51 PM):private final ContentResolver mContentResolver;
 
     SyncAdapter(@NonNull Context applicationContext) {
         super(applicationContext, true);
-        mContentResolver = applicationContext.getContentResolver();
+        //mContentResolver = applicationContext.getContentResolver();
         // TODO: do we really need a copy of the applicationContext reference?
         this.applicationContext = applicationContext;
     }
 
 
-    /**
-     * TODO: What does allowParallelSyncs do and is it useful to us?
-     *
-     * @param applicationContext In our case this is always the global application context but it
-     *                           might not need to be.
-     * @param autoInitialize     I've read the documentation for this argument and am no wiser.
-     * @param allowParallelSyncs Allow sync for different accounts to run at the same time.
-     */
-    public SyncAdapter(@NonNull Context applicationContext,
-                       boolean autoInitialize, // ?
-                       boolean allowParallelSyncs // always false, set in syncadapter.xml
-    ) {
-        super(applicationContext, autoInitialize, allowParallelSyncs);
-        mContentResolver = applicationContext.getContentResolver();
-        this.applicationContext = applicationContext;
-    }
+// --Commented out by Inspection START (12/2/16 8:50 PM):
+//    /**
+//     * TODO: What does allowParallelSyncs do and is it useful to us?
+//     *
+//     * @param applicationContext In our case this is always the global application context but it
+//     *                           might not need to be.
+//     * @param autoInitialize     I've read the documentation for this argument and am no wiser.
+//     * @param allowParallelSyncs Allow sync for different accounts to run at the same time.
+//     */
+//    public SyncAdapter(@NonNull Context applicationContext,
+//                       boolean autoInitialize, // ?
+//                       boolean allowParallelSyncs // always false, set in syncadapter.xml
+//    ) {
+//        super(applicationContext, autoInitialize, allowParallelSyncs);
+//        mContentResolver = applicationContext.getContentResolver();
+//        this.applicationContext = applicationContext;
+//    }
+// --Commented out by Inspection STOP (12/2/16 8:50 PM)
 
     @Override
     public void onPerformSync(@NonNull Account account,

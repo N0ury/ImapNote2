@@ -4,11 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 
 import java.io.File;
-import java.util.ArrayList;
 
 
 /*
@@ -21,13 +19,13 @@ public class ImapNotes2k extends Application {
 
     //private Context context;
     private static final String configurationFileName = "ImapNotes2.conf";
-
+/*
     // Called when starting the application.
     public void onCreate() {
         super.onCreate();
         // Save the context in a static so that it is easy to access everywhere.
         //ImapNotes2k.context = getApplicationContext();
-    }
+    }*/
 /*
 
     // Simplify access to the application context.  But why not just use getApplicationContext
@@ -80,10 +78,10 @@ public class ImapNotes2k extends Application {
         return this.thisSessionImapFolder;
     }
 
-    // ?
+    /*// ?
     public void SetNotesList(ArrayList<OneNote> currentNotesList) {
     }
-
+*/
 // --Commented out by Inspection START (11/26/16 11:44 PM):
 //    // ?
 //    public ArrayList<OneNote> GetNotesList() {

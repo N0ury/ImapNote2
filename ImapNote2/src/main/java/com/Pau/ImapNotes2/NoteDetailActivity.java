@@ -25,9 +25,7 @@ import com.Pau.ImapNotes2.Sync.SyncUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 
 import javax.mail.Message;
@@ -312,18 +310,20 @@ public class NoteDetailActivity extends Activity {
         return new Sticky(stringres, Colors.NONE);
     }
 
-    private void WriteMailToFile(@NonNull String suid, @NonNull Message message) {
-        String directory = getApplicationContext().getFilesDir() + "/" +
-                Listactivity.imapNotes2Account.GetAccountname();
-        try {
-            File outfile = new File(directory, suid);
-            OutputStream str = new FileOutputStream(outfile);
-            message.writeTo(str);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+// --Commented out by Inspection START (12/2/16 8:50 PM):
+//    private void WriteMailToFile(@NonNull String suid, @NonNull Message message) {
+//        String directory = getApplicationContext().getFilesDir() + "/" +
+//                Listactivity.imapNotes2Account.GetAccountname();
+//        try {
+//            File outfile = new File(directory, suid);
+//            OutputStream str = new FileOutputStream(outfile);
+//            message.writeTo(str);
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
+// --Commented out by Inspection STOP (12/2/16 8:50 PM)
 
 
 }
