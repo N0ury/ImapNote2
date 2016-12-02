@@ -46,7 +46,7 @@ public class ConfigurationFile {
     private String imapfolder;
 
     @NonNull
-    private Context applicationContext;
+    private final Context applicationContext;
 
 
     public ConfigurationFile(@NonNull Context applicationContext) {

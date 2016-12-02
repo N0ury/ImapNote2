@@ -36,7 +36,7 @@ import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 /// of the application.
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
-    private Context applicationContext;
+    private final Context applicationContext;
     private NotesDb storedNotes;
     private static Account account;
 // --Commented out by Inspection START (11/26/16 11:49 PM):
