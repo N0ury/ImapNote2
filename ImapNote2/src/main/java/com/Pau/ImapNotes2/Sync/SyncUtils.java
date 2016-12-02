@@ -388,9 +388,6 @@ public class SyncUtils {
         //Message message = null;
         //mailFile = new File(nameDir, uid);
 
-        if (false) {
-            uid = uid.substring(1);
-        }
         return ReadMailFromFile(newFilesDir, uid);
     }
 
