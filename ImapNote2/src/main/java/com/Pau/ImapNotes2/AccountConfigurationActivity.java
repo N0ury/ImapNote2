@@ -76,6 +76,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     //endregion
 
 
+    /**
+     *
+     */
     enum Actions {
         CREATE_ACCOUNT,
         EDIT_ACCOUNT

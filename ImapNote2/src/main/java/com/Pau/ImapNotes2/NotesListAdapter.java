@@ -137,15 +137,17 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
         return v;
     }
 
-    /**
-     * <p>Sets the layout resource to create the drop down views.</p>
-     *
-     * @param resource the layout resource defining the drop down views
-     * @see #getDropDownView(int, android.view.View, android.view.ViewGroup)
-     */
-    public void setDropDownViewResource(int resource) {
-        this.mDropDownResource = resource;
-    }
+// --Commented out by Inspection START (12/2/16 9:22 PM):
+//    /**
+//     * <p>Sets the layout resource to create the drop down views.</p>
+//     *
+//     * @param resource the layout resource defining the drop down views
+//     * @see #getDropDownView(int, android.view.View, android.view.ViewGroup)
+//     */
+//    public void setDropDownViewResource(int resource) {
+//        this.mDropDownResource = resource;
+//    }
+// --Commented out by Inspection STOP (12/2/16 9:22 PM)
 
     // TODO: Should never return null.
     @Nullable
@@ -211,26 +213,30 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
         }
     }
 
-    /**
-     * Returns the {@link ViewBinder} used to bind data to views.
-     *
-     * @return a ViewBinder or null if the binder does not exist
-     * @see #getViewBinder()
-     */
-    private ViewBinder getViewBinder() {
-        return mViewBinder;
-    }
+// --Commented out by Inspection START (12/2/16 9:22 PM):
+//    /**
+//     * Returns the {@link ViewBinder} used to bind data to views.
+//     *
+//     * @return a ViewBinder or null if the binder does not exist
+//     * @see #getViewBinder()
+//     */
+//    private ViewBinder getViewBinder() {
+//        return mViewBinder;
+//    }
+// --Commented out by Inspection STOP (12/2/16 9:22 PM)
 
-    /**
-     * Sets the binder used to bind data to views.
-     *
-     * @param viewBinder the binder used to bind data to views, can be null to
-     *                   remove the existing binder
-     * @see #getViewBinder()
-     */
-    public void setViewBinder(ViewBinder viewBinder) {
-        mViewBinder = viewBinder;
-    }
+// --Commented out by Inspection START (12/2/16 9:13 PM):
+//    /**
+//     * Sets the binder used to bind data to views.
+//     *
+//     * @param viewBinder the binder used to bind data to views, can be null to
+//     *                   remove the existing binder
+//     * @see #getViewBinder()
+//     */
+//    public void setViewBinder(ViewBinder viewBinder) {
+//        mViewBinder = viewBinder;
+//    }
+// --Commented out by Inspection STOP (12/2/16 9:13 PM)
 
     /**
      * Called by bindView() to set the image for an ImageView but only if
