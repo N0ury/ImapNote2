@@ -10,6 +10,7 @@ import android.util.Log;
 /**
  * There can be as many SyncService instances as you like but they all return the same statically
  * allocated SyncAdapter.
+ * TODO: explain why this should be so.  I have made it non-static and it still seems to work.
  */
 public class SyncService extends Service {
     public static final String SYNC_FINISHED = "SYNC_FINISHED";
@@ -17,12 +18,13 @@ public class SyncService extends Service {
 
     private static final Object sSyncAdapterLock = new Object();
     @Nullable
-    private static SyncAdapter sSyncAdapter = null;
+    private  SyncAdapter sSyncAdapter = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Service created");
+        // TODO: fix these comments now thatsSyncAdapter is no longer static.  Fix the code too.
         // This sync lock is necessary because sSyncAdapter is static so if we have more than one
         // SyncService object we would otherwise have a race condition
         synchronized (sSyncAdapterLock) {
