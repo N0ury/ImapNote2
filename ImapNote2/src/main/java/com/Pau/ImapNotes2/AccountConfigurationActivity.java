@@ -311,7 +311,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 //accountConfigurationActivity = acountConfigurationActivity;
                 if (res.returnCode == Imaper.ResultCodeSuccess) {
                     // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().
-                    Account account = new Account(imapNotes2Account.GetAccountname(), "com.Pau.ImapNotes2");
+                    Account account = new Account(imapNotes2Account.GetAccountName(), "com.Pau.ImapNotes2");
                     //long SYNC_FREQUENCY = (long) stuffs[ParamSyncPeriod];
                     AccountManager am = AccountManager.get(accountConfigurationActivity);
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);

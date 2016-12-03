@@ -158,7 +158,7 @@ public class Imaper {
 // --Commented out by Inspection START (11/26/16 11:44 PM):
 //    // Put values in shared preferences:
 //    public void SetPrefs() {
-//        SharedPreferences preferences = ImapNotes2k.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
+//        SharedPreferences preferences = ImapNotes2k.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountName(), Context.MODE_PRIVATE);
 //        SharedPreferences.Editor editor = preferences.edit();
 //        editor.putString("Name", "valid_data");
 //        editor.putLong("UIDValidity", UIDValidity);
@@ -169,7 +169,7 @@ public class Imaper {
 // --Commented out by Inspection START (11/26/16 11:44 PM):
 //    // Retrieve values from shared preferences:
 //    public void GetPrefs() {
-//        SharedPreferences preferences = (ImapNotes2k.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountname(), Context.MODE_PRIVATE);
+//        SharedPreferences preferences = (ImapNotes2k.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountName(), Context.MODE_PRIVATE);
 //        String name = preferences.getString("Name", "");
 //        if (!name.equalsIgnoreCase("")) {
 //            UIDValidity = preferences.getLong("UIDValidity", -1);

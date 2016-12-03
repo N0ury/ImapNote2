@@ -113,7 +113,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage, mPackage + mClass));
             res.putExtra(ACTION, AccountConfigurationActivity.Actions.EDIT_ACCOUNT);
-            res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountname());
+            res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountName());
             startActivity(res);
         }
     };
@@ -213,7 +213,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             Boolean isChanged = intent.getBooleanExtra(CHANGED, false);
             Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
             String syncInterval = intent.getStringExtra(SYNCINTERVAL);
-            if (accountName.equals(Listactivity.imapNotes2Account.GetAccountname())) {
+            if (accountName.equals(Listactivity.imapNotes2Account.GetAccountName())) {
                 String statusText;
                 if (isSynced) {
                     // Display last sync date

@@ -34,18 +34,26 @@ public class ImapNotes2Account {
     public ImapNotes2Account() {
     }
 
-    public ImapNotes2Account(String accountName) {
+    public File dirForNewFiles;
+
+    public File dirForDeletedFiles;
+
+    public File rootDir;
+
+    public ImapNotes2Account(@NonNull String accountName,
+                             Context applicationContext) {
         this.accountName = accountName;
+        rootDir = new File(applicationContext.getFilesDir(), accountName);
+        dirForNewFiles= new File(rootDir, "new");
+        dirForDeletedFiles= new File(rootDir, "deleted");
     }
 
-    public ImapNotes2Account(Account account) {
-        this(account.name);
+    public ImapNotes2Account(@NonNull Account account,
+                             Context applicationContext) {
+        this(account.name, applicationContext);
         this.account = account;
     }
 
-    public File dirForNewFiles(Context applicationContext) {
-        return new File(applicationContext.getFilesDir(), accountName);
-    }
 
     /*
     @NonNull
@@ -55,8 +63,8 @@ public class ImapNotes2Account {
                 + this.usesticky + ":" + this.imapfolder + ":" + Boolean.toString(this.accountHasChanged);
     }*/
 
-    public String GetAccountname() {
-        return this.accountName;
+    public String GetAccountName() {
+        return accountName;
     }
 
     public void SetAccount(Account account) {

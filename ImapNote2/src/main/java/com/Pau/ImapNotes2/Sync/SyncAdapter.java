@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
+import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Data.Security;
 import com.Pau.ImapNotes2.Listactivity;
@@ -37,8 +38,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
     private final Context applicationContext;
     private NotesDb storedNotes;
-    // TODO: Why is this static?
-    private Account account;
+    // TODO: Why was this static?
+    //private Account account;
+    private ImapNotes2Account account;
+
 // --Commented out by Inspection START (11/26/16 11:49 PM):
 //    /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
 //    @NonNull
@@ -85,7 +88,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
         // TODO: should the account be static?  Should it be local?  If static then why do we not
         // provide it in the constructor?  What happens if we allow parallel syncs?
-        account = accountArg;
+        account = new ImapNotes2Account(accountArg, applicationContext);
 
         SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
 
@@ -180,7 +183,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                                     boolean isSynced,
                                     String syncInterval) {
         Intent i = new Intent(SyncService.SYNC_FINISHED);
-        i.putExtra(Listactivity.ACCOUNTNAME, account.name);
+        i.putExtra(Listactivity.ACCOUNTNAME, account.GetAccountName());
         i.putExtra(Listactivity.CHANGED, isChanged);
         i.putExtra(Listactivity.SYNCED, isSynced);
         i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
@@ -197,12 +200,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private ImapNotes2Result ConnectToRemote() {
         AccountManager am = AccountManager.get(applicationContext);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
-                am.getUserData(account, ConfigurationFieldNames.UserName),
-                am.getPassword(account),
-                am.getUserData(account, ConfigurationFieldNames.Server),
-                am.getUserData(account, ConfigurationFieldNames.PortNumber),
-                Security.from(am.getUserData(account, ConfigurationFieldNames.Security)),
-                am.getUserData(account, ConfigurationFieldNames.ImapFolder));
+                am.getUserData(account.GetAccount(), ConfigurationFieldNames.UserName),
+                am.getPassword(account.GetAccount()),
+                am.getUserData(account.GetAccount(), ConfigurationFieldNames.Server),
+                am.getUserData(account.GetAccount(), ConfigurationFieldNames.PortNumber),
+                Security.from(am.getUserData(account.GetAccount(), ConfigurationFieldNames.Security)),
+                am.getUserData(account.GetAccount(), ConfigurationFieldNames.ImapFolder));
         if (res.returnCode != ResultCodeSuccess) {
             // TODO: Notify the user?
             Log.d(TAG, "Connection problem: " + res.errorMessage);
@@ -216,7 +219,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //AppendUID[] uids = null;
         //String rootString = applicationContext.getFilesDir() + File.separator + account.name;
         //File rootDir = new File(rootString);
-        File accountDir = new File(applicationContext.getFilesDir(), account.name);
+        File accountDir = new File(applicationContext.getFilesDir(), account.GetAccount().name);
         File dirNew = new File(accountDir, "new");
         Log.d(TAG, "dn path: " + dirNew.getAbsolutePath());
         Log.d(TAG, "dn exists: " + Boolean.toString(dirNew.exists()));
@@ -239,7 +242,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 AppendUID[] uids = SyncUtils.sendMessageToRemote(msg);
                 // Update uid in database entry
                 String newuid = Long.toString(uids[0].uid);
-                storedNotes.UpdateANote(fileNew, newuid, account.name);
+                storedNotes.UpdateANote(fileNew, newuid, account.GetAccountName());
                 // move new note from new dir, one level up
                 File fileInNew = new File(dirNew, fileNew);
                 File to = new File(accountDir, newuid);
@@ -256,7 +259,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private boolean handleDeletedNotes() {
         //Message message = null;
         boolean deletedNotesManaged = false;
-        String rootString = applicationContext.getFilesDir() + "/" + account.name;
+        String rootString = applicationContext.getFilesDir() + "/" + account.GetAccountName();
         File rootDir = new File(rootString);
         File dirDeleted = new File(rootDir + "/deleted");
         String[] listOfDeleted = dirDeleted.list();
