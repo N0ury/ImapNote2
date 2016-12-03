@@ -205,21 +205,21 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     /* It is possible for this function to throw exceptions; the original code caught
     MessagingException but just logged it instead of handling it.  This results in a possibility of
-    returning null.  Removing the catch fixies the possible null reference but of course means that
+    returning null.  Removing the catch fixes the possible null reference but of course means that
     the caller becomes responsible.  This is the correct approach.
-
      */
     @NonNull
     private ImapNotes2Result ConnectToRemote() {
         AccountManager am = AccountManager.get(applicationContext);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
-                    am.getUserData(account, ConfigurationFieldNames.UserName),
-                    am.getPassword(account),
-                    am.getUserData(account, ConfigurationFieldNames.Server),
-                    am.getUserData(account, ConfigurationFieldNames.PortNumber),
-                    Security.from(am.getUserData(account, ConfigurationFieldNames.Security)),
+                am.getUserData(account, ConfigurationFieldNames.UserName),
+                am.getPassword(account),
+                am.getUserData(account, ConfigurationFieldNames.Server),
+                am.getUserData(account, ConfigurationFieldNames.PortNumber),
+                Security.from(am.getUserData(account, ConfigurationFieldNames.Security)),
                 am.getUserData(account, ConfigurationFieldNames.ImapFolder));
         if (res.returnCode != ResultCodeSuccess) {
+            // TODO: Notify the user?
             Log.d(TAG, "Connection problem: " + res.errorMessage);
         }
         return res;
@@ -258,6 +258,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // move new note from new dir, one level up
                 File fileInNew = new File(dirNew, fileNew);
                 File to = new File(accountDir, newuid);
+                //noinspection ResultOfMethodCallIgnored
                 fileInNew.renameTo(to);
             } catch (Exception e) {
                 // TODO: Handle message properly.

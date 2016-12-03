@@ -8,7 +8,7 @@ import android.util.Log;
 public class ImapNotes2Account {
 
     private static final String TAG = "IN_ImapNotes2Account";
-    private String accountname = "";
+    private String accountName = "";
     // TODO: Why are the username, password, etc. nullable?
     @NonNull
     private String username = "";
@@ -24,23 +24,22 @@ public class ImapNotes2Account {
     private String syncinterval = "15";
     @NonNull
     private String imapfolder = "";
-    private boolean accountHasChanged = false;
     @Nullable
     private Account account = null;
 
 
     public ImapNotes2Account() {
     }
-
+/*
     @NonNull
     public String toString() {
-        return this.accountname + ":" + this.username + ":" + this.password + ":"
+        return this.accountName + ":" + this.username + ":" + this.password + ":"
                 + this.server + ":" + this.portnum + ":" + this.security + ":"
                 + this.usesticky + ":" + this.imapfolder + ":" + Boolean.toString(this.accountHasChanged);
-    }
+    }*/
 
     public String GetAccountname() {
-        return this.accountname;
+        return this.accountName;
     }
 
     public void SetAccount(Account account) {
@@ -52,9 +51,9 @@ public class ImapNotes2Account {
         return this.account;
     }
 
-    public void SetAccountname(String Accountname) {
-        if (this.accountname.equals(Accountname)) this.accountHasChanged = true;
-        this.accountname = Accountname;
+    public void SetAccountname(String accountName) {
+        if (this.accountName.equals(accountName)) ;
+        this.accountName = accountName;
     }
 
     @NonNull
@@ -127,7 +126,6 @@ public class ImapNotes2Account {
     }
 
     public void SetaccountHasChanged() {
-        this.accountHasChanged = true;
     }
 /*
     public void SetaccountHasNotChanged() {

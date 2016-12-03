@@ -77,10 +77,9 @@ public class SyncUtils {
             }
         }
 
-        String proto = security.proto;
-        boolean acceptcrt = security.acceptcrt;
+        //boolean acceptcrt = security.acceptcrt;
 
-        MailSSLSocketFactory sf = null;
+        MailSSLSocketFactory sf;
         try {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {
@@ -92,11 +91,12 @@ public class SyncUtils {
 
         Properties props = new Properties();
 
+        String proto = security.proto;
         props.setProperty(String.format("mail.%s.host", proto), server);
         props.setProperty(String.format("mail.%s.port", proto), portnum);
         props.setProperty("mail.store.protocol", proto);
 
-        if ((acceptcrt)) {
+        if (security.acceptcrt) {
             sf.setTrustedHosts(new String[]{server});
             if (proto.equals("imap")) {
                 props.put("mail.imap.ssl.socketFactory", sf);
@@ -309,7 +309,7 @@ public class SyncUtils {
         return UIDValidity;
     }
 
-    public static void DisconnectFromRemote() {
+    static void DisconnectFromRemote() {
         try {
             store.close();
         } catch (MessagingException e) {
@@ -471,7 +471,7 @@ public class SyncUtils {
         return ((IMAPFolder) notesFolder).appendUIDMessages(message);
     }
 
-    public static void ClearHomeDir(@NonNull Account account, @NonNull Context ctx) {
+    static void ClearHomeDir(@NonNull Account account, @NonNull Context ctx) {
         File directory = new File(ctx.getFilesDir() + "/" + account.name);
         try {
             FileUtils.deleteDirectory(directory);

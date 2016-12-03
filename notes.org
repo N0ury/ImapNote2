@@ -13,7 +13,14 @@ It's annoying to have to wait.
 
 ** Implement general filesynchronization.
 
-** Implement text file merging
+** Implement text file mer ging
+
+Consider using:
+
+- jDiff library from http://www.qarks.com/web/en/downloads.html
+
+- https://mvnrepository.com/open-source/diff-patch
+
 
 ** Implement Unix and Windows desktop versions.
 

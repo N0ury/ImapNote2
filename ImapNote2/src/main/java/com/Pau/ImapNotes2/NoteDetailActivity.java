@@ -15,7 +15,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
@@ -103,11 +102,13 @@ public class NoteDetailActivity extends Activity {
     }
 
 
+/*
     // TODO: delete this?
     public void onClick(View view) {
         Log.d(TAG, "onClick");
         //Boolean isClicked = true;
     }
+*/
 
 
     // realColor is misnamed.  It is the ID of the radio button widget that chooses the background

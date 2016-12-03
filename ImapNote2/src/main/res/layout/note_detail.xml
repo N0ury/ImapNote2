@@ -20,9 +20,7 @@
             android:clickable="true"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:onClick="onClick"
             tools:ignore="LabelFor">
-
             <requestFocus />
         </EditText>
     </LinearLayout>

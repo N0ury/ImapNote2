@@ -17,7 +17,6 @@ public class ImapNotes2k extends Application {
 
     private Imaper thisSessionImapFolder;
 
-    //private Context context;
     private static final String configurationFileName = "ImapNotes2.conf";
 /*
     // Called when starting the application.
@@ -26,15 +25,6 @@ public class ImapNotes2k extends Application {
         // Save the context in a static so that it is easy to access everywhere.
         //ImapNotes2k.context = getApplicationContext();
     }*/
-/*
-
-    // Simplify access to the application context.  But why not just use getApplicationContext
-    // everywhere?
-    public static Context getAppContext() {
-        return ImapNotes2k.context;
-    }
-*/
-
 
     @NonNull
     public static String ConfigurationFilePath(Context applicationContext) {
