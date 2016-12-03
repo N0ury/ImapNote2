@@ -1,9 +1,12 @@
 package com.Pau.ImapNotes2.Data;
 
 import android.accounts.Account;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import java.io.File;
 
 public class ImapNotes2Account {
 
@@ -30,7 +33,21 @@ public class ImapNotes2Account {
 
     public ImapNotes2Account() {
     }
-/*
+
+    public ImapNotes2Account(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public ImapNotes2Account(Account account) {
+        this(account.name);
+        this.account = account;
+    }
+
+    public File dirForNewFiles(Context applicationContext) {
+        return new File(applicationContext.getFilesDir(), accountName);
+    }
+
+    /*
     @NonNull
     public String toString() {
         return this.accountName + ":" + this.username + ":" + this.password + ":"
@@ -52,7 +69,6 @@ public class ImapNotes2Account {
     }
 
     public void SetAccountname(String accountName) {
-        if (this.accountName.equals(accountName)) ;
         this.accountName = accountName;
     }
 

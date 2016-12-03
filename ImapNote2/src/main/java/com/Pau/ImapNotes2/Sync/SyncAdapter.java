@@ -37,7 +37,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
     private final Context applicationContext;
     private NotesDb storedNotes;
-    private static Account account;
+    // TODO: Why is this static?
+    private Account account;
 // --Commented out by Inspection START (11/26/16 11:49 PM):
 //    /// See RFC 3501: http://www.faqs.org/rfcs/rfc3501.html
 //    @NonNull
@@ -76,7 +77,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 // --Commented out by Inspection STOP (12/2/16 8:50 PM)
 
     @Override
-    public void onPerformSync(@NonNull Account account,
+    public void onPerformSync(@NonNull Account accountArg,
                               Bundle extras,
                               String authority,
                               ContentProviderClient provider,
@@ -84,15 +85,15 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
         // TODO: should the account be static?  Should it be local?  If static then why do we not
         // provide it in the constructor?  What happens if we allow parallel syncs?
-        SyncAdapter.account = account;
+        account = accountArg;
 
-        SyncUtils.CreateLocalDirectories(account.name, applicationContext);
+        SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
 
         storedNotes = new NotesDb(applicationContext);
         storedNotes.OpenDb();
 
         AccountManager am = AccountManager.get(applicationContext);
-        String syncInterval = am.getUserData(account, "syncinterval");
+        String syncInterval = am.getUserData(accountArg, "syncinterval");
 
         // Connect to remote and get UIDValidity
         ImapNotes2Result res = ConnectToRemote();
@@ -114,16 +115,16 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         // Compare UIDValidity to old saved one
         //
         if (!(res.UIDValidity.equals(
-                SyncUtils.GetUIDValidity(SyncAdapter.account, applicationContext)))) {
+                SyncUtils.GetUIDValidity(accountArg, applicationContext)))) {
             // Replace local data by remote.  UIDs are no longer valid.
             try {
                 // delete notes in NotesDb for this account
-                storedNotes.ClearDb(account.name);
+                storedNotes.ClearDb(accountArg.name);
                 // delete notes in folders for this account and recreate dirs
-                SyncUtils.ClearHomeDir(account, applicationContext);
-                SyncUtils.CreateLocalDirectories(account.name, applicationContext);
+                SyncUtils.ClearHomeDir(accountArg, applicationContext);
+                SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
                 // Get all notes from remote and replace local
-                SyncUtils.GetNotes(account,
+                SyncUtils.GetNotes(accountArg,
                         res.notesFolder,
                         applicationContext, storedNotes);
                 storedNotes.CloseDb();
@@ -134,15 +135,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            SyncUtils.SetUIDValidity(account, res.UIDValidity, applicationContext);
+            SyncUtils.SetUIDValidity(accountArg, res.UIDValidity, applicationContext);
             // Notify Listactivity that it's finished, and that it can refresh display
-            /*Intent i = new Intent(SyncService.SYNC_FINISHED);
-            i.putExtra(Listactivity.ACCOUNTNAME, account.name);
-            i.putExtra(Listactivity.CHANGED, true);
-            i.putExtra(Listactivity.SYNCED, true);
-            i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
-            applicationContext.sendBroadcast(i);
-            */
             NotifySyncFinished(true, true, syncInterval);
             return;
         }
@@ -160,10 +154,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // handle notes created or removed on remote
         boolean remoteNotesManaged = false;
-        String usesticky = am.getUserData(account, ConfigurationFieldNames.UseSticky);
+        String usesticky = am.getUserData(accountArg, ConfigurationFieldNames.UseSticky);
         try {
             remoteNotesManaged = SyncUtils.handleRemoteNotes(applicationContext, res.notesFolder,
-                    storedNotes, account.name, usesticky);
+                    storedNotes, accountArg.name, usesticky);
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -179,15 +173,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         SyncUtils.DisconnectFromRemote();
         //Log.d(TAG, "Network synchronization complete of account: "+account.name);
         // Notify Listactivity that it's finished, and that it can refresh display
-/*
-        Intent i = new Intent(SyncService.SYNC_FINISHED);
-        i.putExtra(Listactivity.ACCOUNTNAME, account.name);
-        i.putExtra(Listactivity.CHANGED, isChanged);
-        i.putExtra(Listactivity.SYNCED, true);
-        i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
-        applicationContext.sendBroadcast(i);
-*/
-
         NotifySyncFinished(isChanged, true, syncInterval);
     }
 
