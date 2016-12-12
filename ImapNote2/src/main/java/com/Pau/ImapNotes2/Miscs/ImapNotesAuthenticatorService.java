@@ -1,6 +1,6 @@
 package com.Pau.ImapNotes2.Miscs;
 
-import com.Pau.ImapNotes2.AccontConfigurationActivity;
+import com.Pau.ImapNotes2.AccountConfigurationActivity;
 import com.Pau.ImapNotes2.Sync.SyncUtils;
 
 import android.accounts.AbstractAccountAuthenticator;
@@ -64,7 +64,7 @@ public class ImapNotesAuthenticatorService extends Service{
 		@Override
 		public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
 			
-			Intent toLoginActivity = new Intent(this.mContext, AccontConfigurationActivity.class);
+			Intent toLoginActivity = new Intent(this.mContext, AccountConfigurationActivity.class);
 			toLoginActivity.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(AccountManager.KEY_INTENT, toLoginActivity);

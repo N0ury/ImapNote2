@@ -33,10 +33,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AccontConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener{
+public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener{
   public static final int TO_REFRESH = 999;
   public static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
-  private static final String TAG = "AccontConfigurationActivity";
+  private static final String TAG = "AccountConfigurationActivity";
   
   private Imaper imapFolder;
   
@@ -224,7 +224,7 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
   
   class LoginThread extends AsyncTask<Object, Void, Boolean> {
     
-      private AccontConfigurationActivity accontConfigurationActivity;
+      private AccountConfigurationActivity accontConfigurationActivity;
       private ImapNotes2Result res = new ImapNotes2Result();
       String action;
 
@@ -239,12 +239,12 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
             ((ImapNotes2Account)stuffs[1]).GetSecurity(),
             ((ImapNotes2Account)stuffs[1]).GetUsesticky(),
             ((ImapNotes2Account)stuffs[1]).GetFoldername());
-          accontConfigurationActivity = (AccontConfigurationActivity)stuffs[3];
+          accontConfigurationActivity = (AccountConfigurationActivity)stuffs[3];
           if (this.res.returnCode==0) {
             Account account = new Account(((ImapNotes2Account)stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
             long SYNC_FREQUENCY = (long)stuffs[5];
-            AccountManager am = AccountManager.get(((AccontConfigurationActivity)stuffs[3]));
-            accontConfigurationActivity.setResult(AccontConfigurationActivity.TO_REFRESH);
+            AccountManager am = AccountManager.get(((AccountConfigurationActivity)stuffs[3]));
+            accontConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
             Bundle result = null;
             if (this.action.equals("EDIT_ACCOUNT")) {
                   result = new Bundle();

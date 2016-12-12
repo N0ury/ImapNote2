@@ -90,7 +90,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener,Fi
             // Clic on editAccount Button
             Intent res = new Intent();
             String mPackage = "com.Pau.ImapNotes2";
-            String mClass = ".AccontConfigurationActivity";
+            String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage,mPackage+mClass));
             res.putExtra("action", "EDIT_ACCOUNT");
             res.putExtra("accountname", Listactivity.imapNotes2Account.GetAccountname());
@@ -265,7 +265,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener,Fi
         case R.id.login:
             Intent res = new Intent();
             String mPackage = "com.Pau.ImapNotes2";
-            String mClass = ".AccontConfigurationActivity";
+            String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage,mPackage+mClass));
             res.putExtra("action", "CREATE_ACCOUNT");
             startActivity(res);
@@ -457,7 +457,7 @@ public class Listactivity extends Activity  implements OnItemSelectedListener,Fi
                 }
                 Intent res = new Intent();
                 String mPackage = "com.Pau.ImapNotes2";
-                String mClass = ".AccontConfigurationActivity";
+                String mClass = ".AccountConfigurationActivity";
                 res.setComponent(new ComponentName(mPackage,mPackage+mClass));
                 startActivity(res);
             }
