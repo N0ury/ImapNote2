@@ -141,6 +141,8 @@ public class AccontConfigurationActivity extends AccountAuthenticatorActivity im
     }
 
     if (this.settings != null) {
+        ((TextView)(findViewById(R.id.heading))).setText("Edit Account");
+
         this.accountnameTextView.setText(this.settings.GetAccountname());
         this.usernameTextView.setText(this.settings.GetUsername());
         this.passwordTextView.setText(this.settings.GetPassword());
