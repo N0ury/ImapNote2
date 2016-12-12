@@ -55,10 +55,10 @@ public class ImapNotesAuthenticatorService extends Service {
             Bundle ret = super.getAccountRemovalAllowed(response, account);
             if (ret.getBoolean(AccountManager.KEY_BOOLEAN_RESULT))
                 SyncUtils.RemoveAccount(this.mContext, account);
-/*
+            /*
             mContext.getContentResolver().delete(ListProvider.getClearUri(),
-					null, null);
-*/
+                null, null);
+            */
             return ret;
         }
 

@@ -89,7 +89,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private OnClickListener clickListenerRemove = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // Clic on Remove Button
+            // Click on Remove Button
             accountManager.removeAccount(myAccount, null, null);
             Toast.makeText(getApplicationContext(), "Account has been removed",
                     Toast.LENGTH_LONG).show();

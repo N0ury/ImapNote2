@@ -126,25 +126,25 @@ public class Imaper {
         if (this.useProxy) {
             props.put("mail.imap.socks.host", "10.0.2.2");
             props.put("mail.imap.socks.port", "1080");
-/*
-        props.put("proxySet","true");
-        props.put("socksProxyHost","10.0.2.2");
-        props.put("socksProxyPort","1080");
-        props.put("sun.net.spi.nameservice.provider.1", "dns,sun");
-        props.put("sun.net.spi.nameservice.nameservers", "192.168.0.99");
-*/
+            /*
+            props.put("proxySet","true");
+            props.put("socksProxyHost","10.0.2.2");
+            props.put("socksProxyPort","1080");
+            props.put("sun.net.spi.nameservice.provider.1", "dns,sun");
+            props.put("sun.net.spi.nameservice.nameservers", "192.168.0.99");
+            */
         }
         this.session = Session.getInstance(props, null);
-//this.session.setDebug(true);
+        //this.session.setDebug(true);
         this.store = this.session.getStore(this.proto);
         try {
             this.store.connect(server, username, password);
             Boolean hasUIDPLUS = ((IMAPStore) this.store).hasCapability("UIDPLUS");
-//Log.d(TAG, "has UIDPLUS="+hasUIDPLUS);
+            //Log.d(TAG, "has UIDPLUS="+hasUIDPLUS);
 
             Folder[] folders = store.getPersonalNamespaces();
             Folder folder = folders[0];
-//Log.d(TAG,"Personal Namespaces="+folder.getFullName());
+            //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
             if (this.folderoverride.length() > 0) {
                 Imaper.sfolder = this.folderoverride;
             } else if (folder.getFullName().length() == 0) {

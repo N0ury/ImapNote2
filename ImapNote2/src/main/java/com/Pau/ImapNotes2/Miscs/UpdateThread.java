@@ -74,8 +74,8 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
 
             // Do we have a note to add?
             if (this.action.equals("insert") || this.action.equals("update")) {
-//Log.d(TAG,"Sticky ? "+((ImapNotes2Account)stuffs[1]).GetUsesticky());
-//Log.d(TAG,"Color:"+this.color);
+                //Log.d(TAG,"Sticky ? "+((ImapNotes2Account)stuffs[1]).GetUsesticky());
+                //Log.d(TAG,"Color:"+this.color);
                 //Log.d(TAG,"Received request to add new message"+this.noteBody+"===");
                 String noteTxt = Html.fromHtml(this.noteBody).toString();
                 String[] tok = noteTxt.split("\n", 2);

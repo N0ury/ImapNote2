@@ -214,7 +214,7 @@ public class NoteDetailActivity extends Activity {
         String charset;
         Sticky sticky = null;
         try {
-//Log.d(TAG, "Contenttype as string:"+message.getContentType());
+            //Log.d(TAG, "Contenttype as string:"+message.getContentType());
             contentType = new ContentType(message.getContentType());
             charset = contentType.getParameter("charset");
             iis = (InputStream) message.getContent();
@@ -224,7 +224,7 @@ public class NoteDetailActivity extends Activity {
             e.printStackTrace();
         }
 
-//Log.d(TAG,"contentType:"+contentType);
+        //Log.d(TAG,"contentType:"+contentType);
         if (contentType.match("text/x-stickynote")) {
             sticky = SyncUtils.ReadStickynote(stringres);
         } else if (contentType.match("TEXT/HTML")) {
@@ -232,8 +232,8 @@ public class NoteDetailActivity extends Activity {
         } else if (contentType.match("TEXT/PLAIN")) {
             sticky = ReadPlainnote(stringres);
         } else if (contentType.match("multipart/related")) {
-// All next is a workaround
-// All function need to be rewritten to handle correctly multipart and images
+            // All next is a workaround
+            // All function need to be rewritten to handle correctly multipart and images
             if (contentType.getParameter("type").equalsIgnoreCase("TEXT/HTML")) {
                 sticky = ReadHtmlnote(stringres);
             } else if (contentType.getParameter("type").equalsIgnoreCase("TEXT/PLAIN")) {
@@ -272,7 +272,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     private Sticky ReadHtmlnote(String stringres) {
-//        Log.d(TAG,"From server (html):"+stringres);
+        // Log.d(TAG,"From server (html):"+stringres);
         Spanned spanres = Html.fromHtml(stringres);
         stringres = Html.toHtml(spanres);
         stringres = stringres.replaceFirst("<p dir=ltr>", "");
@@ -285,7 +285,7 @@ public class NoteDetailActivity extends Activity {
     }
 
     private Sticky ReadPlainnote(String stringres) {
-//        Log.d(TAG,"From server (plain):"+stringres);
+        // Log.d(TAG,"From server (plain):"+stringres);
         stringres = stringres.replaceAll("\n", "<br>");
 
         return new Sticky(stringres, "", "NONE");

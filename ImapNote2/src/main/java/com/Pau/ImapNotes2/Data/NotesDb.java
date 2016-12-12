@@ -162,7 +162,7 @@ public class NotesDb {
                         _db.execSQL(NotesDb.CREATE_NOTES_DB);
                     }
                 }
-/*
+            /*
            ,new Patch() {
               public void apply(SQLiteDatabase _db) {
                 Log.d(TAG,"upgrade: v3 to v4");
@@ -170,7 +170,7 @@ public class NotesDb {
                 _db.execSQL(NotesDb.CREATE_NOTES_DB);
               }
            }
-*/
+            */
         };
     }
 }

@@ -99,8 +99,8 @@ public class SyncUtils {
                 proto = "imap";
                 acceptcrt = "true";
                 break;
-////////////////////// Change this
             default:
+                ////////////////////// Change this
                 proto = "Invalid proto";
                 break;
         }
@@ -143,16 +143,16 @@ public class SyncUtils {
             props.put("mail.imap.socks.port", "1080");
         }
         session = Session.getInstance(props, null);
-//this.session.setDebug(true);
+        //this.session.setDebug(true);
         store = session.getStore(proto);
         try {
             store.connect(server, username, password);
             res.hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
-//Log.d(TAG, "has UIDPLUS="+res.hasUIDPLUS);
+            //Log.d(TAG, "has UIDPLUS="+res.hasUIDPLUS);
 
             Folder[] folders = store.getPersonalNamespaces();
             Folder folder = folders[0];
-//Log.d(TAG,"Personal Namespaces="+folder.getFullName());
+            //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
             if (folderoverride.length() > 0) {
                 sfolder = folderoverride;
             } else if (folder.getFullName().length() == 0) {
