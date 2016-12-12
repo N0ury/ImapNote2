@@ -151,6 +151,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 toDetail.putExtra("selectedNote", (OneNote) arg0.getItemAtPosition(selectedNote));
                 toDetail.putExtra("useSticky", Listactivity.imapNotes2Account.GetUsesticky());
                 startActivityForResult(toDetail, SEE_DETAIL);
+
+                TriggerSync(status);
             }
         });
 
@@ -319,9 +321,11 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     String txt = data.getStringExtra("EDIT_ITEM_TXT");
                     String suid = data.getStringExtra("EDIT_ITEM_NUM_IMAP");
                     String color = data.getStringExtra("EDIT_ITEM_COLOR");
-                    //Log.d(TAG,"Received request to delete message:"+suid);
+                    //Log.d(TAG,"Received request to edit message:"+suid);
                     //Log.d(TAG,"Received request to replace message with:"+txt);
                     this.UpdateList(suid, txt, color, "update");
+
+                    this.TriggerSync(this.status);
                 }
             case Listactivity.NEW_BUTTON:
                 // Returning from NewNoteActivity
