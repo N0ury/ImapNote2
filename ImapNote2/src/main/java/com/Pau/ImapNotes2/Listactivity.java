@@ -165,7 +165,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         // logcat will be sent by mail
         // send mail action is done by the user, so he can refuse
         // SendLogcatMail();
-//        this.imapFolder.SetPrefs();
+        // this.imapFolder.SetPrefs();
     }
 
     public void onStart() {
