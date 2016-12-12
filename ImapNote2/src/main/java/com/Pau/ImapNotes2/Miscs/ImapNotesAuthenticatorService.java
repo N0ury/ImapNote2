@@ -64,7 +64,6 @@ public class ImapNotesAuthenticatorService extends Service {
 
         @Override
         public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
-
             Intent toLoginActivity = new Intent(this.mContext, AccountConfigurationActivity.class);
             toLoginActivity.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             Bundle bundle = new Bundle();
@@ -75,37 +74,31 @@ public class ImapNotesAuthenticatorService extends Service {
 
         @Override
         public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) throws NetworkErrorException {
-
             return null;
         }
 
         @Override
         public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
-
             return null;
         }
 
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
-
             return null;
         }
 
         @Override
         public String getAuthTokenLabel(String authTokenType) {
-
             return null;
         }
 
         @Override
         public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) throws NetworkErrorException {
-
             return null;
         }
 
         @Override
         public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
-
             return null;
         }
 

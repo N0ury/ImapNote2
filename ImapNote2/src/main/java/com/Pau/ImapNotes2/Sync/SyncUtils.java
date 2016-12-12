@@ -436,7 +436,6 @@ public class SyncUtils {
 
     public static boolean handleRemoteNotes(Context context, Folder notesFolder, NotesDb storedNotes, String accountName, String usesticky)
             throws MessagingException, IOException {
-
         Message notesMessage;
         boolean result = false;
         ArrayList<Long> uids = new ArrayList<Long>();

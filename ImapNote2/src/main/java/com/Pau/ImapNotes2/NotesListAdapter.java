@@ -346,7 +346,6 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
                 for (int i = 0; i < count; i++) {
                     Map<String, ?> h = unfilteredValues.get(i);
                     if (h != null) {
-
                         int len = mTo.length;
 
                         for (int j = 0; j < len; j++) {
