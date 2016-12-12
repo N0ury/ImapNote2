@@ -226,7 +226,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     class LoginThread extends AsyncTask<Object, Void, Boolean> {
 
-        private AccountConfigurationActivity accontConfigurationActivity;
+        private AccountConfigurationActivity accountConfigurationActivity;
         private ImapNotes2Result res = new ImapNotes2Result();
         String action;
 
@@ -241,12 +241,12 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         ((ImapNotes2Account) stuffs[1]).GetSecurity(),
                         ((ImapNotes2Account) stuffs[1]).GetUsesticky(),
                         ((ImapNotes2Account) stuffs[1]).GetFoldername());
-                accontConfigurationActivity = (AccountConfigurationActivity) stuffs[3];
+                accountConfigurationActivity = (AccountConfigurationActivity) stuffs[3];
                 if (this.res.returnCode == 0) {
                     Account account = new Account(((ImapNotes2Account) stuffs[1]).GetAccountname(), "com.Pau.ImapNotes2");
                     long SYNC_FREQUENCY = (long) stuffs[5];
                     AccountManager am = AccountManager.get(((AccountConfigurationActivity) stuffs[3]));
-                    accontConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
+                    accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                     Bundle result = null;
                     if (this.action.equals("EDIT_ACCOUNT")) {
                         result = new Bundle();
@@ -301,16 +301,16 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         protected void onPostExecute(Boolean result) {
             if (result) {
-                accontConfigurationActivity.settings.Clear();
-                this.accontConfigurationActivity.accountnameTextView.setText("");
-                this.accontConfigurationActivity.usernameTextView.setText("");
-                this.accontConfigurationActivity.passwordTextView.setText("");
-                this.accontConfigurationActivity.serverTextView.setText("");
-                this.accontConfigurationActivity.portnumTextView.setText("");
-                this.accontConfigurationActivity.syncintervalTextView.setText("15");
-                this.accontConfigurationActivity.securitySpinner.setSelection(0);
-                this.accontConfigurationActivity.folderTextView.setText("");
-                this.accontConfigurationActivity.stickyCheckBox.setChecked(false);
+                accountConfigurationActivity.settings.Clear();
+                this.accountConfigurationActivity.accountnameTextView.setText("");
+                this.accountConfigurationActivity.usernameTextView.setText("");
+                this.accountConfigurationActivity.passwordTextView.setText("");
+                this.accountConfigurationActivity.serverTextView.setText("");
+                this.accountConfigurationActivity.portnumTextView.setText("");
+                this.accountConfigurationActivity.syncintervalTextView.setText("15");
+                this.accountConfigurationActivity.securitySpinner.setSelection(0);
+                this.accountConfigurationActivity.folderTextView.setText("");
+                this.accountConfigurationActivity.stickyCheckBox.setChecked(false);
             }
             final Toast tag = Toast.makeText(getApplicationContext(), this.res.errorMessage, Toast.LENGTH_LONG);
             tag.show();
