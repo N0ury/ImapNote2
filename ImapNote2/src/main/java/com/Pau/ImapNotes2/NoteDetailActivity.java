@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -132,13 +134,21 @@ public class NoteDetailActivity extends Activity {
     }
     
     public boolean onOptionsItemSelected (MenuItem item){
-        Intent intent=new Intent();  
+        final Intent intent=new Intent();
         switch (item.getItemId()){
         case R.id.delete:
-            //Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
-            intent.putExtra("DELETE_ITEM_NUM_IMAP",suid);  
-            setResult(NoteDetailActivity.DELETE_BUTTON, intent);
-            finish();//finishing activity  
+            new AlertDialog.Builder(this)
+                .setTitle("Delete note")
+                .setMessage("Are you sure you wish to delete the note?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //Log.d(TAG,"We ask to delete Message #"+this.currentNote.get("number"));
+                        intent.putExtra("DELETE_ITEM_NUM_IMAP",suid);  
+                        setResult(NoteDetailActivity.DELETE_BUTTON, intent);
+                        finish();//finishing activity  
+                    }})
+                 .setNegativeButton(android.R.string.no, null).show();
             return true;
         case R.id.save:
             //Log.d(TAG,"We ask to modify Message #"+this.currentNote.get("number"));
