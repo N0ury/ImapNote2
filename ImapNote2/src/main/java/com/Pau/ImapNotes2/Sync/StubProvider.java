@@ -18,6 +18,7 @@ public class StubProvider extends ContentProvider {
     public boolean onCreate() {
         return true;
     }
+
     /*
      * Return no type for MIME type
      */
@@ -25,6 +26,7 @@ public class StubProvider extends ContentProvider {
     public String getType(Uri uri) {
         return null;
     }
+
     /*
      * query() always returns no results
      *
@@ -38,6 +40,7 @@ public class StubProvider extends ContentProvider {
             String sortOrder) {
         return null;
     }
+
     /*
      * insert() always returns null (no URI)
      */
@@ -45,6 +48,7 @@ public class StubProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         return null;
     }
+
     /*
      * delete() always returns "no rows affected" (0)
      */
@@ -52,6 +56,7 @@ public class StubProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
+
     /*
      * update() always returns "no rows affected" (0)
      */
