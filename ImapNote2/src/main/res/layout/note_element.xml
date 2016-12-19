@@ -14,9 +14,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:layout_marginRight="40dp"
-        android:scrollHorizontally="false">
+        android:scrollHorizontally="false"
+        android:maxLines="1">
    </TextView>
 
     <!-- This text view is used to display the date and time of the most recent edit. -->
