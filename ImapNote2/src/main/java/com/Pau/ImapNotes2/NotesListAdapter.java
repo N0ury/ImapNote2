@@ -59,12 +59,12 @@ import java.util.Map;
 public class NotesListAdapter extends BaseAdapter implements Filterable {
     private final int[] mTo;
     private final String[] mFrom;
-    private ViewBinder mViewBinder;
+    // --Commented out by Inspection (12/3/16 11:31 PM):private ViewBinder mViewBinder;
 
     private List<? extends Map<String, ?>> mData;
 
     private final int mResource;
-    private int mDropDownResource;
+    private final int mDropDownResource;
     @NonNull
     private final LayoutInflater mInflater;
 
@@ -162,7 +162,7 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
             return;
         }
 
-        final ViewBinder binder = mViewBinder;
+        //final ViewBinder binder = mViewBinder;
         final String[] from = mFrom;
         final int[] to = mTo;
         final int count = to.length;
@@ -177,9 +177,9 @@ public class NotesListAdapter extends BaseAdapter implements Filterable {
                 }
 
                 boolean bound = false;
-                if (binder != null) {
-                    bound = binder.setViewValue(v, data, text);
-                }
+                //if (binder != null) {
+                //    bound = binder.setViewValue(v, data, text);
+                //}
 
                 if (!bound) {
                     if (v instanceof Checkable) {

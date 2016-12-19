@@ -90,29 +90,20 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         // provide it in the constructor?  What happens if we allow parallel syncs?
         account = new ImapNotes2Account(accountArg, applicationContext);
 
-        SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
-
+        //SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
+        account.CreateLocalDirectories();
         storedNotes = new NotesDb(applicationContext);
         storedNotes.OpenDb();
 
         AccountManager am = AccountManager.get(applicationContext);
-        String syncInterval = am.getUserData(accountArg, "syncinterval");
+        //String syncInterval = am.getUserData(accountArg, "syncinterval");
+        String syncInterval = account.GetSyncinterval();
 
         // Connect to remote and get UIDValidity
         ImapNotes2Result res = ConnectToRemote();
         if (res.returnCode != ResultCodeSuccess) {
             storedNotes.CloseDb();
-
-            // Notify Listactivity that it's finished, but it can't
-            // refresh display
-            /*Intent i = new Intent(SyncService.SYNC_FINISHED);
-            i.putExtra(Listactivity.ACCOUNTNAME, account.name);
-            i.putExtra(Listactivity.CHANGED, false);
-            i.putExtra(Listactivity.SYNCED, false);
-            i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
-            applicationContext.sendBroadcast(i);
-            */
-            NotifySyncFinished(false, false, syncInterval);
+            NotifySyncFinished(false, false);
             return;
         }
         // Compare UIDValidity to old saved one
@@ -124,8 +115,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // delete notes in NotesDb for this account
                 storedNotes.ClearDb(accountArg.name);
                 // delete notes in folders for this account and recreate dirs
-                SyncUtils.ClearHomeDir(accountArg, applicationContext);
-                SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
+                //SyncUtils.ClearHomeDir(accountArg, applicationContext);
+                account.ClearHomeDir();
+                //SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
+                account.CreateLocalDirectories();
                 // Get all notes from remote and replace local
                 SyncUtils.GetNotes(accountArg,
                         res.notesFolder,
@@ -140,7 +133,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             SyncUtils.SetUIDValidity(accountArg, res.UIDValidity, applicationContext);
             // Notify Listactivity that it's finished, and that it can refresh display
-            NotifySyncFinished(true, true, syncInterval);
+            NotifySyncFinished(true, true);
             return;
         }
 
@@ -176,17 +169,16 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         SyncUtils.DisconnectFromRemote();
         //Log.d(TAG, "Network synchronization complete of account: "+account.name);
         // Notify Listactivity that it's finished, and that it can refresh display
-        NotifySyncFinished(isChanged, true, syncInterval);
+        NotifySyncFinished(isChanged, true);
     }
 
     private void NotifySyncFinished(boolean isChanged,
-                                    boolean isSynced,
-                                    String syncInterval) {
+                                    boolean isSynced) {
         Intent i = new Intent(SyncService.SYNC_FINISHED);
         i.putExtra(Listactivity.ACCOUNTNAME, account.GetAccountName());
         i.putExtra(Listactivity.CHANGED, isChanged);
         i.putExtra(Listactivity.SYNCED, isSynced);
-        i.putExtra(Listactivity.SYNCINTERVAL, syncInterval);
+        i.putExtra(Listactivity.SYNCINTERVAL, account.GetSyncinterval());
         applicationContext.sendBroadcast(i);
 
     }
@@ -200,7 +192,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private ImapNotes2Result ConnectToRemote() {
         AccountManager am = AccountManager.get(applicationContext);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
-                am.getUserData(account.GetAccount(), ConfigurationFieldNames.UserName),
+                account.GetUsername(),
+                //am.getUserData(account.GetAccount(), ConfigurationFieldNames.UserName),
                 am.getPassword(account.GetAccount()),
                 am.getUserData(account.GetAccount(), ConfigurationFieldNames.Server),
                 am.getUserData(account.GetAccount(), ConfigurationFieldNames.PortNumber),

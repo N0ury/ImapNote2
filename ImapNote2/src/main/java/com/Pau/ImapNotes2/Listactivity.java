@@ -230,8 +230,9 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 status.setText(statusText);
 
                 if (isChanged) {
-                    if (Listactivity.storedNotes == null)
+                    if (storedNotes == null) {
                         storedNotes = new NotesDb(getApplicationContext());
+                    }
                     storedNotes.OpenDb();
                     storedNotes.GetStoredNotes(noteList, accountName);
                     listToView.notifyDataSetChanged();
@@ -394,19 +395,19 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                         Toast.LENGTH_LONG).show();
             }
         }
-        // End of code
+
         ImapNotes2Account imapNotes2Account = Listactivity.imapNotes2Account;
-        imapNotes2Account.SetAccountname(account.name);
-        imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
-        String pwd = Listactivity.accountManager.getPassword(account);
-        imapNotes2Account.SetPassword(pwd);
-        imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Server));
-        imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.PortNumber));
-        imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Security));
-        imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
-        imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
-        imapNotes2Account.SetaccountHasChanged();
-        imapNotes2Account.SetAccount(account);
+        imapNotes2Account.SetAccount(account, getApplicationContext());
+        //imapNotes2Account.SetAccountname(account.name);
+        //imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
+        //String pwd = Listactivity.accountManager.getPassword(account);
+        //imapNotes2Account.SetPassword(pwd);
+        //imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Server));
+        //imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.PortNumber));
+        //imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Security));
+        //imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
+        //imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
+        //imapNotes2Account.SetaccountHasChanged();
         this.RefreshList();
     }
 
@@ -435,7 +436,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Security));
             imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
             imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
-            imapNotes2Account.SetaccountHasChanged();
+            //imapNotes2Account.SetaccountHasChanged();
         }
     }
 

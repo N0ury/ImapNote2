@@ -19,6 +19,7 @@
             android:layout_height="fill_parent"
             android:clickable="true"
             android:gravity="top"
+
             android:inputType="textMultiLine"
             tools:ignore="LabelFor">
             <requestFocus />

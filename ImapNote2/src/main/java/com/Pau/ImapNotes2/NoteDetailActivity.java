@@ -227,7 +227,6 @@ public class NoteDetailActivity extends Activity {
         //InputStream iis = null;
         //Colors color = NONE;
         //String charset;
-        Sticky sticky = null;
         try {
             Log.d(TAG, "message :" + message.toString());
 
@@ -243,6 +242,7 @@ public class NoteDetailActivity extends Activity {
         }
 
         Log.d(TAG,"contentType:"+contentType);
+        Sticky sticky = null;
         if (contentType.match("text/x-stickynote")) {
             sticky = SyncUtils.ReadStickyNote(stringres);
         } else if (contentType.match("TEXT/HTML")) {

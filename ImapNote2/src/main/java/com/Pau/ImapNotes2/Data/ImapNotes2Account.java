@@ -1,12 +1,16 @@
 package com.Pau.ImapNotes2.Data;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 
 public class ImapNotes2Account {
 
@@ -24,7 +28,7 @@ public class ImapNotes2Account {
     @NonNull
     private Security security = Security.None;
     private boolean usesticky = false;
-    private String syncinterval = "15";
+    private String syncInterval = "15";
     @NonNull
     private String imapfolder = "";
     @Nullable
@@ -34,14 +38,14 @@ public class ImapNotes2Account {
     public ImapNotes2Account() {
     }
 
-    public File dirForNewFiles;
+    private File dirForNewFiles;
 
-    public File dirForDeletedFiles;
+    private File dirForDeletedFiles;
 
-    public File rootDir;
+    private File rootDir;
 
-    public ImapNotes2Account(@NonNull String accountName,
-                             Context applicationContext) {
+    private ImapNotes2Account(@NonNull String accountName,
+                              Context applicationContext) {
         this.accountName = accountName;
         rootDir = new File(applicationContext.getFilesDir(), accountName);
         dirForNewFiles= new File(rootDir, "new");
@@ -51,7 +55,26 @@ public class ImapNotes2Account {
     public ImapNotes2Account(@NonNull Account account,
                              Context applicationContext) {
         this(account.name, applicationContext);
-        this.account = account;
+        SetAccount(account, applicationContext);
+
+    }
+
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void CreateLocalDirectories() {
+        Log.d(TAG, "CreateLocalDirs(String: " + accountName);
+        dirForNewFiles.mkdirs();
+        dirForDeletedFiles.mkdirs();
+    }
+
+
+    public void ClearHomeDir() {
+        try {
+            FileUtils.deleteDirectory(rootDir);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 
@@ -67,8 +90,21 @@ public class ImapNotes2Account {
         return accountName;
     }
 
-    public void SetAccount(Account account) {
+    public void SetAccount(Account account,
+                           Context applicationContext) {
         this.account = account;
+        SetAccountname(account.name);
+        AccountManager am = AccountManager.get(applicationContext);
+        username = am.getUserData(account, ConfigurationFieldNames.UserName);
+        syncInterval = am.getUserData(account, ConfigurationFieldNames.SyncInterval);
+        String pwd = am.getPassword(account);
+        SetPassword(pwd);
+        SetServer(am.getUserData(account, ConfigurationFieldNames.Server));
+        SetPortnum(am.getUserData(account, ConfigurationFieldNames.PortNumber));
+        SetSecurity(am.getUserData(account, ConfigurationFieldNames.Security));
+        SetUsesticky("true".equals(am.getUserData(account, ConfigurationFieldNames.UseSticky)));
+        //SetSyncinterval(am.getUserData(account, ConfigurationFieldNames.SyncInterval));
+        //SetaccountHasChanged();
     }
 
     @Nullable
@@ -142,16 +178,14 @@ public class ImapNotes2Account {
     }
 
     public String GetSyncinterval() {
-        return this.syncinterval;
+        return this.syncInterval;
     }
 
     public void SetSyncinterval(String Syncinterval) {
-        this.syncinterval = Syncinterval;
+        this.syncInterval = Syncinterval;
     }
 
-    public void SetaccountHasChanged() {
-    }
-/*
+    /*
     public void SetaccountHasNotChanged() {
         this.accountHasChanged = false;
     }

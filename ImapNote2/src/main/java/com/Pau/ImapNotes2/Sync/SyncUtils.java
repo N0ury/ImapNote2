@@ -18,8 +18,6 @@ import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.util.MailSSLSocketFactory;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -174,6 +172,10 @@ public class SyncUtils {
         }
         UIDValidity = GetUIDValidity(account, applicationContext);
         SetUIDValidity(account, UIDValidity, applicationContext);
+        // From the docs: "Folder implementations are expected to provide light-weight Message
+        // objects, which get filled on demand. "
+        // This means that at this point we can ask for the subject without getting the rest of the
+        // message.
         Message[] notesMessages = imapNotesFolder.getMessages();
         //Log.d(TAG,"number of messages in folder="+(notesMessages.length));
         // TODO: explain why we enumerate the messages in descending order of index.
@@ -471,15 +473,17 @@ public class SyncUtils {
         return ((IMAPFolder) notesFolder).appendUIDMessages(message);
     }
 
-    static void ClearHomeDir(@NonNull Account account, @NonNull Context ctx) {
-        File directory = new File(ctx.getFilesDir() + "/" + account.name);
-        try {
-            FileUtils.deleteDirectory(directory);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+// --Commented out by Inspection START (12/3/16 11:31 PM):
+//    static void ClearHomeDir(@NonNull Account account, @NonNull Context ctx) {
+//        File directory = new File(ctx.getFilesDir() + "/" + account.name);
+//        try {
+//            FileUtils.deleteDirectory(directory);
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
+// --Commented out by Inspection STOP (12/3/16 11:31 PM)
 
     /**
      * Do we really need the Context argument or could we call getApplicationContext instead?
