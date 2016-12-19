@@ -137,7 +137,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         Listactivity.accountManager.addOnAccountsUpdatedListener(
                 new AccountsUpdateListener(), null, true);
 
-        //TextView status = (TextView) findViewById(R.id.status);
+        final TextView status = (TextView) findViewById(R.id.status);
 
         this.spinnerList = new ArrayAdapter<>
                 (this, android.R.layout.simple_spinner_item, Listactivity.currentList);
@@ -170,6 +170,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 toDetail.putExtra(NoteDetailActivity.selectedNote, (OneNote) parent.getItemAtPosition(selectedNote));
                 toDetail.putExtra(NoteDetailActivity.useSticky, Listactivity.imapNotes2Account.GetUsesticky());
                 startActivityForResult(toDetail, SEE_DETAIL);
+
+                TriggerSync(status);
             }
         });
 
@@ -362,9 +364,11 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     String txt = data.getStringExtra(EDIT_ITEM_TXT);
                     String suid = data.getStringExtra(EDIT_ITEM_NUM_IMAP);
                     Colors color = (Colors) data.getSerializableExtra(EDIT_ITEM_COLOR);
-                    //Log.d(TAG,"Received request to delete message:"+suid);
+                    //Log.d(TAG,"Received request to edit message:"+suid);
                     //Log.d(TAG,"Received request to replace message with:"+txt);
                     this.UpdateList(suid, txt, color, UpdateThread.Action.Update);
+                    TextView status = (TextView) findViewById(R.id.status);
+                    TriggerSync(status);
                 }
             case Listactivity.NEW_BUTTON:
                 // Returning from NewNoteActivity
