@@ -10,23 +10,24 @@
     <!-- The notes are listed in most recently edited order using the first line as the title-->
     <TextView
         android:id="@+id/noteTitle"
+        android:textColor="#000000"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:singleLine="true"
         android:layout_marginRight="40dp"
-        android:scrollHorizontally="false"
-        android:text="@string/note_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#000000"
-        android:maxLines="1" />
+        android:scrollHorizontally="false">
+   </TextView>
 
     <!-- This text view is used to display the date and time of the most recent edit. -->
     <TextView
+        android:text="Note Information"
         android:id="@+id/noteInformation"
+        android:textColor="#838383"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Note Information"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#838383" />
+       />
 
 </RelativeLayout>
