@@ -43,6 +43,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     private Imaper imapFolder;
 
+    private TextView headingTextView;
     private TextView accountnameTextView;
     private TextView usernameTextView;
     private TextView passwordTextView;
@@ -114,7 +115,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private final OnClickListener clickListenerRemove = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // Clic on Remove Button
+            // Click on Remove Button
             accountManager.removeAccount(myAccount, null, null);
             Toast.makeText(getApplicationContext(), R.string.account_removed,
                     Toast.LENGTH_LONG).show();
@@ -128,6 +129,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         setContentView(R.layout.account_selection);
         //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        headingTextView = (TextView) (findViewById(R.id.heading));
         accountnameTextView = (TextView) (findViewById(R.id.accountnameEdit));
         usernameTextView = (TextView) findViewById(R.id.usernameEdit);
         passwordTextView = (TextView) findViewById(R.id.passwordEdit);
@@ -185,7 +187,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         folderTextView.setText(settings.GetFoldername());
         //}
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.bttonsLayout);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.buttonsLayout);
         accountManager = AccountManager.get(getApplicationContext());
         Account[] accounts = accountManager.getAccountsByType("com.Pau.ImapNotes2");
         for (Account account : accounts) {
@@ -202,6 +204,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         if (action == Actions.EDIT_ACCOUNT) {
             // Here we have to edit an existing account
+            headingTextView.setText(R.string.editAccount);
             accountnameTextView.setText(accountname);
             usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
             passwordTextView.setText(accountManager.getPassword(myAccount));
