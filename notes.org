@@ -4,6 +4,38 @@
 
 Consider also using HTML: github: AvinashSKaranth/android-summernotesummernote
 
+To use attachments we should examine
+http://stackoverflow.com/questions/1748183/download-attachments-using-java-mail
+
+http://www.javatpoint.com/java-mail-api-tutorial
+
+
+We should use the subject line for metadata instead of title so that
+we can avoid downloading notes that are not new.
+
+We should probably use vector clocks to assist in conflict detection
+so that we can avoid unnecessary merges.
+
+For vector clocks to be useful we need to identify the device.  We
+could identify just the app installation but then when we re-install we
+will get a different id which will simply cause the vector clocks to
+contain dead ids.
+
+The clocks should be stored in the subject so we need to know if there
+are any limits on subject length.
+
+According to RFC 2060 there are no limits on the subject except that
+it can be a string literal defined as a 32 bit integer followed by
+CHAR8 octets.  So plenty of space.
+
+** Subject line definition
+
+Must contain:
+
+- ID
+
+- Each device's vector clock
+
 ** Synchronize when user brings app to foreground
 
 It's annoying to have to wait.
@@ -123,3 +155,4 @@ one analysis at a time to be fixed, tested and committed.
 
 The names of the intent items should be defined as constants in the
 receiving class.
+
