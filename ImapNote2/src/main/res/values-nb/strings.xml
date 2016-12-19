@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ImapNotes2k</string>
+    <string name="delete">Slette</string>
+    <string name="green">Grøṇn</string>
+    <string name="note_title">Tittel</string>
+    <string name="password">Passord</string>
+    <string name="remove">Fjerne</string>
+    <string name="save">Lagre</string>
+    <string name="search">søḳ</string>
+    <string name="select_account">Velg konto til aa se eller rediger</string>
+    <string name="titleNew">Ny</string>
+    <string name="syncing">Synkronisering..</string>
+    <string name="username">Brukernavn</string>
+    <string name="white">Hvit</string>
+    <string name="yellow">Gul</string>
+    <string name="your_login_name">Ditt innloggingsnavn</string>
+    <string name="your_password">Passordet ditt</string>
+    <string name="about">Om</string>
+    <string name="account">Konto</string>
+    <string name="account_added">Kontoen er lagt</string>
+    <string name="account_already_exists_or_is_null">Kontoen eksisterer eller er null</string>
+    <string name="account_name">Konto navn</string>
+    <string name="account_removed">Kontoen er fjernet</string>
+    <string name="add_account">Legge til konto</string>
+    <string name="blue">Bl</string>
+    <string name="check_and_create_account">Kontollerer og lag kontoen</string>
+</resources>

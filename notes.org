@@ -1,0 +1,158 @@
+* To do
+
+** Consider dropping mime and using attachments directly.
+
+Consider also using HTML: github: AvinashSKaranth/android-summernotesummernote
+
+To use attachments we should examine
+http://stackoverflow.com/questions/1748183/download-attachments-using-java-mail
+
+http://www.javatpoint.com/java-mail-api-tutorial
+
+
+We should use the subject line for metadata instead of title so that
+we can avoid downloading notes that are not new.
+
+We should probably use vector clocks to assist in conflict detection
+so that we can avoid unnecessary merges.
+
+For vector clocks to be useful we need to identify the device.  We
+could identify just the app installation but then when we re-install we
+will get a different id which will simply cause the vector clocks to
+contain dead ids.
+
+The clocks should be stored in the subject so we need to know if there
+are any limits on subject length.
+
+According to RFC 2060 there are no limits on the subject except that
+it can be a string literal defined as a 32 bit integer followed by
+CHAR8 octets.  So plenty of space.
+
+** Subject line definition
+
+Must contain:
+
+- ID
+
+- Each device's vector clock
+
+** Synchronize when user brings app to foreground
+
+It's annoying to have to wait.
+
+
+** Add configuration for directory synchronization.
+
+** Implement general filesynchronization.
+
+** Implement text file mer ging
+
+Consider using:
+
+- jDiff library from http://www.qarks.com/web/en/downloads.html
+
+- https://mvnrepository.com/open-source/diff-patch
+
+
+** Implement Unix and Windows desktop versions.
+
+** Implement undo delete
+
+** Implement Autosave
+
+
+First question is how is the note saved in the first place.
+
+Then can we do it automatically and then can we start the sync early?
+
+
+* Directory synchronization
+
+Use the already implemented accounts.
+
+One sync. definition consists of the following:
+
+- Account to be used
+
+- Root directory on the server
+
+- Root directory on the local system.  Use a directory chooser dialog.
+
+- Include sub-directories or not.  Checkbox.
+
+- A list of glob patterns defining the files to be included.  Simple
+  text field.  Use white space as separator.
+
+- A list of glob patterns defining the files to be excluded.  Simple
+  text field.  Use white space as separator.
+
+- The maximum allowed network transfer rate.
+
+- The length of time allowed for a complete scan of the directory.
+
+
+Use android.os.PatternMatcher to implement the globbing.
+
+
+* Merge
+
+Should be a three way merge so that we can automatically resolve as
+many conflicts as possible.  This means keeping two copies on the
+server.
+
+We can avoid worrying about race conditions by recognizing that this
+is essentially a single user system so simultaneous access will be
+unlikely (not impossible though)
+
+https://gist.github.com/stepchowfun/4713315
+
+
+* Sync adapters
+
+See:
+
+- https://developer.android.com/training/sync-adapters/creating-sync-adapter.html
+
+- src/main/res/xml/syncadapter.xml
+
+- src/main/java/com/Pau/ImapNotes2/Sync/SyncAdapter.java
+
+- src/main/java/com/Pau/ImapNotes2/Sync/SyncService.java
+
+
+
+
+
+* SQLite database
+
+This is used to store metadata about the notes.  The notes themselves
+are stored as files in a sub-directory named after the account to
+which they belong.  The file names are the IMAP UIDs.
+
+
+* Code analysis
+
+Run Android lint to discover opportunities to get rid of warnings,
+convert fields to local variables, etc.
+
+** Analyses done
+
+Ran whole project default profile to get an overview and then picked
+one analysis at a time to be fixed, tested and committed.
+
+| Group             | Analysis                         | Synopsis                                                                                               | Notes                                                                  |
+|-------------------+----------------------------------+--------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------|
+|                   | Field can be local               |                                                                                                        | Some of these seem to be work in progress so have been left unfixed.   |
+|                   | Parameter can be local           |                                                                                                        | No suspicious code found.                                              |
+| Probable bugs     | Constant conditions & exceptions | Method invocation 'setDisplayHomeAsUpEnabled' at line 106 may produce 'java.lang.NullPointerException' | Suppressed because result is not used.                                 |
+|                   | ConstantConditions               |                                                                                                        | Some possible null pointers remain.                                    |
+| Data flow issues  | Missing return statement         | Not all execution paths return a value                                                                 | Very odd the, the file in question is build.gradle.  What should I do? |
+|                   |                                  |                                                                                                        |                                                                        |
+| Infer Nullability | Added @Nullable, @NonNull        |                                                                                                        |                                                                        |
+
+
+* Intents
+
+The names of the intent items should be defined as constants in the
+receiving class.
+

@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="60dip"
-  android:padding="5dip">
-    
+
+<!--This layout displays the title and time stamp of a single note. -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="60dip"
+    android:orientation="vertical"
+    android:padding="5dip">
+
+    <!-- The notes are listed in most recently edited order using the first line as the title-->
     <TextView
-    	android:text="Note Title"
-    	android:id="@+id/noteTitle"
-    	android:textColor="#000000"
-    	android:textAppearance="?android:attr/textAppearanceLarge"
-    	android:layout_width="wrap_content"
+        android:id="@+id/noteTitle"
+        android:textColor="#000000"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:layout_marginRight="40dp"
-        android:scrollHorizontally="false">
+        android:scrollHorizontally="false"
+        android:maxLines="1">
    </TextView>
 
-   <TextView
-    	android:text="Note Information"
-    	android:id="@+id/noteInformation"
-    	android:textColor="#838383"
-    	android:layout_alignParentBottom="true"
-    	android:textAppearance="?android:attr/textAppearanceMedium"
-    	android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-   </TextView>
+    <!-- This text view is used to display the date and time of the most recent edit. -->
+    <TextView
+        android:text="Note Information"
+        android:id="@+id/noteInformation"
+        android:textColor="#838383"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+       />
 
 </RelativeLayout>

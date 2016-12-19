@@ -1,177 +1,231 @@
 package com.Pau.ImapNotes2.Data;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import com.Pau.ImapNotes2.ImapNotes2k;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xmlpull.v1.XmlSerializer;
 
-import android.content.Context;
-import android.util.Log;
-import android.util.Xml;
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+//import android.util.Log;
 
 public class ConfigurationFile {
 
-    private Context applicationContext;
+    // For logging.
     private static final String TAG = "IN_ConfigurationFile";
-    
+
+    // TODO: make all fields final.
+    // The account name is the concatenation of the username and server.
+    @Nullable
     private String accountname;
+    // User name on the IMAP server.
+    @Nullable
     private String username;
+    @Nullable
     private String password;
+    // Address of the IMAP server
+    @Nullable
     private String server;
+    // Port number.
+    @Nullable
     private String portnum;
-    private String security;
-    private String usesticky;
+    // TLS, etc.
+    @NonNull
+    private Security security = Security.None;
+    // ?
+    private boolean usesticky;
+    // The name of the IMAP folder to be used.
+    @Nullable
     private String imapfolder;
-    
-    
-    public ConfigurationFile(Context myContext){
-        this.applicationContext = myContext;
-        
+
+    @NonNull
+    private final Context applicationContext;
+
+
+    public ConfigurationFile(@NonNull Context applicationContext) {
+        this.applicationContext = applicationContext;
         try {
             Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-            new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf"));
-            this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
-            this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
-            this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
-            this.imapfolder = this.LoadItemFromXML(fileToLoad, "imapfolder").item(0).getChildNodes().item(0).getNodeValue();
-            this.accountname = this.username + "@" + this.server;
-            if (this.LoadItemFromXML(fileToLoad, "portnum").getLength() == 0)
+                    new File(ImapNotes2k.ConfigurationFilePath(applicationContext)));
+            username = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UserName);
+            password = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Password);
+            server = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Server);
+            imapfolder = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.ImapFolder);
+            accountname = username + "@" + server;
+            // All of these can be simplified by initializing the fields to the default values and
+            // only setting when the value exists in the file.
+            if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.Security).getLength() != 0) {
+                Log.d(TAG, "nfx: " + NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Security));
+                security = Security.from(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.Security));
+            }
+            if (LoadItemFromXML(fileToLoad, ConfigurationFieldNames.PortNumber).getLength() == 0) {
                 // portnum option doesn't exist
-                this.portnum = "";
-            else
-                this.portnum = this.LoadItemFromXML(fileToLoad, "portnum").item(0).getChildNodes().item(0).getNodeValue();
-            if (this.LoadItemFromXML(fileToLoad, "security").getLength() == 0)
-                // security option doesn't exist, say "0"
-                this.security = "0";
-            else
-                this.security = this.LoadItemFromXML(fileToLoad, "security").item(0).getChildNodes().item(0).getNodeValue();
-            if (this.LoadItemFromXML(fileToLoad, "usesticky").getLength() == 0)
-                // usesticky option doesn't exist, say no
-                this.usesticky = "false";
-            else
-                this.usesticky = this.LoadItemFromXML(fileToLoad, "usesticky").item(0).getChildNodes().item(0).getNodeValue();
+                portnum = security.defaultPort;
+            } else {
+                portnum = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.PortNumber);
+            }
+            // usesticky option doesn't exist, say no
+            usesticky = LoadItemFromXML(fileToLoad, ConfigurationFieldNames.UseSticky).getLength() != 0 &&
+                    Boolean.parseBoolean(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UseSticky));
 
 //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
+            // TODO: This catch should be turned into a simple if then and the catch
+            // reserved for conditions that cannot be checked for.
 //Log.d(TAG, "Conf file absent, go to the exception that initializes variables");
-            this.accountname = "";
-            this.username = "";
-            this.password = "";
-            this.server = "";
-            this.portnum = "";
-            this.security = "0";
-            this.usesticky = "false";
-            this.imapfolder = "";
+            accountname = "";
+            username = "";
+            password = "";
+            server = "";
+            security = Security.None;
+            portnum = security.defaultPort;
+            usesticky = false;
+            imapfolder = "";
         }
     }
-    
-    public String GetAccountname(){
-        return this.accountname;
-    }
- 
-    public String GetUsername(){
-        return this.username;
-    }
- 
-    public void SetUsername(String Username){
-        this.username = Username;
-    }
- 
-    public String GetPassword(){
-        return this.password;
-    }
- 
-    public void SetPassword(String Password){
-        this.password = Password;
-    }
-    
-    public String GetServer(){
-        return this.server;
-    }
- 
-    public void SetServer(String Server){
-        this.server = Server;
-    }
-    
-    public String GetPortnum(){
-        return this.portnum;
-    }
- 
-    public void SetPortnum(String Portnum){
-        this.portnum = Portnum;
-    }
-    
-    public String GetSecurity(){
-        return this.security;
-    }
- 
-    public void SetSecurity(String Security){
-        this.security = Security;
-    }
-    
-    public String GetUsesticky(){
-        return this.usesticky;
-    }
- 
-    public void SetUsesticky(String Usesticky){
-        this.usesticky = Usesticky;
+
+    @Nullable
+    public String GetAccountname() {
+        return accountname;
     }
 
-    public String GetFoldername(){
-        return this.imapfolder;
+    @Nullable
+    public String GetUsername() {
+        return username;
     }
-    
-    public void Clear(){
-        new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf").delete();
-        this.username=null;
-        this.password=null;
-        this.server=null;
-        this.portnum=null;
-        this.security=null;
-        this.usesticky=null;
-        this.imapfolder = null;
+
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetUsername(String Username) {
+//        username = Username;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
+
+    @Nullable
+    public String GetPassword() {
+        return password;
     }
-    
-    public void SaveConfigurationToXML() throws IllegalArgumentException, IllegalStateException, IOException{
-        FileOutputStream configurationFile = this.applicationContext.openFileOutput("ImapNotes2.conf", Context.MODE_PRIVATE);
-        XmlSerializer serializer = Xml.newSerializer();
-        serializer.setOutput(configurationFile, "UTF-8");
-        serializer.startDocument(null, Boolean.valueOf(true)); 
-        serializer.startTag(null, "Configuration"); 
-        serializer.startTag(null, "username");
-        serializer.text(this.username);
-        serializer.endTag(null, "username");
-        serializer.startTag(null, "password");
-        serializer.text(this.password);
-        serializer.endTag(null, "password");
-        serializer.startTag(null, "server");
-        serializer.text(this.server);
-        serializer.endTag(null, "server");
-        serializer.startTag(null, "portnum");
-        serializer.text(this.portnum);
-        serializer.endTag(null, "portnum");
-        serializer.startTag(null, "security");
-        serializer.text(this.security);
-        serializer.endTag(null, "security");
-        serializer.startTag(null,"imapfolder");
-        serializer.text(this.imapfolder);
-        serializer.endTag(null, "imapfolder");
-        serializer.startTag(null, "usesticky");
-        serializer.text(this.usesticky);
-        serializer.endTag(null, "usesticky");
-        serializer.endTag(null, "Configuration"); 
-        serializer.endDocument();
-        serializer.flush();
-        configurationFile.close();
+
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetPassword(String Password) {
+//        password = Password;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
+
+    @Nullable
+    public String GetServer() {
+        return server;
     }
-    
-    private NodeList LoadItemFromXML(Document fileLoaded, String tag){
+
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetServer(String Server) {
+//        server = Server;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
+
+    @Nullable
+    public String GetPortnum() {
+        return portnum;
+    }
+
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    public void SetPortnum(String Portnum) {
+//        portnum = Portnum;
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
+
+    @NonNull
+    public Security GetSecurity() {
+        return security;
+    }
+/*
+
+    public void SetSecurity(Security security) {
+        security = security;
+    }
+*/
+
+    public boolean GetUsesticky() {
+        return usesticky;
+    }
+/*
+
+    public void SetUsesticky(boolean usesticky) {
+        this.usesticky = usesticky;
+    }
+*/
+
+    @Nullable
+    public String GetFoldername() {
+        return imapfolder;
+    }
+
+
+    public void Clear() {
+        //noinspection ResultOfMethodCallIgnored
+        new File(ImapNotes2k.ConfigurationFilePath(applicationContext)).delete();
+        username = null;
+        password = null;
+        server = null;
+        portnum = null;
+        security = Security.None;
+        usesticky = false;
+        imapfolder = null;
+    }
+
+// --Commented out by Inspection START (11/26/16 11:42 PM):
+//    // This function could take the context as an argument.
+//    // In addition the name of the file should be a named constant
+//    // because it is used elewhere.
+//    public void SaveConfigurationToXML()
+//            throws IllegalArgumentException, IllegalStateException, IOException {
+//        FileOutputStream configurationFile
+//                = ImapNotes2k.getAppContext().openFileOutput(ImapNotes2k.ConfigurationFilePath(),
+//                Context.MODE_PRIVATE);
+//        XmlSerializer serializer = Xml.newSerializer();
+//        serializer.setOutput(configurationFile, "UTF-8");
+//        serializer.startDocument(null, true);
+//        serializer.startTag(null, "Configuration");
+//        SerializeText(serializer, ConfigurationFieldNames.UserName, username);
+//        SerializeText(serializer, ConfigurationFieldNames.Password, password);
+//        SerializeText(serializer, ConfigurationFieldNames.Server, server);
+//        SerializeText(serializer, ConfigurationFieldNames.PortNumber, portnum);
+//        SerializeText(serializer, ConfigurationFieldNames.Security, security.name());
+//        SerializeText(serializer, ConfigurationFieldNames.ImapFolder, imapfolder);
+//        SerializeText(serializer, ConfigurationFieldNames.UseSticky, String.valueOf(usesticky));
+//        serializer.endTag(null, "Configuration");
+//        serializer.endDocument();
+//        serializer.flush();
+//        configurationFile.close();
+//    }
+// --Commented out by Inspection STOP (11/26/16 11:42 PM)
+/*
+    // Avoid repeated literal tag names.
+    private void SerializeText(@NonNull XmlSerializer serializer,
+                               String tag,
+                               String text)
+            throws IOException {
+        serializer.startTag(null, tag);
+        serializer.text(text);
+        serializer.endTag(null, tag);
+    }*/
+
+    private NodeList LoadItemFromXML(@NonNull Document fileLoaded,
+                                     String tag) {
         return fileLoaded.getElementsByTagName(tag);
-        
     }
+
+    // Reduce clutter and improve maintainability.
+    private String NodeValueFromXML(@NonNull Document fileLoaded,
+                                    String tag) {
+        return LoadItemFromXML(fileLoaded, tag).item(0).getChildNodes().item(0).getNodeValue();
+    }
+
+
 }

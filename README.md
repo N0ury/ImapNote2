@@ -1,5 +1,36 @@
-imapnote2
-=========
+imapnote2k
+==========
+
+Notes on this fork
+------------------
+
+This fork exists because I was looking for example code using IMAP and
+Android and it is the first that I found that both worked and did
+something useful to me.
+
+Initially the principal changes are the addition of comments and
+conversion of many stringly typed variables and fields to specific
+types together with the introduction of the Security enum that
+encapsulates the specification and naming of the security types (None,
+SSL, STARTTLS, etc.).  Using the enum means that we no longer have to
+use switch statements on the name of the security type and men that it
+is harder to cause errors by mistyping.
+
+The effort to rid the code of magic numbers and literal strings will
+continue.
+
+From now on I will start making breaking changes because I want to be 
+able to create rich text or html notes with embedded grapics and for 
+notes to be automatically merged when two or more devices make 
+simultaneous edits.
+
+
+
+Original README from nbenm
+--------------------------
+
+Below is the readme from nbenm's version:
+https://github.com/nbenm/ImapNote2.
 
 Sync your notes between Android, iOs devices and different accounts like Gmail, iCloud and others
 

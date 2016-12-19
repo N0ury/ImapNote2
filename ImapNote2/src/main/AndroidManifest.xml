@@ -1,75 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.Pau.ImapNotes2"
-	android:versionCode="40"
-	android:versionName="4.9" xmlns:android="http://schemas.android.com/apk/res/android">
-	<uses-sdk android:minSdkVersion="16" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
-	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
-	<uses-permission android:name="android.permission.READ_SYNC_STATS"/>
-	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-	
-	<application
-		android:icon="@drawable/ic_launcher"
-		android:name=".ImapNotes2"
-		android:label="@string/app_name"
-		android:theme="@style/ImapNotesTheme">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.Pau.ImapNotes2"
+    android:versionCode="40"
+    android:versionName="4.9">
 
-		<activity android:name=".Listactivity"
-		    android:label="@string/app_name"
-		    android:launchMode="singleTop">
-			<intent-filter>
-                            <action android:name="android.intent.action.MAIN" />
-                            <category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-                        <intent-filter>
-                            <action android:name="android.intent.action.SEARCH" />
-                        </intent-filter>
-                        <meta-data android:name="android.app.searchable"
-                                android:resource="@xml/searchable" />
-		</activity>
+    <!--
+    <uses-sdk android:minSdkVersion="19" />
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
-		<activity android:name=".AccontConfigurationActivity"
-                    android:exported="true"
-		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
-			<meta-data android:name="android.support.PARENT_ACTIVITY"
-				android:value="com.Pau.ImapNotes2.Listactivity" />
-		</activity>
+    <application
+        android:name=".ImapNotes2k"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/ImapNotesTheme"
+        android:allowBackup="true">
 
-		<activity android:name=".NoteDetailActivity"
-		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
-			<meta-data android:name="android.support.PARENT_ACTIVITY"
-				android:value="com.Pau.ImapNotes2.Listactivity" />
-		</activity>
+        <activity
+            android:name=".Listactivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
 
-		<activity android:name=".NewNoteActivity"
-		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
-			<meta-data android:name="android.support.PARENT_ACTIVITY"
-				android:value="com.Pau.ImapNotes2.Listactivity" />
-		</activity>
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
 
-		<service android:name="com.Pau.ImapNotes2.Miscs.ImapNotesAuthenticatorService" android:exported="true">
-			<intent-filter>
-				<action android:name="android.accounts.AccountAuthenticator" />
-			</intent-filter>
-			<meta-data android:name="android.accounts.AccountAuthenticator"
-				android:resource="@xml/authenticator" />
-		</service>
+        <activity
+            android:name=".AccountConfigurationActivity"
+            android:exported="true"
+            android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.Pau.ImapNotes2.Listactivity" />
+        </activity>
 
-                <provider
-                        android:name="com.Pau.ImapNotes2.Sync.StubProvider"
-                        android:authorities="com.Pau.ImapNotes2.provider"
-                        android:exported="false" />
+        <activity
+            android:name=".NoteDetailActivity"
+            android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.Pau.ImapNotes2.Listactivity" />
+        </activity>
 
-                <service android:name="com.Pau.ImapNotes2.Sync.SyncService" android:exported="true">
-                    <intent-filter>
-                        <action android:name="android.content.SyncAdapter" />
-                    </intent-filter>
-                    <meta-data android:name="android.content.SyncAdapter"
-                               android:resource="@xml/syncadapter" />
-                </service>
-	</application>
+        <activity
+            android:name=".NewNoteActivity"
+            android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.Pau.ImapNotes2.Listactivity" />
+        </activity>
+
+        <service
+            android:name="com.Pau.ImapNotes2.Sync.ImapNotesAuthenticatorService"
+            android:exported="true"
+            android:permission="">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- TODO: What is StubProvider for?  This is the only reference to it.
+         Also AndroidDom Inspection complains about it not being public, yet the application still
+         works.-->
+        <!--suppress AndroidDomInspection -->
+        <provider
+            android:name="com.Pau.ImapNotes2.Sync.StubProvider"
+            android:authorities="com.Pau.ImapNotes2.provider"
+            android:exported="false" />
+
+        <service
+            android:name="com.Pau.ImapNotes2.Sync.SyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <!-- What is this meta-data for?  There doesn't seem to be any code that uses it -->
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+    </application>
 </manifest>
