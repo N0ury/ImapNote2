@@ -18,7 +18,7 @@ public class ConfigurationFile {
 
     private Context applicationContext;
     private static final String TAG = "IN_ConfigurationFile";
-    
+
     private String accountname;
     private String username;
     private String password;
@@ -27,14 +27,14 @@ public class ConfigurationFile {
     private String security;
     private String usesticky;
     private String imapfolder;
-    
-    
-    public ConfigurationFile(Context myContext){
+
+
+    public ConfigurationFile(Context myContext) {
         this.applicationContext = myContext;
-        
+
         try {
             Document fileToLoad = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-            new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf"));
+                    new File(this.applicationContext.getFilesDir() + "/ImapNotes2.conf"));
             this.username = this.LoadItemFromXML(fileToLoad, "username").item(0).getChildNodes().item(0).getNodeValue();
             this.password = this.LoadItemFromXML(fileToLoad, "password").item(0).getChildNodes().item(0).getNodeValue();
             this.server = this.LoadItemFromXML(fileToLoad, "server").item(0).getChildNodes().item(0).getNodeValue();
@@ -56,9 +56,9 @@ public class ConfigurationFile {
             else
                 this.usesticky = this.LoadItemFromXML(fileToLoad, "usesticky").item(0).getChildNodes().item(0).getNodeValue();
 
-//Log.d(TAG, "conf file present, we read data");
+            //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
-//Log.d(TAG, "Conf file absent, go to the exception that initializes variables");
+            //Log.d(TAG, "Conf file absent, go to the exception that initializes variables");
             this.accountname = "";
             this.username = "";
             this.password = "";
@@ -69,80 +69,80 @@ public class ConfigurationFile {
             this.imapfolder = "";
         }
     }
-    
-    public String GetAccountname(){
+
+    public String GetAccountname() {
         return this.accountname;
     }
- 
-    public String GetUsername(){
+
+    public String GetUsername() {
         return this.username;
     }
- 
-    public void SetUsername(String Username){
+
+    public void SetUsername(String Username) {
         this.username = Username;
     }
- 
-    public String GetPassword(){
+
+    public String GetPassword() {
         return this.password;
     }
- 
-    public void SetPassword(String Password){
+
+    public void SetPassword(String Password) {
         this.password = Password;
     }
-    
-    public String GetServer(){
+
+    public String GetServer() {
         return this.server;
     }
- 
-    public void SetServer(String Server){
+
+    public void SetServer(String Server) {
         this.server = Server;
     }
-    
-    public String GetPortnum(){
+
+    public String GetPortnum() {
         return this.portnum;
     }
- 
-    public void SetPortnum(String Portnum){
+
+    public void SetPortnum(String Portnum) {
         this.portnum = Portnum;
     }
-    
-    public String GetSecurity(){
+
+    public String GetSecurity() {
         return this.security;
     }
- 
-    public void SetSecurity(String Security){
+
+    public void SetSecurity(String Security) {
         this.security = Security;
     }
-    
-    public String GetUsesticky(){
+
+    public String GetUsesticky() {
         return this.usesticky;
     }
- 
-    public void SetUsesticky(String Usesticky){
+
+    public void SetUsesticky(String Usesticky) {
         this.usesticky = Usesticky;
     }
 
-    public String GetFoldername(){
+    public String GetFoldername() {
         return this.imapfolder;
     }
-    
-    public void Clear(){
-        new File(this.applicationContext.getFilesDir()+"/ImapNotes2.conf").delete();
-        this.username=null;
-        this.password=null;
-        this.server=null;
-        this.portnum=null;
-        this.security=null;
-        this.usesticky=null;
+
+    public void Clear() {
+        new File(this.applicationContext.getFilesDir() + "/ImapNotes2.conf").delete();
+        this.username = null;
+        this.password = null;
+        this.server = null;
+        this.portnum = null;
+        this.security = null;
+        this.usesticky = null;
         this.imapfolder = null;
     }
-    
-    public void SaveConfigurationToXML() throws IllegalArgumentException, IllegalStateException, IOException{
+
+    public void SaveConfigurationToXML() throws IllegalArgumentException, IllegalStateException, IOException {
         FileOutputStream configurationFile = this.applicationContext.openFileOutput("ImapNotes2.conf", Context.MODE_PRIVATE);
         XmlSerializer serializer = Xml.newSerializer();
         serializer.setOutput(configurationFile, "UTF-8");
-        serializer.startDocument(null, Boolean.valueOf(true)); 
-        serializer.startTag(null, "Configuration"); 
+        serializer.startDocument(null, Boolean.valueOf(true));
+        serializer.startTag(null, "Configuration");
         serializer.startTag(null, "username");
         serializer.text(this.username);
         serializer.endTag(null, "username");
@@ -158,20 +158,20 @@ public class ConfigurationFile {
         serializer.startTag(null, "security");
         serializer.text(this.security);
         serializer.endTag(null, "security");
-        serializer.startTag(null,"imapfolder");
+        serializer.startTag(null, "imapfolder");
         serializer.text(this.imapfolder);
         serializer.endTag(null, "imapfolder");
         serializer.startTag(null, "usesticky");
         serializer.text(this.usesticky);
         serializer.endTag(null, "usesticky");
-        serializer.endTag(null, "Configuration"); 
+        serializer.endTag(null, "Configuration");
         serializer.endDocument();
         serializer.flush();
         configurationFile.close();
     }
-    
-    private NodeList LoadItemFromXML(Document fileLoaded, String tag){
+
+    private NodeList LoadItemFromXML(Document fileLoaded, String tag) {
         return fileLoaded.getElementsByTagName(tag);
-        
+
     }
 }

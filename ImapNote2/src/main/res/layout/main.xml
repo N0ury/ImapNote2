@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/ListColor"
-        android:text="Select account"
+        android:text="Select account to view or edit"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#000000" >
 

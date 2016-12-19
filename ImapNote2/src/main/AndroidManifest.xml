@@ -32,7 +32,7 @@
                                 android:resource="@xml/searchable" />
 		</activity>
 
-		<activity android:name=".AccontConfigurationActivity"
+		<activity android:name=".AccountConfigurationActivity"
                     android:exported="true"
 		    android:parentActivityName="com.Pau.ImapNotes2.Listactivity">
 			<meta-data android:name="android.support.PARENT_ACTIVITY"
