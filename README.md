@@ -1,3 +1,12 @@
+<a> <b>IMPORTANT NOTICE</b> <br>
+Due to health problems, I must stop maintaining ImapNote2 app (Github, F-droid and Google Play).
+I have some other apps, but I cannot maintain them all.
+I think there are already some people ready to make this app live better than I would.<br>
+Regards
+
+Noury<a>
+
+
 imapnote2
 =========
 
