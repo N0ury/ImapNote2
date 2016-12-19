@@ -30,7 +30,7 @@
     <string name="manually_set_full_imap_path_to_notes_folder">Manually set full IMAP path to notes folder</string>
     <string name="use_sticky_notes">Use Sticky Notes</string>
     <string name="welcome">Welcome</string>
-    <string name="select_account">Select account</string>
+    <string name="select_account">Select account to view or edit</string>
     <string name="note_title">Note Title</string>
     <string name="delete">Delete</string>
     <string name="color">Color</string>
