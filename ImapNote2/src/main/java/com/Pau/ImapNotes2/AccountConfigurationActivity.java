@@ -36,6 +36,10 @@ import com.Pau.ImapNotes2.Miscs.Imaper;
 
 import java.util.List;
 
+
+
+
+
 public class AccountConfigurationActivity extends AccountAuthenticatorActivity implements OnItemSelectedListener {
     private static final int TO_REFRESH = 999;
     private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
@@ -43,7 +47,6 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     private Imaper imapFolder;
 
-    private TextView headingTextView;
     private TextView accountnameTextView;
     private TextView usernameTextView;
     private TextView passwordTextView;
@@ -62,12 +65,16 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private Actions action;
     @Nullable
     private String accountname;
-    @NonNull
-    private final ConfigurationFile settings = new ConfigurationFile(getApplicationContext());
-
     @Nullable
     private static Account myAccount = null;
+
     private static AccountManager accountManager;
+
+    /**
+     * Cannot be final or NonNull because it needs the application context which is not available
+     * until onCreate.
+     */
+    private ConfigurationFile settings;
 
     //region Intent item names and values.
     public static final String ACTION = "ACTION";
@@ -126,10 +133,11 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings = new ConfigurationFile(getApplicationContext());
         setContentView(R.layout.account_selection);
         //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        headingTextView = (TextView) (findViewById(R.id.heading));
+        TextView headingTextView = (TextView) (findViewById(R.id.heading));
         accountnameTextView = (TextView) (findViewById(R.id.accountnameEdit));
         usernameTextView = (TextView) findViewById(R.id.usernameEdit);
         passwordTextView = (TextView) findViewById(R.id.passwordEdit);
