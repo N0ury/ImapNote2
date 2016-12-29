@@ -4,21 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.BuildConfig;
 import android.support.v4.app.NavUtils;
-import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.EditText;
 
 import com.Pau.ImapNotes2.Miscs.Sticky;
 import com.Pau.ImapNotes2.Sync.SyncUtils;
@@ -32,6 +28,7 @@ import java.util.HashMap;
 import javax.mail.Message;
 import javax.mail.internet.ContentType;
 
+import jp.wasabeef.richeditor.RichEditor;
 
 
 public class NoteDetailActivity extends Activity {
@@ -77,9 +74,12 @@ public class NoteDetailActivity extends Activity {
         //String position = sticky.position;
         color = sticky.color;
         Spanned plainText = Html.fromHtml(stringres);
-        EditText editText = ((EditText) findViewById(R.id.bodyView));
-        editText.setText(plainText);
-        // TODO: Watch for changes to that we can auto save.
+        //EditText editText = ((EditText) findViewById(R.id.bodyView));
+        RichEditor editText = (RichEditor) findViewById(R.id.bodyView);
+        //editText.setText(plainText);
+        editText.setHtml(stringres);
+
+/*        // TODO: Watch for changes to that we can auto save.
         // See http://stackoverflow.com/questions/7117209/how-to-know-key-presses-in-edittext#14251047
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -99,6 +99,7 @@ public class NoteDetailActivity extends Activity {
             }
 
         });
+        */
         ResetColors();
         //invalidateOptionsMenu();
     }
@@ -116,9 +117,11 @@ public class NoteDetailActivity extends Activity {
     // realColor is misnamed.  It is the ID of the radio button widget that chooses the background
     // colour.
     private void ResetColors() {
+/*
         EditText bodyView = (EditText) findViewById(R.id.bodyView);
         bodyView.setBackgroundColor(Color.TRANSPARENT);
         bodyView.setTextColor(Color.BLACK);
+*/
         (findViewById(R.id.scrollView)).setBackgroundColor(color.colorCode);
         //realColor = color.id;
         invalidateOptionsMenu();
@@ -188,8 +191,11 @@ public class NoteDetailActivity extends Activity {
         Log.d(TAG, "Save");
         Intent intent = new Intent();
         intent.putExtra(Listactivity.EDIT_ITEM_NUM_IMAP, suid);
-        intent.putExtra(Listactivity.EDIT_ITEM_TXT,
+        /*intent.putExtra(Listactivity.EDIT_ITEM_TXT,
                 Html.toHtml(((EditText) findViewById(R.id.bodyView)).getText()));
+        */
+        intent.putExtra(Listactivity.EDIT_ITEM_TXT,
+                ((RichEditor) findViewById(R.id.bodyView)).getHtml());
         if (!usesticky) {
             Log.d(TAG, "not sticky so set color to none");
             color = Colors.NONE;

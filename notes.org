@@ -102,9 +102,11 @@ server.
 
 We can avoid worrying about race conditions by recognizing that this
 is essentially a single user system so simultaneous access will be
-unlikely (not impossible though)
+unlikely (not impossible though).
 
 https://gist.github.com/stepchowfun/4713315
+
+See: http://www.qarks.com/web/en/downloads.html
 
 
 * Sync adapters

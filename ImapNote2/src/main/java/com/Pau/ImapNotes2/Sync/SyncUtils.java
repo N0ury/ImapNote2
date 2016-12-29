@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -640,7 +641,7 @@ public class SyncUtils {
                 result = true;
             } else if (usesticky.equals("true")) {
                 //Log.d (TAG,"MANAGE STICKY");
-                remoteInternaldate = notesMessage.getSentDate().toLocaleString();
+                remoteInternaldate = DateFormat.getDateInstance().format(notesMessage.getSentDate());
                 localInternaldate = storedNotes.GetDate(suid, accountName);
                 if (!(remoteInternaldate.equals(localInternaldate))) {
                     File outfile = new File(rootDir, suid);

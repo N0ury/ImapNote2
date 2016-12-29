@@ -99,7 +99,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private static Account[] accounts = new Account[0];
     private static List<String> currentList;
     //@Nullable
-    //private TextView status;
+    private TextView status;
     private static String OldStatus;
     private static final String AUTHORITY = "com.Pau.ImapNotes2.provider";
     private static final String TAG = "IN_Listactivity";
@@ -137,7 +137,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         Listactivity.accountManager.addOnAccountsUpdatedListener(
                 new AccountsUpdateListener(), null, true);
 
-        final TextView status = (TextView) findViewById(R.id.status);
+        status = (TextView) findViewById(R.id.status);
 
         this.spinnerList = new ArrayAdapter<>
                 (this, android.R.layout.simple_spinner_item, Listactivity.currentList);
@@ -211,10 +211,12 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     @NonNull
     private final BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, @NonNull Intent intent) {
+            Log.d(TAG, "BroadcastReceiver.onReceive");
             String accountName = intent.getStringExtra(ACCOUNTNAME);
             Boolean isChanged = intent.getBooleanExtra(CHANGED, false);
             Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
             String syncInterval = intent.getStringExtra(SYNCINTERVAL);
+            Log.d(TAG, "if " + accountName + " " + Listactivity.imapNotes2Account.GetAccountName());
             if (accountName.equals(Listactivity.imapNotes2Account.GetAccountName())) {
                 String statusText;
                 if (isSynced) {
@@ -228,7 +230,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 } else {
                     statusText = OldStatus;
                 }
-                TextView status = (TextView) findViewById(R.id.status);
+                //TextView status = (TextView) findViewById(R.id.status);
                 status.setText(statusText);
 
                 if (isChanged) {
@@ -251,7 +253,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 ShowProgress(R.string.refreshing_notes_list),
                 storedNotes,
                 this.getApplicationContext()).execute();
-        TextView status = (TextView) findViewById(R.id.status);
+        //TextView status = (TextView) findViewById(R.id.status);
         status.setText(R.string.welcome);
     }
 
@@ -317,7 +319,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 startActivity(res);
                 return true;
             case R.id.refresh:
-                TextView status = (TextView) findViewById(R.id.status);
+                //TextView status = (TextView) findViewById(R.id.status);
                 TriggerSync(status);
                 return true;
             case R.id.newnote:
@@ -367,7 +369,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     //Log.d(TAG,"Received request to edit message:"+suid);
                     //Log.d(TAG,"Received request to replace message with:"+txt);
                     this.UpdateList(suid, txt, color, UpdateThread.Action.Update);
-                    TextView status = (TextView) findViewById(R.id.status);
+                    //TextView status = (TextView) findViewById(R.id.status);
                     TriggerSync(status);
                 }
             case Listactivity.NEW_BUTTON:
