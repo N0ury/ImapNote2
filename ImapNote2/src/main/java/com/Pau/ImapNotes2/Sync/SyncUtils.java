@@ -66,6 +66,7 @@ public class SyncUtils {
                                             String portnum,
                                             @NonNull Security security,
                                             @NonNull String folderOverride) {
+        Log.d(TAG,"ConnectToRemote: " + username);
         if (IsConnected()) {
             try {
                 store.close();
@@ -162,6 +163,7 @@ public class SyncUtils {
                          @NonNull Folder imapNotesFolder,
                          @NonNull Context applicationContext,
                          @NonNull NotesDb storedNotes) throws MessagingException, IOException {
+        Log.d(TAG,"GetNotes: " + account.name);
         //Long UIDM;
         //Message notesMessage;
         File directory = new File(applicationContext.getFilesDir(), account.name);
@@ -197,6 +199,7 @@ public class SyncUtils {
 
     @NonNull
     public static Sticky ReadStickyNote(@NonNull String stringres) {
+        Log.d(TAG,"ReadStickyNote");
 /*
         Matcher matcherColor = patternColor.matcher(stringres);
         Colors color = Colors.NONE;
@@ -272,6 +275,7 @@ public class SyncUtils {
     }
 
     static void DeleteNote(int numMessage) throws MessagingException {
+        Log.d(TAG,"DeleteNote: " + numMessage);
         Folder notesFolder = store.getFolder(sfolder);
         if (notesFolder.isOpen()) {
             if ((notesFolder.getMode() & Folder.READ_WRITE) != 0) {
@@ -291,6 +295,7 @@ public class SyncUtils {
     static void SetUIDValidity(@NonNull Account account,
                                Long UIDValidity,
                                @NonNull Context ctx) {
+        Log.d(TAG,"SetUIDValidity: " + account.name);
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("Name", "valid_data");
@@ -302,6 +307,7 @@ public class SyncUtils {
     // Retrieve values from shared preferences:
     static Long GetUIDValidity(@NonNull Account account,
                                @NonNull Context ctx) {
+        Log.d(TAG,"GetUIDValidity: " + account.name);
         UIDValidity = (long) -1;
         SharedPreferences preferences = ctx.getSharedPreferences(account.name, Context.MODE_MULTI_PROCESS);
         String name = preferences.getString("Name", "");
@@ -313,6 +319,7 @@ public class SyncUtils {
     }
 
     static void DisconnectFromRemote() {
+        Log.d(TAG,"DisconnectFromRemote");
         try {
             store.close();
         } catch (MessagingException e) {
@@ -387,6 +394,7 @@ public class SyncUtils {
     @Nullable
     static Message ReadMailFromFileNew(@NonNull String uid,
                                        @NonNull File newFilesDir) {
+        Log.d(TAG,"ReadMailFromFileNew");
         //File mailFile;
         //Message message = null;
         //mailFile = new File(nameDir, uid);
@@ -403,6 +411,7 @@ public class SyncUtils {
     @Nullable
     public static Message ReadMailFromFileRootAndNew(@NonNull String uid,
                                                      @NonNull File fileDir) {
+        Log.d(TAG,"ReadMailFromFileRootAndNew: " + fileDir.getPath() + " " + uid);
         //File mailFile;
         //Message message = null;
         File mailFile = new File(fileDir, uid);
@@ -439,12 +448,14 @@ public class SyncUtils {
     @Nullable
     private static Message ReadMailFromFile(@NonNull File nameDir,
                                             @NonNull String uid) {
+        Log.d(TAG,"ReadMailFromFile: " + nameDir.getPath() + " " + uid);
         File mailFile = new File(nameDir, uid);
 
         try (InputStream mailFileInputStream = new FileInputStream(mailFile)) {
             try {
                 Properties props = new Properties();
                 Session session = Session.getDefaultInstance(props, null);
+                Log.d(TAG, "ReadMailFromFile return new MimeMessage.");
                 return new MimeMessage(session, mailFileInputStream);
             } catch (MessagingException e) {
                 // TODO Auto-generated catch block
@@ -460,6 +471,7 @@ public class SyncUtils {
             Log.d(TAG, "IO exception opening mailFile: " + mailFile.getAbsolutePath());
             exIO.printStackTrace();
         }
+        Log.d(TAG,"ReadMailFromFile return null.");
         return null;
     }
 
@@ -510,6 +522,7 @@ public class SyncUtils {
     private static void SaveNote(@NonNull File outfile,
                                  @NonNull Message notesMessage) throws IOException, MessagingException {
 
+        Log.d(TAG,"SaveNote: " + outfile.getCanonicalPath());
         try (OutputStream str = new FileOutputStream(outfile)) {
             notesMessage.writeTo(str);
 /*
@@ -532,6 +545,7 @@ public class SyncUtils {
                                                  @NonNull NotesDb storedNotes,
                                                  @NonNull String accountName,
                                                  @NonNull String suid) throws IOException, MessagingException {
+        Log.d(TAG,"SaveNoteAndUpdatDatabase: " + outfile.getCanonicalPath() + " " + accountName);
 
         SaveNote(outfile, notesMessage);
 
@@ -596,6 +610,7 @@ public class SyncUtils {
                                      @NonNull String accountName,
                                      @NonNull String usesticky)
             throws MessagingException, IOException {
+        Log.d(TAG,"handleRemoteNotes: " + notesFolder.getFullName() + " " + accountName + " " + usesticky);
 
         Message notesMessage;
         boolean result = false;
@@ -669,6 +684,7 @@ public class SyncUtils {
     }
 
     static void RemoveAccount(@NonNull Context context, @NonNull Account account) {
+        Log.d(TAG,"RemoveAccount: " + account.name);
         // remove Shared Preference file
         String rootString = context.getFilesDir().getParent() +
                 File.separator + "shared_prefs";

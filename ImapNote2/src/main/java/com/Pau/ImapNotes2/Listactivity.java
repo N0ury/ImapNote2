@@ -125,6 +125,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.main);
 
         this.accountSpinner = (Spinner) findViewById(R.id.accountSpinner);
@@ -165,13 +166,18 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         // When item is clicked, we go to NoteDetailActivity
         listview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(@NonNull AdapterView<?> parent, @NonNull View widget, int selectedNote, long rowId) {
+            public void onItemClick(@NonNull AdapterView<?> parent,
+                                    @NonNull View widget,
+                                    int selectedNote,
+                                    long rowId) {
+                Log.d(TAG, "onItemClick");
                 Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
                 toDetail.putExtra(NoteDetailActivity.selectedNote, (OneNote) parent.getItemAtPosition(selectedNote));
                 toDetail.putExtra(NoteDetailActivity.useSticky, Listactivity.imapNotes2Account.GetUsesticky());
                 startActivityForResult(toDetail, SEE_DETAIL);
+                Log.d(TAG, "onItemClick, back from detail.");
 
-                TriggerSync(status);
+                //TriggerSync(status);
             }
         });
 
@@ -353,6 +359,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
+        Log.d(TAG, "onActivityResult: " + requestCode + " " + resultCode);
         switch (requestCode) {
             case Listactivity.SEE_DETAIL:
                 // Returning from NoteDetailActivity

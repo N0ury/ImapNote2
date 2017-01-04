@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.util.Log;
 
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
@@ -68,7 +67,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                         Context applicationContext,
                         Action action,
                         NotesDb storedNotes) {
-
+        Log.d(TAG, "UpdateThread: " + noteBody);
         this.imapNotes2Account = imapNotes2Account;
         this.notesList = noteList;
         this.adapter = listToView;
@@ -102,8 +101,10 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
             if ((action == Action.Insert) || (action == Action.Update)) {
 //Log.d(TAG,"Sticky ? "+((ImapNotes2Account)stuffs[1]).GetUsesticky());
 //Log.d(TAG,"Color:"+color);
-                //Log.d(TAG,"Received request to add new message"+noteBody+"===");
-                String noteTxt = Html.fromHtml(noteBody).toString();
+                Log.d(TAG,"Received request to add new message: " + noteBody + "===");
+                //String noteTxt = Html.fromHtml(noteBody).toString();
+                String noteTxt =  noteBody;
+                Log.d(TAG,"noteTxt: " + noteTxt + "===");
                 String[] tok = noteTxt.split("\n", 2);
                 String title = tok[0];
                 //String position = "0 0 0 0";
@@ -123,6 +124,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 currentNote.SetUid(suid);
                 // Here we ask to add the new note to the new note folder
                 // Must be done AFTER uid has been set in currenteNote
+                Log.d(TAG, "doInBackground body: " + body);
                 WriteMailToNew(currentNote,
                         imapNotes2Account.GetUsesticky(), body);
                 storedNotes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountName());
@@ -185,6 +187,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private void WriteMailToNew(@NonNull OneNote note,
                                 boolean usesticky,
                                 String noteBody) throws MessagingException, IOException {
+        Log.d(TAG, "WriteMailToNew: " + noteBody);
         //String body = null;
 
         // Here we add the new note to the new note folder

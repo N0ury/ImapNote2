@@ -54,6 +54,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     SyncAdapter(@NonNull Context applicationContext) {
         super(applicationContext, true);
+        Log.d(TAG, "SyncAdapter");
+
         //mContentResolver = applicationContext.getContentResolver();
         // TODO: do we really need a copy of the applicationContext reference?
         this.applicationContext = applicationContext;
@@ -85,7 +87,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                               String authority,
                               ContentProviderClient provider,
                               SyncResult syncResult) {
-        //Log.d(TAG, "Beginning network synchronization of account: "+account.name);
+        Log.d(TAG, "Beginning network synchronization of account: " + accountArg.name);
         // TODO: should the account be static?  Should it be local?  If static then why do we not
         // provide it in the constructor?  What happens if we allow parallel syncs?
         account = new ImapNotes2Account(accountArg, applicationContext);
@@ -174,6 +176,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void NotifySyncFinished(boolean isChanged,
                                     boolean isSynced) {
+        Log.d(TAG, "NotifySyncFinished: " + isChanged + " " + isSynced);
         Intent i = new Intent(SyncService.SYNC_FINISHED);
         i.putExtra(Listactivity.ACCOUNTNAME, account.GetAccountName());
         i.putExtra(Listactivity.CHANGED, isChanged);
@@ -190,6 +193,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     @NonNull
     private ImapNotes2Result ConnectToRemote() {
+        Log.d(TAG, "ConnectToRemote");
         AccountManager am = AccountManager.get(applicationContext);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
                 account.GetUsername(),
@@ -207,6 +211,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private boolean handleNewNotes() {
+        Log.d(TAG, "handleNewNotes");
         //Message message = null;
         boolean newNotesManaged = false;
         //AppendUID[] uids = null;
@@ -218,10 +223,11 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "dn exists: " + Boolean.toString(dirNew.exists()));
         String[] listOfNew = dirNew.list();
         for (String fileNew : listOfNew) {
-            //Log.d(TAG,"New Note to process:"+fileNew);
+            Log.d(TAG,"New Note to process:"+fileNew);
             newNotesManaged = true;
             // Read local new message from file
             Message message = SyncUtils.ReadMailFromFileNew(fileNew, dirNew);
+            Log.d(TAG,"handleNewNotes message: " + message.toString());
             try {
                 message.setFlag(Flags.Flag.SEEN, true); // set message as seen
             } catch (MessagingException e) {
@@ -251,6 +257,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private boolean handleDeletedNotes() {
         //Message message = null;
+        Log.d(TAG, "handleDeletedNotes");
         boolean deletedNotesManaged = false;
         String rootString = applicationContext.getFilesDir() + "/" + account.GetAccountName();
         File rootDir = new File(rootString);
