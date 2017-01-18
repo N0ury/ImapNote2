@@ -109,11 +109,17 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         }
     };
 
+    private void Toast(int message){
+        Toast.makeText(getApplicationContext(), message,
+                Toast.LENGTH_LONG).show();
+
+    }
     private void CheckNameAndLogIn() {
         if (accountnameTextView.getText().toString().contains("'")) {
             // Single quotation marks are not allowed in accountname
-            Toast.makeText(getApplicationContext(), R.string.quotation_marks_not_allowed,
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), R.string.quotation_marks_not_allowed,
+            // Toast.LENGTH_LONG).show();
+            Toast(R.string.quotation_marks_not_allowed);
         } else {
             DoLogin();
         }
@@ -124,8 +130,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         public void onClick(View v) {
             // Click on Remove Button
             accountManager.removeAccount(myAccount, null, null);
-            Toast.makeText(getApplicationContext(), R.string.account_removed,
-                    Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), R.string.account_removed,
+  //                  Toast.LENGTH_LONG).show();
+            Toast(R.string.account_removed);
             finish();//finishing activity
         }
     };
@@ -288,7 +295,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 SYNC_FREQUENCY).execute();
     }
 
-    class LoginThread extends AsyncTask<Void, Void, Boolean> {
+    class LoginThread extends AsyncTask<Void, Void, LoginThread.Result> {
 
         private final ImapNotes2Account imapNotes2Account;
         private final ProgressDialog progressDialog;
@@ -297,8 +304,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private final AccountConfigurationActivity accountConfigurationActivity;
         //@NonNull
         //private ImapNotes2Result res = new ImapNotes2Result();
-        @NonNull
-        private String statusMessage = "";
+ //       @NonNull
+   //     private final String statusMessage;
         private final Actions action;
 
         LoginThread(ImapNotes2Account imapNotes2Account,
@@ -314,8 +321,18 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         }
 
+        class Result{
+            final String message;
+            final boolean succeeded;
+
+            Result(String message,
+                   boolean succeeded) {
+                this.message = message;
+                this.succeeded = succeeded;
+            }
+        }
         @NonNull
-        protected Boolean doInBackground(Void... none) {
+        protected Result doInBackground(Void... none) {
             //action = (String) stuffs[ParamAction];
             try {
                 //ImapNotes2Account imapNotes2Account= ((ImapNotes2Account) stuffs[ParamImapNotes2Account]);
@@ -340,20 +357,11 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                         setAccountAuthenticatorResult(result);
                         setUserData(am, account);
-                        /*am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
-                        am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
-                        am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
-                        am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
-                        am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
-                        am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
-                        am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
-                        */
                         // Run the Sync Adapter Periodically
                         ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                         ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                         ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                        statusMessage = "Account has been modified";
-                        return true;
+                        return new Result("Account has been modified", true);
                     } else {
                         if (am.addAccountExplicitly(account, imapNotes2Account.GetPassword(), null)) {
                             // TODO: make function for these repeated lines.
@@ -362,32 +370,24 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                             setAccountAuthenticatorResult(result);
                             setUserData(am, account);
-                            /*am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
-                            am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
-                            am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
-                            am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.GetSyncinterval());
-                            am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.GetSecurity().name());
-                            am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.GetUsesticky()));
-                            am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
-                            */
                             // Run the Sync Adapter Periodically
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                             ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
-                            statusMessage = getString(R.string.account_added);
-                            return true;
+                            return new Result(getString(R.string.account_added), true);
                         } else {
-                            statusMessage = getString(R.string.account_already_exists_or_is_null);
-                            return false;
+                            return new Result(getString(R.string.account_already_exists_or_is_null), false);
                         }
                     }
+                } else {
+                    return new Result("IMAP operation failed: " + res.errorMessage, false);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                return new Result("Unexpected exception: " + e.getMessage(), false);
             } finally {
                 progressDialog.dismiss();
             }
-            return false;
         }
 
         private void setUserData(@NonNull AccountManager am,
@@ -401,8 +401,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
         }
 
-        protected void onPostExecute(Boolean result) {
-            if (result) {
+        protected void onPostExecute(Result result) {
+            if (result.succeeded) {
                 //accountConfigurationActivity.settings.Clear();
                 accountConfigurationActivity.accountnameTextView.setText("");
                 accountConfigurationActivity.usernameTextView.setText("");
@@ -414,7 +414,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 accountConfigurationActivity.folderTextView.setText("");
                 accountConfigurationActivity.stickyCheckBox.setChecked(false);
             }
-            final Toast tag = Toast.makeText(getApplicationContext(), statusMessage, Toast.LENGTH_LONG);
+            final Toast tag = Toast.makeText(getApplicationContext(), result.message, Toast.LENGTH_LONG);
             tag.show();
             new CountDownTimer(5000, 1000) {
                 public void onTick(long millisUntilFinished) {
