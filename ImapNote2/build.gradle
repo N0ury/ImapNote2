@@ -4,6 +4,7 @@ android {
     compileSdkVersion 21
     buildToolsVersion "23.0.3"
 
+    //noinspection GroovyMissingReturnStatement
     defaultConfig {
         applicationId "com.Pau.ImapNotes2"
         minSdkVersion 19
@@ -17,6 +18,7 @@ android {
         }
     }
 
+    //noinspection GroovyMissingReturnStatement
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
     }

@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
-import com.Pau.ImapNotes2.Data.ConfigurationFile;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.Security;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
@@ -55,6 +54,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private TextView syncintervalTextView;
     private TextView folderTextView;
     private CheckBox stickyCheckBox;
+    private CheckBox automaticMergeCheckBox;
     private Spinner securitySpinner;
     // TODO: move this to dologin becauae it is the only use.
     private ImapNotes2Account imapNotes2Account;
@@ -74,7 +74,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
      * Cannot be final or NonNull because it needs the application context which is not available
      * until onCreate.
      */
-    private ConfigurationFile settings;
+    //private ConfigurationFile settings;
 
     //region Intent item names and values.
     public static final String ACTION = "ACTION";
@@ -133,7 +133,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        settings = new ConfigurationFile(getApplicationContext());
+        //settings = new ConfigurationFile(getApplicationContext());
         setContentView(R.layout.account_selection);
         //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -146,6 +146,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         syncintervalTextView = (TextView) findViewById(R.id.syncintervalEdit);
         folderTextView = (TextView) findViewById(R.id.folderEdit);
         stickyCheckBox = (CheckBox) findViewById(R.id.stickyCheckBox);
+        automaticMergeCheckBox = (CheckBox) findViewById(R.id.automaticMergeCheckBox);
 
         securitySpinner = (Spinner) findViewById(R.id.securitySpinner);
         /*List<String> list = new ArrayList<String>();
@@ -181,6 +182,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         // Settings can never be null so there is no need to guard it
         //if (settings != null) {
+/*
         accountnameTextView.setText(settings.GetAccountname());
         usernameTextView.setText(settings.GetUsername());
         passwordTextView.setText(settings.GetPassword());
@@ -191,8 +193,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         //int security_i = security.ordinal();
         securitySpinner.setSelection(security.ordinal());
         stickyCheckBox.setChecked(settings.GetUsesticky());
-        syncintervalTextView.setText(R.string.default_sync_interval);
+        automaticMergeCheckBox.setChecked(settings.GetUseAutomaticMerge());
         folderTextView.setText(settings.GetFoldername());
+*/
+        syncintervalTextView.setText(R.string.default_sync_interval);
         //}
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.buttonsLayout);
@@ -221,6 +225,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             Log.d(TAG, "Security: " + GetConfigValue(ConfigurationFieldNames.Security));
             security = Security.from(GetConfigValue(ConfigurationFieldNames.Security));
             stickyCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseSticky)));
+            automaticMergeCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseAutomaticMerge)));
             syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
             folderTextView.setText(GetConfigValue(ConfigurationFieldNames.ImapFolder));
             //if (security == null) security = "0";
@@ -267,6 +272,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         imapNotes2Account.SetPortnum(GetTextViewText(portnumTextView));
         imapNotes2Account.SetSecurity(security);
         imapNotes2Account.SetUsesticky(stickyCheckBox.isChecked());
+        imapNotes2Account.SetUsesAutomaticMerge(automaticMergeCheckBox.isChecked());
         imapNotes2Account.SetSyncinterval(GetTextViewText(syncintervalTextView));
         imapNotes2Account.SetFoldername(GetTextViewText(folderTextView));
         // No need to check for valid numbers because the field only allows digits.  But it is
@@ -291,6 +297,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private final AccountConfigurationActivity accountConfigurationActivity;
         //@NonNull
         //private ImapNotes2Result res = new ImapNotes2Result();
+        @NonNull
         private String statusMessage = "";
         private final Actions action;
 
@@ -383,7 +390,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             return false;
         }
 
-        private void setUserData(AccountManager am,
+        private void setUserData(@NonNull AccountManager am,
                                  Account account) {
             am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
             am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
@@ -396,7 +403,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         protected void onPostExecute(Boolean result) {
             if (result) {
-                accountConfigurationActivity.settings.Clear();
+                //accountConfigurationActivity.settings.Clear();
                 accountConfigurationActivity.accountnameTextView.setText("");
                 accountConfigurationActivity.usernameTextView.setText("");
                 accountConfigurationActivity.passwordTextView.setText("");

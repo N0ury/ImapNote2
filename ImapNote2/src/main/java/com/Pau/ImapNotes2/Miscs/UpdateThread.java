@@ -4,10 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.util.Log;
 
+import com.Pau.ImapNotes2.Data.Db;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
@@ -25,12 +26,18 @@ import java.util.Properties;
 import java.util.UUID;
 
 import javax.mail.Flags;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.MailDateFormat;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
+
+//import com.Pau.ImapNotes2.Data.NotesDb;
 
 // TODO: move arguments from execute to constructor.
 public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
@@ -42,7 +49,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
     private final String noteBody;
     private final Colors color;
     private boolean bool_to_return;
-    private NotesDb storedNotes;
+    private Db storedNotes;
     private final Context applicationContext;
     private final Action action;
     private static final String TAG = "IN_UpdateThread";
@@ -55,7 +62,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
 
     /*
     Assign all fields in the constructor because we never reuse this object.  This makes the code
-    typesafe.  Make them final to preven accidental reuse.
+    typesafe.  Make them final to prevent accidental reuse.
     */
     public UpdateThread(ImapNotes2Account imapNotes2Account,
                         ArrayList<OneNote> noteList,
@@ -66,7 +73,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                         Colors color,
                         Context applicationContext,
                         Action action,
-                        NotesDb storedNotes) {
+                        Db storedNotes) {
         Log.d(TAG, "UpdateThread: " + noteBody);
         this.imapNotes2Account = imapNotes2Account;
         this.notesList = noteList;
@@ -80,6 +87,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         this.storedNotes = storedNotes;
 
     }
+
     @Override
     protected Boolean doInBackground(Object... stuffs) {
 
@@ -92,7 +100,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 notesList.remove(getIndexByNumber(suid));
                 MoveMailToDeleted(suid);
                 storedNotes.OpenDb();
-                storedNotes.DeleteANote(suid, Listactivity.imapNotes2Account.GetAccountName());
+                storedNotes.notes.DeleteANote(suid, Listactivity.imapNotes2Account.GetAccountName());
                 storedNotes.CloseDb();
                 bool_to_return = true;
             }
@@ -101,11 +109,12 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
             if ((action == Action.Insert) || (action == Action.Update)) {
 //Log.d(TAG,"Sticky ? "+((ImapNotes2Account)stuffs[1]).GetUsesticky());
 //Log.d(TAG,"Color:"+color);
-                Log.d(TAG,"Received request to add new message: " + noteBody + "===");
+                Log.d(TAG, "Received request to add new message: " + noteBody + "===");
                 //String noteTxt = Html.fromHtml(noteBody).toString();
-                String noteTxt =  noteBody;
-                Log.d(TAG,"noteTxt: " + noteTxt + "===");
-                String[] tok = noteTxt.split("\n", 2);
+                String noteTxt = noteBody;
+                Log.d(TAG, "noteTxt: " + noteTxt + "===");
+                // Use the first line as the tile
+                String[] tok = Html.fromHtml(noteBody).toString().split("\n", 2);
                 String title = tok[0];
                 //String position = "0 0 0 0";
                 String body = (imapNotes2Account.GetUsesticky()) ?
@@ -118,16 +127,18 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 String stringDate = sdf.format(date);
                 OneNote currentNote = new OneNote(title, stringDate, "");
                 // Add note to database
-                if (storedNotes == null) storedNotes = new NotesDb(applicationContext);
+                if (storedNotes == null) storedNotes = new Db(applicationContext);
                 storedNotes.OpenDb();
-                suid = storedNotes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountName());
+                suid = storedNotes.notes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountName());
                 currentNote.SetUid(suid);
                 // Here we ask to add the new note to the new note folder
                 // Must be done AFTER uid has been set in currenteNote
                 Log.d(TAG, "doInBackground body: " + body);
                 WriteMailToNew(currentNote,
-                        imapNotes2Account.GetUsesticky(), body);
-                storedNotes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountName());
+                        imapNotes2Account.GetUsesticky(),
+                        imapNotes2Account.GetUsesAutomaticMerge(),
+                        body);
+                storedNotes.notes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountName());
                 storedNotes.CloseDb();
                 // Add note to noteList but chage date format before
                 //DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(applicationContext);
@@ -184,8 +195,44 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         }
     }
 
+    @NonNull
+    private Message MakeMessageWithAttachment(String subject,
+                                              String message,
+                                              String filePath,
+                                              Session session)
+            throws IOException, MessagingException {
+
+        Message msg = new MimeMessage(session);
+
+
+        msg.setSubject(subject);
+        msg.setSentDate(new Date());
+
+        // creates message part
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(message, "text/html");
+
+        // creates multi-part
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+
+        // add attachment
+
+        MimeBodyPart attachPart = new MimeBodyPart();
+
+        attachPart.attachFile(filePath);
+
+
+        multipart.addBodyPart(attachPart);
+
+        // sets the multi-part as e-mail's content
+        msg.setContent(multipart);
+        return msg;
+    }
+
     private void WriteMailToNew(@NonNull OneNote note,
                                 boolean usesticky,
+                                boolean usesAutomaticMerge,
                                 String noteBody) throws MessagingException, IOException {
         Log.d(TAG, "WriteMailToNew: " + noteBody);
         //String body = null;
@@ -195,6 +242,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
+
         if (usesticky) {
             String body = "BEGIN:STICKYNOTE\nCOLOR:" + color.name() + "\nTEXT:" + noteBody +
                     "\nPOSITION:0 0 0 0\nEND:STICKYNOTE";

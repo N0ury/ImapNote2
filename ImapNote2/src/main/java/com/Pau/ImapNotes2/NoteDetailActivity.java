@@ -78,7 +78,7 @@ public class NoteDetailActivity extends Activity {
         String stringres = sticky.text;
         //String position = sticky.position;
         color = sticky.color;
-        Spanned plainText = Html.fromHtml(stringres);
+        //Spanned plainText = Html.fromHtml(stringres);
         //EditText editText = ((EditText) findViewById(R.id.bodyView));
         editText = (RichEditor) findViewById(R.id.bodyView);
         //editText.setText(plainText);
@@ -112,7 +112,7 @@ public class NoteDetailActivity extends Activity {
 
 
 
-    void SetupRichEditor(final RichEditor mEditor) {
+    private void SetupRichEditor(@NonNull final RichEditor mEditor) {
         //mEditor = (RichEditor) findViewById(R.id.editor);
         //mEditor.setEditorHeight(200);
         //mEditor.setEditorFontSize(22);
@@ -384,6 +384,11 @@ public class NoteDetailActivity extends Activity {
         }
     }
 
+
+    /**
+     * Note that this function does not save the note to permanent storage it just passes it back to
+     * the calling activity to be saved in whatever fashion it that activity wishes.
+     */
     private void Save() {
         Log.d(TAG, "Save");
         Intent intent = new Intent();

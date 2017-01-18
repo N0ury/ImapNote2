@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Data.Db;
 import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Data.Security;
 import com.Pau.ImapNotes2.Data.Utilities;
@@ -43,6 +43,8 @@ import javax.mail.UIDFolder;
 import javax.mail.internet.MimeMessage;
 
 import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
+
+//import com.Pau.ImapNotes2.Data.NotesDb;
 
 public class SyncUtils {
 
@@ -162,7 +164,7 @@ public class SyncUtils {
     static void GetNotes(@NonNull Account account,
                          @NonNull Folder imapNotesFolder,
                          @NonNull Context applicationContext,
-                         @NonNull NotesDb storedNotes) throws MessagingException, IOException {
+                         @NonNull Db storedNotes) throws MessagingException, IOException {
         Log.d(TAG,"GetNotes: " + account.name);
         //Long UIDM;
         //Message notesMessage;
@@ -243,7 +245,7 @@ public class SyncUtils {
                 "";
     }*/
 
-    private static String getText(String stringres) {
+    private static String getText(@NonNull String stringres) {
         Matcher matcherText = patternText.matcher(stringres);
         String text = "";
         if (matcherText.find()) {
@@ -257,7 +259,8 @@ public class SyncUtils {
         return text;
     }
 
-    private static Colors getColor(String stringres) {
+    @NonNull
+    private static Colors getColor(@NonNull String stringres) {
         Matcher matcherColor = patternColor.matcher(stringres);
         if (matcherColor.find()) {
             String colorName = matcherColor.group(1);
@@ -542,7 +545,7 @@ public class SyncUtils {
 
     private static void SaveNoteAndUpdatDatabase(@NonNull File outfile,
                                                  @NonNull Message notesMessage,
-                                                 @NonNull NotesDb storedNotes,
+                                                 @NonNull Db storedNotes,
                                                  @NonNull String accountName,
                                                  @NonNull String suid) throws IOException, MessagingException {
         Log.d(TAG,"SaveNoteAndUpdatDatabase: " + outfile.getCanonicalPath() + " " + accountName);
@@ -601,12 +604,12 @@ public class SyncUtils {
                 title,
                 internaldate,
                 suid);
-        storedNotes.InsertANoteInDb(aNote, accountName);
+        storedNotes.notes.InsertANoteInDb(aNote, accountName);
     }
 
     static boolean handleRemoteNotes(@NonNull Context context,
                                      @NonNull Folder notesFolder,
-                                     @NonNull NotesDb storedNotes,
+                                     @NonNull Db storedNotes,
                                      @NonNull String accountName,
                                      @NonNull String usesticky)
             throws MessagingException, IOException {
@@ -657,7 +660,7 @@ public class SyncUtils {
             } else if (usesticky.equals("true")) {
                 //Log.d (TAG,"MANAGE STICKY");
                 remoteInternaldate = DateFormat.getDateInstance().format(notesMessage.getSentDate());
-                localInternaldate = storedNotes.GetDate(suid, accountName);
+                localInternaldate = storedNotes.notes.GetDate(suid, accountName);
                 if (!(remoteInternaldate.equals(localInternaldate))) {
                     File outfile = new File(rootDir, suid);
                     SaveNote(outfile, notesMessage);
@@ -675,7 +678,7 @@ public class SyncUtils {
                 //noinspection ResultOfMethodCallIgnored
                 toDelete.delete();
                 // Remove note from database
-                storedNotes.DeleteANote(suid, accountName);
+                storedNotes.notes.DeleteANote(suid, accountName);
                 result = true;
             }
         }
@@ -700,9 +703,9 @@ public class SyncUtils {
             file.delete();
         }
         // Delete account name entries in database
-        NotesDb storedNotes = new NotesDb(context);
+        Db storedNotes = new Db(context);
         storedNotes.OpenDb();
-        storedNotes.ClearDb(account.name);
+        storedNotes.notes.ClearDb(account.name);
         storedNotes.CloseDb();
     }
 }

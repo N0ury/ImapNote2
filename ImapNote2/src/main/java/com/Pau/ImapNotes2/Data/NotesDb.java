@@ -1,10 +1,7 @@
 package com.Pau.ImapNotes2.Data;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -15,17 +12,16 @@ import java.util.Date;
 
 public class NotesDb {
 
-    private static final int NOTES_VERSION = 3;
     private static final String TAG = "IN_NotesDb";
+
 
     private static final String COL_TITLE = "title";
     private static final String COL_DATE = "date";
     private static final String COL_NUMBER = "number";
     private static final String COL_ACCOUNT_NAME = "accountname";
     private static final String TABLE_NAME = "notesTable";
-    private static final String DATABASE_NAME = "NotesDb";
 
-    private static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
+    public static final String CREATE_NOTES_DB = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NAME
             + " (pk integer primary key autoincrement, "
             + COL_TITLE + " text not null, "
@@ -33,25 +29,11 @@ public class NotesDb {
             + COL_NUMBER + " text not null, "
             + COL_ACCOUNT_NAME + " text not null);";
 
-    private SQLiteDatabase notesDb;
-    @NonNull
-    private final NotesDbHelper defaultHelper;
 
-    public NotesDb(Context applicationContext) {
-        this.defaultHelper = new NotesDbHelper(applicationContext);
+    private final Db db;
 
-    }
-
-    /**
-     * TODO: can we make this implement closeable?
-     */
-    public void OpenDb() {
-        this.notesDb = this.defaultHelper.getWritableDatabase();
-
-    }
-
-    public void CloseDb() {
-        this.notesDb.close();
+    public NotesDb(@NonNull Db db) {
+        this.db = db;
 
     }
 
@@ -62,28 +44,32 @@ public class NotesDb {
         tableRow.put(COL_DATE, noteElement.GetDate());
         tableRow.put(COL_NUMBER, noteElement.GetUid());
         tableRow.put(COL_ACCOUNT_NAME, accountname);
-        this.notesDb.insert(TABLE_NAME, null, tableRow);
+        db.insert(TABLE_NAME, null, tableRow);
         //Log.d(TAG, "note inserted");
     }
 
-    public void DeleteANote(String number, String accountname) {
-        this.notesDb.execSQL("delete from notesTable where number = '" + number +
+    public void DeleteANote(@NonNull String number,
+                            @NonNull String accountname) {
+        db.notesDb.execSQL("delete from notesTable where number = '" + number +
                 "' and accountname = '" + accountname + "'");
     }
 
-    public void UpdateANote(String olduid, String newuid, String accountname) {
+    public void UpdateANote(@NonNull String olduid,
+                            @NonNull String newuid,
+                            @NonNull String accountname) {
         /* TODO: use sql template and placeholders instead of string concatenation.
                  */
         String req = "update notesTable set number='" + newuid + "' where number='-" + olduid + "' and accountname='" + accountname + "'";
-        this.notesDb.execSQL(req);
+        db.notesDb.execSQL(req);
     }
 
-    public String GetDate(String uid, String accountname) {
+    public String GetDate(@NonNull String uid,
+                          @NonNull String accountname) {
        /* Returns a string representing the modification time of the note.
           TODO: use date class.
         */
         String selectQuery = "select date from notesTable where number = '" + uid + "' and accountname='" + accountname + "'";
-        try (Cursor c = this.notesDb.rawQuery(selectQuery, null)) {
+        try (Cursor c = db.notesDb.rawQuery(selectQuery, null)) {
             if (c.moveToFirst()) {
                 return c.getString(0);
             }
@@ -91,9 +77,9 @@ public class NotesDb {
         return "";
     }
 
-    public String GetTempNumber(String accountname) {
+    public String GetTempNumber(@NonNull String accountname) {
         String selectQuery = "select case when cast(max(abs(number)+1) as int) > 0 then cast(max(abs(number)+1) as int)*-1 else '-1' end from notesTable where number < '0' and accountname='" + accountname + "'";
-        try (Cursor c = this.notesDb.rawQuery(selectQuery, null)) {
+        try (Cursor c = db.notesDb.rawQuery(selectQuery, null)) {
             if (c.moveToFirst()) {
                 return c.getString(0);
             }
@@ -105,7 +91,7 @@ public class NotesDb {
                                @NonNull String accountName) {
         noteList.clear();
         Date date = null;
-        try (Cursor resultPointer = this.notesDb.query(TABLE_NAME, null, "accountname = ?",
+        try (Cursor resultPointer = db.notesDb.query(TABLE_NAME, null, "accountname = ?",
                 new String[]{accountName}, null, null, "date DESC")) {
 
             if (resultPointer.moveToFirst()) {
@@ -136,56 +122,8 @@ public class NotesDb {
 
     }
 
-    public void ClearDb(String accountname) {
-        this.notesDb.execSQL("delete from notesTable where accountname = '" + accountname + "'");
+    public void ClearDb(@NonNull String accountname) {
+        db.notesDb.execSQL("delete from notesTable where accountname = '" + accountname + "'");
 
-    }
-
-    /**
-     * Database helper that creates and maintains the SQLite database.
-     */
-
-    private static class NotesDbHelper extends SQLiteOpenHelper {
-
-        NotesDbHelper(Context currentApplicationContext) {
-            super(currentApplicationContext, NotesDb.DATABASE_NAME, null, NotesDb.NOTES_VERSION);
-        }
-
-        @Override
-        public void onCreate(@NonNull SQLiteDatabase _db) {
-            _db.execSQL(NotesDb.CREATE_NOTES_DB);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase _db, int oldVersion, int newVersion) {
-            //Log.d(TAG,"onUpgrade from:"+oldVersion+" to:"+newVersion);
-            for (int i = oldVersion; i < newVersion; i++) {
-                PATCHES[i - 2].apply(_db);
-            }
-        }
-
-        private static class Patch {
-            public void apply(SQLiteDatabase _db) {
-            }
-        }
-
-        private static final Patch[] PATCHES = new Patch[]{
-                new Patch() {
-                    public void apply(@NonNull SQLiteDatabase _db) {
-                        //Log.d(TAG,"upgrade: v2 to v3");
-                        _db.execSQL("Drop table notesTable;");
-                        _db.execSQL(NotesDb.CREATE_NOTES_DB);
-                    }
-                }
-/*
-           ,new Patch() {
-              public void apply(SQLiteDatabase _db) {
-                Log.d(TAG,"upgrade: v3 to v4");
-                _db.execSQL("Drop table notesTable;");
-                _db.execSQL(NotesDb.CREATE_NOTES_DB);
-              }
-           }
-*/
-        };
     }
 }

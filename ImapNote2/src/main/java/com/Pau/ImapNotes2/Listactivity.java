@@ -38,8 +38,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
+import com.Pau.ImapNotes2.Data.Db;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Miscs.Imaper;
 import com.Pau.ImapNotes2.Miscs.SyncThread;
@@ -60,6 +60,8 @@ import java.util.ListIterator;
 import static com.Pau.ImapNotes2.AccountConfigurationActivity.ACTION;
 import static com.Pau.ImapNotes2.NoteDetailActivity.Colors;
 
+//import com.Pau.ImapNotes2.Data.NotesDb;
+
 //import com.Pau.ImapNotes2.R;
 //import android.widget.SimpleAdapter;
 
@@ -78,7 +80,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     public static final String EDIT_ITEM_COLOR = "EDIT_ITEM_COLOR";
     private static final String SAVE_ITEM_COLOR = "SAVE_ITEM_COLOR";
     private static final String SAVE_ITEM = "SAVE_ITEM";
-    public static final String DELETE_ITEM_NUM_IMAP = "DELETE_ITEM_NUM_IMAP";
+    private static final String DELETE_ITEM_NUM_IMAP = "DELETE_ITEM_NUM_IMAP";
     public static final String ACCOUNTNAME = "ACCOUNTNAME";
     public static final String SYNCINTERVAL = "SYNCINTERVAL";
     public static final String CHANGED = "CHANGED";
@@ -90,7 +92,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
     private ArrayAdapter<String> spinnerList;
 
     @Nullable
-    private static NotesDb storedNotes = null;
+    private static Db storedNotes = null;
     private Spinner accountSpinner;
     public static ImapNotes2Account imapNotes2Account;
     private static AccountManager accountManager;
@@ -162,7 +164,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
         ((ImapNotes2k) this.getApplicationContext()).SetImaper(imapFolder);
 
         if (Listactivity.storedNotes == null)
-            storedNotes = new NotesDb(getApplicationContext());
+            storedNotes = new Db(getApplicationContext());
 
         // When item is clicked, we go to NoteDetailActivity
         listview.setOnItemClickListener(new OnItemClickListener() {
@@ -241,10 +243,10 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
                 if (isChanged) {
                     if (storedNotes == null) {
-                        storedNotes = new NotesDb(getApplicationContext());
+                        storedNotes = new Db(getApplicationContext());
                     }
                     storedNotes.OpenDb();
-                    storedNotes.GetStoredNotes(noteList, accountName);
+                    storedNotes.notes.GetStoredNotes(noteList, accountName);
                     listToView.notifyDataSetChanged();
                     storedNotes.CloseDb();
                 }
@@ -267,16 +269,29 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                             String noteBody,
                             Colors color,
                             UpdateThread.Action action) {
-        new UpdateThread(Listactivity.imapNotes2Account,
-                noteList,
-                listToView,
-                ShowProgress(R.string.updating_notes_list),
-                suid,
-                noteBody,
-                color,
-                getApplicationContext(),
-                action,
-                storedNotes).execute();
+        if (Listactivity.imapNotes2Account.GetUsesAutomaticMerge()) {
+            new UpdateThread(Listactivity.imapNotes2Account,
+                    noteList,
+                    listToView,
+                    ShowProgress(R.string.updating_notes_list),
+                    suid,
+                    noteBody,
+                    color,
+                    getApplicationContext(),
+                    action,
+                    storedNotes).execute();
+        } else {
+            new UpdateThread(Listactivity.imapNotes2Account,
+                    noteList,
+                    listToView,
+                    ShowProgress(R.string.updating_notes_list),
+                    suid,
+                    noteBody,
+                    color,
+                    getApplicationContext(),
+                    action,
+                    storedNotes).execute();
+        }
     }
 
     private ProgressDialog ShowProgress(int detailId) {
@@ -322,6 +337,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 String mClass = ".AccountConfigurationActivity";
                 res.setComponent(new ComponentName(mPackage, mPackage + mClass));
                 res.putExtra(ACTION, AccountConfigurationActivity.Actions.CREATE_ACCOUNT);
+                res.putExtra(ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountName());
                 startActivity(res);
                 return true;
             case R.id.refresh:
@@ -385,7 +401,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                     String res = data.getStringExtra(SAVE_ITEM);
                     //Log.d(TAG,"Received request to save message:"+res);
                     Colors color = (Colors) data.getSerializableExtra(SAVE_ITEM_COLOR);
-                    this.UpdateList(null, res, color, UpdateThread.Action.Insert);
+                    UpdateList(null, res, color, UpdateThread.Action.Insert);
                 }
         }
     }

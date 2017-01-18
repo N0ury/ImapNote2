@@ -41,6 +41,9 @@ public class ConfigurationFile {
     private Security security = Security.None;
     // ?
     private boolean usesticky;
+
+    private boolean useAutomaticMerge;
+
     // The name of the IMAP folder to be used.
     @Nullable
     private String imapfolder;
@@ -71,9 +74,14 @@ public class ConfigurationFile {
             } else {
                 portnum = NodeValueFromXML(fileToLoad, ConfigurationFieldNames.PortNumber);
             }
-            // usesticky option doesn't exist, say no
+
             usesticky = LoadItemFromXML(fileToLoad, ConfigurationFieldNames.UseSticky).getLength() != 0 &&
                     Boolean.parseBoolean(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UseSticky));
+
+            // Automatic merge allows you to edit the same note on different devices at the same
+            // time an have the changes merged automatically.
+            useAutomaticMerge = LoadItemFromXML(fileToLoad, ConfigurationFieldNames.UseAutomaticMerge).getLength() != 0 &&
+                    Boolean.parseBoolean(NodeValueFromXML(fileToLoad, ConfigurationFieldNames.UseAutomaticMerge));
 
 //Log.d(TAG, "conf file present, we read data");
         } catch (Exception e) {
@@ -87,6 +95,7 @@ public class ConfigurationFile {
             security = Security.None;
             portnum = security.defaultPort;
             usesticky = false;
+            useAutomaticMerge = false;
             imapfolder = "";
         }
     }
@@ -154,6 +163,10 @@ public class ConfigurationFile {
     public boolean GetUsesticky() {
         return usesticky;
     }
+
+    public boolean GetUseAutomaticMerge() {
+        return useAutomaticMerge;
+    }
 /*
 
     public void SetUsesticky(boolean usesticky) {
@@ -176,6 +189,7 @@ public class ConfigurationFile {
         portnum = null;
         security = Security.None;
         usesticky = false;
+        useAutomaticMerge= false;
         imapfolder = null;
     }
 

@@ -33,6 +33,7 @@ public class ImapNotes2Account {
     private String imapfolder = "";
     @Nullable
     private Account account = null;
+    private boolean usesAutomaticMerge = false;
 
 
     public ImapNotes2Account() {
@@ -45,7 +46,7 @@ public class ImapNotes2Account {
     private File rootDir;
 
     private ImapNotes2Account(@NonNull String accountName,
-                              Context applicationContext) {
+                              @NonNull Context applicationContext) {
         this.accountName = accountName;
         rootDir = new File(applicationContext.getFilesDir(), accountName);
         dirForNewFiles= new File(rootDir, "new");
@@ -53,7 +54,7 @@ public class ImapNotes2Account {
     }
 
     public ImapNotes2Account(@NonNull Account account,
-                             Context applicationContext) {
+                             @NonNull Context applicationContext) {
         this(account.name, applicationContext);
         SetAccount(account, applicationContext);
 
@@ -90,7 +91,7 @@ public class ImapNotes2Account {
         return accountName;
     }
 
-    public void SetAccount(Account account,
+    public void SetAccount(@NonNull Account account,
                            Context applicationContext) {
         this.account = account;
         SetAccountname(account.name);
@@ -206,6 +207,14 @@ public class ImapNotes2Account {
     public void SetFoldername(@NonNull String folder) {
         this.imapfolder = folder;
     }
+
+    public boolean GetUsesAutomaticMerge() {
+    return this.usesAutomaticMerge;
+    }
+    public void SetUsesAutomaticMerge(boolean usesAutomaticMerge) {
+        this.usesAutomaticMerge = usesAutomaticMerge;
+    }
+
 /*
     public void Clear() {
         this.username = null;

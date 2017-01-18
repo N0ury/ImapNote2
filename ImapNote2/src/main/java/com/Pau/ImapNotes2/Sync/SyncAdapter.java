@@ -12,8 +12,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
+import com.Pau.ImapNotes2.Data.Db;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
-import com.Pau.ImapNotes2.Data.NotesDb;
 import com.Pau.ImapNotes2.Data.Security;
 import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
@@ -29,6 +29,8 @@ import javax.mail.internet.MimeMessage;
 
 import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 
+//import com.Pau.ImapNotes2.Data.NotesDb;
+
 /// A SyncAdapter provides methods to be called by the Android
 /// framework when the framework is ready for the synchronization to
 /// occur.  The application does not need to consider threading
@@ -36,8 +38,9 @@ import static com.Pau.ImapNotes2.Miscs.Imaper.ResultCodeSuccess;
 /// of the application.
 class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
+    @NonNull
     private final Context applicationContext;
-    private NotesDb storedNotes;
+    private Db storedNotes;
     // TODO: Why was this static?
     //private Account account;
     private ImapNotes2Account account;
@@ -94,12 +97,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         //SyncUtils.CreateLocalDirectories(accountArg.name, applicationContext);
         account.CreateLocalDirectories();
-        storedNotes = new NotesDb(applicationContext);
+        storedNotes = new Db(applicationContext);
         storedNotes.OpenDb();
 
         AccountManager am = AccountManager.get(applicationContext);
         //String syncInterval = am.getUserData(accountArg, "syncinterval");
-        String syncInterval = account.GetSyncinterval();
+        //String syncInterval = account.GetSyncinterval();
 
         // Connect to remote and get UIDValidity
         ImapNotes2Result res = ConnectToRemote();
@@ -115,7 +118,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             // Replace local data by remote.  UIDs are no longer valid.
             try {
                 // delete notes in NotesDb for this account
-                storedNotes.ClearDb(accountArg.name);
+                storedNotes.notes.ClearDb(accountArg.name);
                 // delete notes in folders for this account and recreate dirs
                 //SyncUtils.ClearHomeDir(accountArg, applicationContext);
                 account.ClearHomeDir();
@@ -241,7 +244,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 AppendUID[] uids = SyncUtils.sendMessageToRemote(msg);
                 // Update uid in database entry
                 String newuid = Long.toString(uids[0].uid);
-                storedNotes.UpdateANote(fileNew, newuid, account.GetAccountName());
+                storedNotes.notes.UpdateANote(fileNew, newuid, account.GetAccountName());
                 // move new note from new dir, one level up
                 File fileInNew = new File(dirNew, fileNew);
                 File to = new File(accountDir, newuid);

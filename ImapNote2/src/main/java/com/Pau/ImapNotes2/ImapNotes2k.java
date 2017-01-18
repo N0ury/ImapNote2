@@ -27,18 +27,18 @@ public class ImapNotes2k extends Application {
     }*/
 
     @NonNull
-    public static String ConfigurationFilePath(Context applicationContext) {
+    public static String ConfigurationFilePath(@NonNull Context applicationContext) {
         return ConfigurationDirPath(applicationContext) + "/" + configurationFileName;
     }
 
 
-    public static String ConfigurationDirPath(Context applicationContext) {
+    public static String ConfigurationDirPath(@NonNull Context applicationContext) {
 
         return ConfigurationDir(applicationContext).getPath();
     }
 
 
-    public static File ConfigurationDir(Context applicationContext) {
+    public static File ConfigurationDir(@NonNull Context applicationContext) {
 
         return applicationContext.getFilesDir();
     }

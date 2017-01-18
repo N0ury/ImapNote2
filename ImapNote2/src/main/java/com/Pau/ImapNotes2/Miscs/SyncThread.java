@@ -6,12 +6,14 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.Pau.ImapNotes2.Data.NotesDb;
+import com.Pau.ImapNotes2.Data.Db;
 import com.Pau.ImapNotes2.Data.OneNote;
 import com.Pau.ImapNotes2.Listactivity;
 import com.Pau.ImapNotes2.NotesListAdapter;
 
 import java.util.ArrayList;
+
+//import com.Pau.ImapNotes2.Data.NotesDb;
 
 public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     private final ProgressDialog progressDialog;
@@ -22,7 +24,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
      */
     // TODO: NoteDb should probably never be null.
     @NonNull
-    private final NotesDb storedNotes;
+    private final Db storedNotes;
     // --Commented out by Inspection (11/26/16 11:48 PM):boolean bool_to_return;
 // --Commented out by Inspection START (11/26/16 11:48 PM):
 //    @NonNull
@@ -35,7 +37,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
     public SyncThread(ArrayList<OneNote> noteList,
                       NotesListAdapter listToView,
                       ProgressDialog loadingDialog,
-                      @Nullable NotesDb storedNotes,
+                      @Nullable Db storedNotes,
                       Context applicationContext) {
         //this.imapFolder = imapFolder;
         //this.imapNotes2Account = imapNotes2Account;
@@ -43,7 +45,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
         this.adapter = listToView;
         this.progressDialog = loadingDialog;
         //this.storedNotes = storedNotes;
-        this.storedNotes = (storedNotes == null) ? new NotesDb(applicationContext) : storedNotes;
+        this.storedNotes = (storedNotes == null) ? new Db(applicationContext) : storedNotes;
 
     }
 
@@ -73,7 +75,7 @@ public class SyncThread extends AsyncTask<Object, Void, Boolean> {
 
 
         storedNotes.OpenDb();
-        storedNotes.GetStoredNotes(this.notesList, Listactivity.imapNotes2Account.GetAccountName());
+        storedNotes.notes.GetStoredNotes(this.notesList, Listactivity.imapNotes2Account.GetAccountName());
         storedNotes.CloseDb();
         progressDialog.dismiss();
         return true;

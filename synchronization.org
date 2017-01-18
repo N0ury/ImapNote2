@@ -1,0 +1,93 @@
+* Synchronization
+
+Here is an outline of the proposed new synchronization method that
+will allow for merging.
+
+The process is as follows:
+
+1. prepare for sync.
+
+2. download newer files from remote
+
+3. download and merge  conflicting files from remote
+
+4. upload newer local files
+
+The steps are detailed as follows:
+
+** Prepare for Sync
+
+When a new note is created it is saved in the local notes directory;
+there is no new, deleted, etc.  Saving does not touch the database.
+
+To prepare for a sync we enumerate the files in the notes directory
+and for each one we check the mtime stored in the database; if the
+file is not recorded in the database then the mtime is regarded as
+zero.  If the stored mtime differs from the file mtime we increment
+the vector clock for this device in the database.  If the record does
+not exist in the database then the vector clock starts at zero and is
+incremented to one.
+
+Then we enumerate all the records in the database and check to see if
+each file mentioned still exists, if it does not then we increment the
+vector clock.
+
+*** Can we drop the database?
+
+We have to enumerate the messages so we can extract the file name from
+the title and find the local copy if it exists and check the mtime
+directly.
+
+So we do not need to store the mtime in the database in order to
+discover that the file has changed.  This leaves the vector clock.
+
+
+** Download newer
+
+Enumerate the messages in the IMAP current notes directory.  Extract
+the note id from the subject line (device ID plus creation time
+stamp) and look it up in the database.  Compare the vector clocks.
+
+The vector clock for a device that is not mentioned in the vector is
+zero.  Each remote note that is unambiguously newer (remote vector clock
+elements are all equal to or greater than the corresponding local
+element and at least one is greater) is downloaded and the vector
+clock in the database updated.  If the message has no attachment then
+the note has been deleted so it should be deleted from the local; in
+this case we also delete the database record.
+
+** Download conflicting files
+
+If the remote vector clock is not unambiguously newer and is not equal
+to the local vector clock of the corresponding file then we have a
+conflict.  In this case we must merge the two files.  The result of
+the merge is a new local file where each element of the vector clock
+is the maximum of the corresponding remote and local elements and the
+element belong to this device is incremented once more.  See the
+section on merging for details.
+
+** Upload newer local files
+
+Enumerate the records in the local database and compare the vector
+clocks with the remote vector clocks.  If this is done with the same
+set of data as the previous steps then there cannot be any conflicts.
+If we rescan the IMAP folder it is possible that we will discover
+conflicts; conflicts are ignored and will be fixed in the next sync
+session.
+
+If the local vector clock is unambiguously newer than the remote then
+the remote file is moved to the ancestors folder on the remote and the
+local file uploaded to the current folder on the remote with a subject
+line that records the note id and the vector clocks.
+
+** Merging
+
+A three way merge is performed.  The ancestor file is the
+corresponding file from the ancestors folder that has the greatest
+vector clock that is unambiguously older than both the remote and
+local files.
+
+If there are conflicts then both texts survive.
+
+Initially
+

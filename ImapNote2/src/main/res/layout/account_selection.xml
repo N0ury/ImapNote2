@@ -159,6 +159,13 @@
             android:layout_height="wrap_content"
             android:text="@string/use_sticky_notes" />
 
+
+        <CheckBox
+            android:id="@+id/automaticMergeCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Store versions of the notes so that they can be edited on several devices at the same time and merged together" />
+
         <!-- <Button
             android:id="@+id/loginButton"
             android:layout_width="fill_parent"
