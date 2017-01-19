@@ -55,7 +55,6 @@ public class SyncUtils {
     private static String sfolder = "Notes";
     @Nullable
     private static Folder notesFolder = null;
-    private static final ImapNotes2Result res = new ImapNotes2Result();
     private static Long UIDValidity;
     //private final static int NEW = 1;
     //private final static int DELETED = 2;
@@ -69,6 +68,7 @@ public class SyncUtils {
                                             @NonNull Security security,
                                             @NonNull String folderOverride) {
         Log.d(TAG,"ConnectToRemote: " + username);
+        //final ImapNotes2Result res = new ImapNotes2Result();
         if (IsConnected()) {
             try {
                 store.close();
@@ -86,9 +86,13 @@ public class SyncUtils {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
-            res.errorMessage = "Can't connect to server: " + e.getMessage();
-            res.returnCode = Imaper.ResultCodeCantConnect;
-            return res;
+            return new ImapNotes2Result(Imaper.ResultCodeCantConnect,
+                    "Can't connect to server: " + e.getMessage(),
+                    -1,
+                    null);
+            //res.errorMessage = "Can't connect to server: " + e.getMessage();
+            //res.returnCode = Imaper.ResultCodeCantConnect;
+            //return res;
         }
 
         Properties props = new Properties();
@@ -134,6 +138,8 @@ public class SyncUtils {
             Folder[] folders = store.getPersonalNamespaces();
             Folder folder = folders[0];
 //Log.d(TAG,"Personal Namespaces="+folder.getFullName());
+            // TODO: this the wrong place to make decisions about the name of the notes folder that
+            // should be done where it is created.
             if (folderOverride.length() > 0) {
                 sfolder = folderOverride;
             } else if (folder.getFullName().length() == 0) {
@@ -144,16 +150,24 @@ public class SyncUtils {
             }
             // Get UIDValidity
             notesFolder = store.getFolder(sfolder);
-            res.UIDValidity = ((IMAPFolder) notesFolder).getUIDValidity();
-            res.errorMessage = "";
-            res.returnCode = Imaper.ResultCodeSuccess;
-            res.notesFolder = notesFolder;
-            return res;
+            return new ImapNotes2Result(Imaper.ResultCodeSuccess,
+                    "",
+                    ((IMAPFolder) notesFolder).getUIDValidity(),
+                    notesFolder);
+            //res.UIDValidity = ((IMAPFolder) notesFolder).getUIDValidity();
+            //res.errorMessage = "";
+            //res.returnCode = Imaper.ResultCodeSuccess;
+            //res.notesFolder = notesFolder;
+            //return res;
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
-            res.errorMessage = e.getMessage();
-            res.returnCode = Imaper.ResultCodeException;
-            return res;
+            return new ImapNotes2Result(Imaper.ResultCodeException,
+                    e.getMessage(),
+                    -1,
+                    null);
+            //res.errorMessage = e.getMessage();
+            //res.returnCode = Imaper.ResultCodeException;
+            //return res;
         }
 
     }
@@ -608,12 +622,12 @@ public class SyncUtils {
     }
 
     static boolean handleRemoteNotes(@NonNull Context context,
-                                     @NonNull Folder notesFolder,
+                                     @NonNull javax.mail.Folder remoteIMAPNotesFolder,
                                      @NonNull Db storedNotes,
                                      @NonNull String accountName,
                                      @NonNull String usesticky)
             throws MessagingException, IOException {
-        Log.d(TAG,"handleRemoteNotes: " + notesFolder.getFullName() + " " + accountName + " " + usesticky);
+        Log.d(TAG,"handleRemoteNotes: " + remoteIMAPNotesFolder.getFullName() + " " + accountName + " " + usesticky);
 
         Message notesMessage;
         boolean result = false;
@@ -623,11 +637,11 @@ public class SyncUtils {
         String localInternaldate;
         //Flags flags;
 
-        if (notesFolder.isOpen()) {
-            if ((notesFolder.getMode() & Folder.READ_ONLY) != 0)
-                notesFolder.open(Folder.READ_WRITE);
+        if (remoteIMAPNotesFolder.isOpen()) {
+            if ((remoteIMAPNotesFolder.getMode() & Folder.READ_ONLY) != 0)
+                remoteIMAPNotesFolder.open(Folder.READ_WRITE);
         } else {
-            notesFolder.open(Folder.READ_WRITE);
+            remoteIMAPNotesFolder.open(Folder.READ_WRITE);
         }
 
         // Get local list of notes uids
@@ -641,16 +655,16 @@ public class SyncUtils {
         }
 
         // Add to local device, new notes added to remote
-        Message[] notesMessages = ((IMAPFolder) notesFolder).getMessagesByUID(1, UIDFolder.LASTUID);
+        Message[] notesMessages = ((IMAPFolder) remoteIMAPNotesFolder).getMessagesByUID(1, UIDFolder.LASTUID);
         for (int index = notesMessages.length - 1; index >= 0; index--) {
             notesMessage = notesMessages[index];
-            Long uid = ((IMAPFolder) notesFolder).getUID(notesMessage);
+            Long uid = ((IMAPFolder) remoteIMAPNotesFolder).getUID(notesMessage);
             // Get FLAGS
             //flags = notesMessage.getFlags();
             boolean deleted = notesMessage.isSet(Flags.Flag.DELETED);
             // Builds remote list while in the loop, but only if not deleted on remote
             if (!deleted) {
-                uids.add(((IMAPFolder) notesFolder).getUID(notesMessage));
+                uids.add(((IMAPFolder) remoteIMAPNotesFolder).getUID(notesMessage));
             }
             String suid = uid.toString();
             if (!(localListOfNotes.contains(suid))) {

@@ -391,7 +391,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         }
 
         private void setUserData(@NonNull AccountManager am,
-                                 Account account) {
+                                 @NonNull Account account) {
             am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());
             am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.GetServer());
             am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.GetPortnum());
@@ -401,7 +401,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
         }
 
-        protected void onPostExecute(Result result) {
+        protected void onPostExecute(@NonNull Result result) {
             if (result.succeeded) {
                 //accountConfigurationActivity.settings.Clear();
                 accountConfigurationActivity.accountnameTextView.setText("");

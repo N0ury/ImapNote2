@@ -6,13 +6,24 @@ import javax.mail.Folder;
 
 public class ImapNotes2Result {
 
-    public int returnCode;
-    public String errorMessage;
-    public Long UIDValidity;
+    public final int returnCode;
+    public final String errorMessage;
+    public final Long UIDValidity;
     // --Commented out by Inspection (11/26/16 11:45 PM):public boolean hasUIDPLUS;
     @Nullable
-    public Folder notesFolder;
+    public final Folder notesFolder;
 
+    public ImapNotes2Result(int returnCode,
+                            String errorMessage,
+                            long UIDValidity,
+                            Folder notesFolder) {
+        this.returnCode = returnCode;
+        this.errorMessage = errorMessage ;
+        this.UIDValidity = UIDValidity ;
+        this.notesFolder = notesFolder;
+    }
+
+/*
     public ImapNotes2Result() {
         returnCode = -1;
         errorMessage = "";
@@ -20,4 +31,6 @@ public class ImapNotes2Result {
         //hasUIDPLUS = true;
         notesFolder = null;
     }
+*/
+
 }
