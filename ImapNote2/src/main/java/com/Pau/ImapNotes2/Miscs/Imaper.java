@@ -34,7 +34,7 @@ public class Imaper {
             store.close();
         }
 
-        ImapNotes2Result res = new ImapNotes2Result();
+        //ImapNotes2Result res = new ImapNotes2Result();
         String proto = security.proto;
         boolean acceptcrt = security.acceptcrt;
 /*        int security_i = Integer.parseInt(security);
@@ -74,9 +74,13 @@ public class Imaper {
             sf = new MailSSLSocketFactory();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
-            res.errorMessage = "Can't connect to server";
-            res.returnCode = -1;
-            return res;
+            return new ImapNotes2Result(-1,
+                    "Can't connect to server",
+                    -1,
+                    null);
+            //res.errorMessage = "Can't connect to server";
+            //res.returnCode = -1;
+            //return res;
         }
 
         Properties props = new Properties();
@@ -138,15 +142,24 @@ public class Imaper {
                 Imaper.sfolder = folder.getFullName() + separator + "Notes";
             }
 */
-            res.errorMessage = "";
-            res.returnCode = ResultCodeSuccess;
-            return res;
+            return new ImapNotes2Result(ResultCodeSuccess,
+                    "",
+                    -1,
+                    null);
+
+                    //res.errorMessage = "";
+            //res.returnCode = ResultCodeSuccess;
+            //return res;
         } catch (Exception e) {
             e.printStackTrace();
             Log.d(TAG, e.getMessage());
-            res.errorMessage = e.getMessage();
-            res.returnCode = ResultCodeException;
-            return res;
+            return new ImapNotes2Result(ResultCodeException,
+                    e.getMessage(),
+                    -1,
+                    null);
+                    //res.errorMessage = e.getMessage();
+            //res.returnCode = ResultCodeException;
+            //return res;
         }
 
     }

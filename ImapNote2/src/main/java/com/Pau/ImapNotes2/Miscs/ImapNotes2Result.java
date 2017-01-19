@@ -1,5 +1,6 @@
 package com.Pau.ImapNotes2.Miscs;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import javax.mail.Folder;
@@ -7,6 +8,7 @@ import javax.mail.Folder;
 public class ImapNotes2Result {
 
     public final int returnCode;
+    @NonNull
     public final String errorMessage;
     public final Long UIDValidity;
     // --Commented out by Inspection (11/26/16 11:45 PM):public boolean hasUIDPLUS;
