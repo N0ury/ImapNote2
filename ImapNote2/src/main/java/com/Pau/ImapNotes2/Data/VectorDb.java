@@ -44,10 +44,11 @@ class VectorDb {
 
         private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
                 + TABLE_NAME
+                + " ("
                 + COL_FILE_PATH + " text not null, "
                 + COL_CLOCK + " text not null, "
-                + COL_ACCOUNT_NAME + " text not null),"
-                + "PRIMARY KEY (" + COL_FILE_PATH + ", " + COL_ACCOUNT_NAME + ");";
+                + COL_ACCOUNT_NAME + " text not null, "
+                + " PRIMARY KEY (" + COL_FILE_PATH + ", " + COL_ACCOUNT_NAME + "));";
 
 
         VectorTable() {

@@ -390,6 +390,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             }
         }
 
+
         private void setUserData(@NonNull AccountManager am,
                                  @NonNull Account account) {
             am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.GetUsername());

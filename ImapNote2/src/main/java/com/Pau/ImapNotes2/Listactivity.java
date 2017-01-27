@@ -427,16 +427,6 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         ImapNotes2Account imapNotes2Account = Listactivity.imapNotes2Account;
         imapNotes2Account.SetAccount(account, getApplicationContext());
-        //imapNotes2Account.SetAccountname(account.name);
-        //imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
-        //String pwd = Listactivity.accountManager.getPassword(account);
-        //imapNotes2Account.SetPassword(pwd);
-        //imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Server));
-        //imapNotes2Account.SetPortnum(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.PortNumber));
-        //imapNotes2Account.SetSecurity(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Security));
-        //imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
-        //imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
-        //imapNotes2Account.SetaccountHasChanged();
         this.RefreshList();
     }
 

@@ -24,6 +24,8 @@ public class Imaper {
     public static final int ResultCodeException = -2;
     public static final int ResultCodeCantConnect = -1;
 
+
+
     @NonNull
     public ImapNotes2Result ConnectToProvider(String username,
                                               String password,
@@ -34,41 +36,6 @@ public class Imaper {
             store.close();
         }
 
-        //ImapNotes2Result res = new ImapNotes2Result();
-        String proto = security.proto;
-        boolean acceptcrt = security.acceptcrt;
-/*        int security_i = Integer.parseInt(security);
-        switch (security_i) {
-            case 0:
-                // None
-                proto = "imap";
-                acceptcrt = "";
-                break;
-            case 1:
-                // SSL/TLS
-                proto = "imaps";
-                acceptcrt = "false";
-                break;
-            case 2:
-                // SSL/TLS/TRUST ALL
-                proto = "imaps";
-                acceptcrt = "true";
-                break;
-            case 3:
-                // STARTTLS
-                proto = "imap";
-                acceptcrt = "false";
-                break;
-            case 4:
-                // STARTTLS/TRUST ALL
-                proto = "imap";
-                acceptcrt = "true";
-                break;
-////////////////////// Change this
-            default:
-                proto = "Invalid proto";
-                break;
-        }*/
         MailSSLSocketFactory sf;
         try {
             sf = new MailSSLSocketFactory();
@@ -78,10 +45,9 @@ public class Imaper {
                     "Can't connect to server",
                     -1,
                     null);
-            //res.errorMessage = "Can't connect to server";
-            //res.returnCode = -1;
-            //return res;
         }
+
+        String proto = security.proto;
 
         Properties props = new Properties();
 
@@ -89,7 +55,7 @@ public class Imaper {
         props.setProperty(String.format("mail.%s.port", proto), portnum);
         props.setProperty("mail.store.protocol", proto);
 
-        if (acceptcrt) {
+        if (security.acceptcrt) {
             sf.setTrustedHosts(new String[]{server});
             if (proto.equals("imap")) {
                 props.put("mail.imap.ssl.socketFactory", sf);
@@ -127,29 +93,11 @@ public class Imaper {
         store = session.getStore(proto);
         try {
             store.connect(server, username, password);
-            //Boolean hasUIDPLUS = ((IMAPStore) store).hasCapability("UIDPLUS");
-//Log.d(TAG, "has UIDPLUS="+hasUIDPLUS);
 
-            //Folder[] folders = store.getPersonalNamespaces();
-            //Folder folder = folders[0];
-//Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-            /*if (folderoverride.length() > 0) {
-                Imaper.sfolder = folderoverride;
-            } else if (folder.getFullName().length() == 0) {
-                Imaper.sfolder = "Notes";
-            } else {
-                char separator = folder.getSeparator();
-                Imaper.sfolder = folder.getFullName() + separator + "Notes";
-            }
-*/
             return new ImapNotes2Result(ResultCodeSuccess,
                     "",
                     -1,
                     null);
-
-                    //res.errorMessage = "";
-            //res.returnCode = ResultCodeSuccess;
-            //return res;
         } catch (Exception e) {
             e.printStackTrace();
             Log.d(TAG, e.getMessage());
@@ -157,36 +105,11 @@ public class Imaper {
                     e.getMessage(),
                     -1,
                     null);
-                    //res.errorMessage = e.getMessage();
-            //res.returnCode = ResultCodeException;
-            //return res;
         }
-
     }
 
     private boolean IsConnected() {
         return store != null && store.isConnected();
     }
 
-// --Commented out by Inspection START (11/26/16 11:44 PM):
-//    // Put values in shared preferences:
-//    public void SetPrefs() {
-//        SharedPreferences preferences = ImapNotes2k.getAppContext().getSharedPreferences(Listactivity.imapNotes2Account.GetAccountName(), Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putString("Name", "valid_data");
-//        editor.putLong("UIDValidity", UIDValidity);
-//        editor.apply();
-//    }
-// --Commented out by Inspection STOP (11/26/16 11:44 PM)
-
-// --Commented out by Inspection START (11/26/16 11:44 PM):
-//    // Retrieve values from shared preferences:
-//    public void GetPrefs() {
-//        SharedPreferences preferences = (ImapNotes2k.getAppContext()).getSharedPreferences(Listactivity.imapNotes2Account.GetAccountName(), Context.MODE_PRIVATE);
-//        String name = preferences.getString("Name", "");
-//        if (!name.equalsIgnoreCase("")) {
-//            UIDValidity = preferences.getLong("UIDValidity", -1);
-//        }
-//    }
-// --Commented out by Inspection STOP (11/26/16 11:44 PM)
 }
