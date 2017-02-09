@@ -34,7 +34,7 @@ class VectorDb {
 
     class VectorTable {
 
-        private static final String TAG = "IN_FileTable";
+        private static final String TAG = "IN_VectorTable";
 
         private static final String COL_FILE_PATH = "filepath";
         private static final String COL_CLOCK= "clock";

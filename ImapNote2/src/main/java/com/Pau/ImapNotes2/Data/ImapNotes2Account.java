@@ -39,6 +39,28 @@ public class ImapNotes2Account {
     public ImapNotes2Account() {
     }
 
+    public ImapNotes2Account(String accountname,
+                             String username,
+                             String password,
+                             String server,
+                             String portnum,
+                             Security security,
+                             boolean usesticky,
+                             boolean usesAutomaticMerge,
+                             String syncinterval,
+                             String folderName) {
+
+        this.accountName = accountname;
+        this.username = username;
+        this.password = password;
+        this.server = server;
+        this.security = security;
+        this.portnum = portnum;
+        this.usesticky = usesticky;
+        this.usesAutomaticMerge = usesAutomaticMerge;
+        this.imapfolder = folderName;
+    }
+
     private File dirForNewFiles;
 
     private File dirForDeletedFiles;
