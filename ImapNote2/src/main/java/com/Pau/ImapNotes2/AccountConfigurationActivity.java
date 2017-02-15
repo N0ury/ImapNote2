@@ -32,6 +32,7 @@ import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.Security;
 import com.Pau.ImapNotes2.Miscs.ImapNotes2Result;
 import com.Pau.ImapNotes2.Miscs.Imaper;
+import com.Pau.ImapNotes2.Miscs.Result;
 
 import java.util.List;
 
@@ -270,8 +271,6 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     // DoLogin method is defined in account_selection.xml (account_selection layout)
     private void DoLogin() {
-        ProgressDialog loadingDialog = ProgressDialog.show(this, getString(R.string.app_name),
-                getString(R.string.logging_in), true);
         ImapNotes2Account imapNotes2Account = new ImapNotes2Account(
                 GetTextViewText(accountnameTextView),
                 GetTextViewText(usernameTextView),
@@ -287,40 +286,58 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         // possible to remove all characters which causes the program to crash.  The easiest fix is
         // to add a zero at the beginning so that we are guaranteed to be able to parse it but that
         // leaves us with a zero sync. interval.
-        long SYNC_FREQUENCY = Long.parseLong(GetTextViewText(syncintervalTextView), 10) * 60;
-        new LoginThread(
-                imapNotes2Account,
-                loadingDialog,
-                this,
-                action,
-                SYNC_FREQUENCY).execute();
+        Result<Integer> synchronizationInterval = GetSynchronizationInterval();
+        if (synchronizationInterval.succeeded) {
+
+            new LoginThread(
+                    imapNotes2Account,
+                    this,
+                    action,
+                    synchronizationInterval.result).execute();
+        }
     }
 
-    class LoginThread extends AsyncTask<Void, Void, LoginThread.Result> {
+    Result<Integer> GetSynchronizationInterval() {
+        String syncInterval = GetTextViewText(syncintervalTextView).trim();
+        int syncIntervalInt = 0;
+        boolean status = false;
+        try {
+            syncIntervalInt = Integer.parseInt(GetTextViewText(syncintervalTextView), 10) * 60;
+            if (syncIntervalInt <= 0) {
+                Toast.makeText(this, "Synchronization interval must be greater than zero: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
+            }
+        }catch (NumberFormatException e){
+            Toast.makeText(this, "Synchronization interval is invalid: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
+        }
+        return new Result(syncIntervalInt, status);
+    }
+
+    class LoginThread extends AsyncTask<Void, Void, Result<String>> {
 
         private final ImapNotes2Account imapNotes2Account;
         private final ProgressDialog progressDialog;
-        private final long SYNC_FREQUENCY;
+        private final long synchronizationInterval;
 
         private final AccountConfigurationActivity accountConfigurationActivity;
-        //@NonNull
-        //private ImapNotes2Result res = new ImapNotes2Result();
- //       @NonNull
-   //     private final String statusMessage;
+
         private final Actions action;
 
         LoginThread(ImapNotes2Account imapNotes2Account,
-                    ProgressDialog loadingDialog,
                     AccountConfigurationActivity accountConfigurationActivity,
                     Actions action,
-                    long SYNC_FREQUENCY) {
+                    long synchronizationInterval) {
             this.imapNotes2Account = imapNotes2Account;
-            this.progressDialog = loadingDialog;
+            //this.progressDialog = loadingDialog;
             this.accountConfigurationActivity = accountConfigurationActivity;
             this.action = action;
-            this.SYNC_FREQUENCY = SYNC_FREQUENCY;
+            this.synchronizationInterval = synchronizationInterval;
+            this.progressDialog = ProgressDialog.show(accountConfigurationActivity,
+                    getString(R.string.app_name),
+                    getString(R.string.logging_in),
+                    true);
 
         }
+/*
 
         class Result{
             final String message;
@@ -332,8 +349,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 this.succeeded = succeeded;
             }
         }
+*/
         @NonNull
-        protected Result doInBackground(Void... none) {
+        protected Result<String> doInBackground(Void... none) {
             //action = (String) stuffs[ParamAction];
             try {
                 //ImapNotes2Account imapNotes2Account= ((ImapNotes2Account) stuffs[ParamImapNotes2Account]);
@@ -348,7 +366,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 if (res.returnCode == Imaper.ResultCodeSuccess) {
                     // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().
                     Account account = new Account(imapNotes2Account.GetAccountName(), "com.Pau.ImapNotes2");
-                    //long SYNC_FREQUENCY = (long) stuffs[ParamSyncPeriod];
+                    //long synchronizationInterval = (long) stuffs[ParamSyncPeriod];
                     AccountManager am = AccountManager.get(accountConfigurationActivity);
                     accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                     //Bundle result;
@@ -361,7 +379,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                         // Run the Sync Adapter Periodically
                         ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                         ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-                        ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
+                        ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), synchronizationInterval);
                         return new Result("Account has been modified", true);
                     } else {
                         if (am.addAccountExplicitly(account, imapNotes2Account.GetPassword(), null)) {
@@ -374,7 +392,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                             // Run the Sync Adapter Periodically
                             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-                            ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), SYNC_FREQUENCY);
+                            ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), synchronizationInterval);
                             return new Result(getString(R.string.account_added), true);
                         } else {
                             return new Result(getString(R.string.account_already_exists_or_is_null), false);
@@ -403,7 +421,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.GetFoldername());
         }
 
-        protected void onPostExecute(@NonNull Result result) {
+        protected void onPostExecute(@NonNull Result<String> result) {
             if (result.succeeded) {
                 //accountConfigurationActivity.settings.Clear();
                 accountConfigurationActivity.accountnameTextView.setText("");
@@ -416,7 +434,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 accountConfigurationActivity.folderTextView.setText("");
                 accountConfigurationActivity.stickyCheckBox.setChecked(false);
             }
-            final Toast tag = Toast.makeText(getApplicationContext(), result.message, Toast.LENGTH_LONG);
+            final Toast tag = Toast.makeText(getApplicationContext(), result.result, Toast.LENGTH_LONG);
             tag.show();
             new CountDownTimer(5000, 1000) {
                 public void onTick(long millisUntilFinished) {
