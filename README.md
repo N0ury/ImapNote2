@@ -1,6 +1,10 @@
 imapnote2k
 ==========
 
+Notes
+------------------
+Added travis.  Don't really know how it works yet.
+
 Notes on this fork
 ------------------
 
