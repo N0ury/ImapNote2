@@ -199,13 +199,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "ConnectToRemote");
         AccountManager am = AccountManager.get(applicationContext);
         ImapNotes2Result res = SyncUtils.ConnectToRemote(
-                account.GetUsername(),
+                account.username,
                 //am.getUserData(account.GetAccount(), ConfigurationFieldNames.UserName),
                 am.getPassword(account.GetAccount()),
                 am.getUserData(account.GetAccount(), ConfigurationFieldNames.Server),
                 am.getUserData(account.GetAccount(), ConfigurationFieldNames.PortNumber),
                 Security.from(am.getUserData(account.GetAccount(), ConfigurationFieldNames.Security)),
-                am.getUserData(account.GetAccount(), ConfigurationFieldNames.ImapFolder));
+                account.imapfolder);
         if (res.returnCode != ResultCodeSuccess) {
             // TODO: Notify the user?
             Log.d(TAG, "Connection problem: " + res.errorMessage);

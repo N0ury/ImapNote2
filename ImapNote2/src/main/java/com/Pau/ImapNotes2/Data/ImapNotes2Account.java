@@ -15,42 +15,39 @@ import java.io.IOException;
 public class ImapNotes2Account {
 
     private static final String TAG = "IN_ImapNotes2Account";
-    private String accountName = "";
-    // TODO: Why are the username, password, etc. nullable?
     @NonNull
-    private String username = "";
+    private final String accountName;
     @NonNull
-    private String password = "";
+    public final String username;
     @NonNull
-    private String server = "";
+    public final String password;
     @NonNull
-    private String portnum = "";
+    public final String server;
     @NonNull
-    private Security security = Security.None;
-    private boolean usesticky = false;
-    private String syncInterval = "15";
+    public final String portnum;
     @NonNull
-    private String imapfolder = "";
+    public final Security security;
+    public final boolean usesticky;
+    public final String syncInterval;
+    @NonNull
+    public final String imapfolder;
     @Nullable
-    private Account account = null;
+    private final Account account;
     private boolean usesAutomaticMerge = false;
 
 
-    public ImapNotes2Account() {
-    }
-
-    public ImapNotes2Account(String accountname,
-                             String username,
-                             String password,
-                             String server,
-                             String portnum,
-                             Security security,
+    public ImapNotes2Account(String accountName,
+                             @NonNull String username,
+                             @NonNull String password,
+                             @NonNull String server,
+                             @NonNull String portnum,
+                             @NonNull Security security,
                              boolean usesticky,
                              boolean usesAutomaticMerge,
                              String syncinterval,
-                             String folderName) {
-
-        this.accountName = accountname;
+                             @NonNull String folderName) {
+        account = null;
+        this.accountName = accountName;
         this.username = username;
         this.password = password;
         this.server = server;
@@ -59,6 +56,7 @@ public class ImapNotes2Account {
         this.usesticky = usesticky;
         this.usesAutomaticMerge = usesAutomaticMerge;
         this.imapfolder = folderName;
+        this.syncInterval = syncinterval;
     }
 
     private File dirForNewFiles;
@@ -67,19 +65,23 @@ public class ImapNotes2Account {
 
     private File rootDir;
 
-    private ImapNotes2Account(@NonNull String accountName,
-                              @NonNull Context applicationContext) {
-        this.accountName = accountName;
-        rootDir = new File(applicationContext.getFilesDir(), accountName);
-        dirForNewFiles= new File(rootDir, "new");
-        dirForDeletedFiles= new File(rootDir, "deleted");
-    }
-
     public ImapNotes2Account(@NonNull Account account,
                              @NonNull Context applicationContext) {
-        this(account.name, applicationContext);
-        SetAccount(account, applicationContext);
+        this.accountName = account.name;
+        rootDir = new File(applicationContext.getFilesDir(), accountName);
+        dirForNewFiles = new File(rootDir, "new");
+        dirForDeletedFiles = new File(rootDir, "deleted");
 
+        this.account = account;
+        AccountManager am = AccountManager.get(applicationContext);
+        syncInterval = am.getUserData(account, ConfigurationFieldNames.SyncInterval);
+        username = am.getUserData(account, ConfigurationFieldNames.UserName);
+        password = am.getPassword(account);
+        server = am.getUserData(account, ConfigurationFieldNames.Server);
+        portnum = am.getUserData(account, ConfigurationFieldNames.PortNumber);
+        security = Security.from(am.getUserData(account, ConfigurationFieldNames.Security));
+        usesticky = "true".equals(am.getUserData(account, ConfigurationFieldNames.UseSticky));
+        imapfolder = am.getUserData(account, ConfigurationFieldNames.ImapFolder);
     }
 
 
@@ -113,31 +115,15 @@ public class ImapNotes2Account {
         return accountName;
     }
 
-    public void SetAccount(@NonNull Account account,
-                           Context applicationContext) {
-        this.account = account;
-        SetAccountname(account.name);
-        AccountManager am = AccountManager.get(applicationContext);
-        username = am.getUserData(account, ConfigurationFieldNames.UserName);
-        syncInterval = am.getUserData(account, ConfigurationFieldNames.SyncInterval);
-        String pwd = am.getPassword(account);
-        SetPassword(pwd);
-        SetServer(am.getUserData(account, ConfigurationFieldNames.Server));
-        SetPortnum(am.getUserData(account, ConfigurationFieldNames.PortNumber));
-        SetSecurity(am.getUserData(account, ConfigurationFieldNames.Security));
-        SetUsesticky("true".equals(am.getUserData(account, ConfigurationFieldNames.UseSticky)));
-        //SetSyncinterval(am.getUserData(account, ConfigurationFieldNames.SyncInterval));
-        //SetaccountHasChanged();
-    }
-
     @Nullable
     public Account GetAccount() {
         return this.account;
     }
 
-    public void SetAccountname(String accountName) {
-        this.accountName = accountName;
-    }
+    //public void SetAccountname(String accountName) {
+    //    this.accountName = accountName;
+    //}
+/*
 
     @NonNull
     public String GetUsername() {
@@ -147,8 +133,9 @@ public class ImapNotes2Account {
     public void SetUsername(@NonNull String Username) {
         this.username = Username;
     }
+*/
 
-    @NonNull
+  /*  @NonNull
     public String GetPassword() {
         return this.password;
     }
@@ -166,8 +153,8 @@ public class ImapNotes2Account {
     public void SetServer(@NonNull String Server) {
         this.server = Server;
     }
-
-    @NonNull
+*/
+  /*  @NonNull
     public String GetPortnum() {
         return this.portnum;
     }
@@ -195,18 +182,18 @@ public class ImapNotes2Account {
     public boolean GetUsesticky() {
         return this.usesticky;
     }
-
-    public void SetUsesticky(boolean Usesticky) {
-        this.usesticky = Usesticky;
-    }
+*/
+    //public void SetUsesticky(boolean Usesticky) {
+    //    this.usesticky = Usesticky;
+    //}
 
     public String GetSyncinterval() {
         return this.syncInterval;
     }
 
-    public void SetSyncinterval(String Syncinterval) {
-        this.syncInterval = Syncinterval;
-    }
+    //public void SetSyncinterval(String Syncinterval) {
+    //    this.syncInterval = Syncinterval;
+    //}
 
     /*
     public void SetaccountHasNotChanged() {
@@ -221,12 +208,13 @@ public class ImapNotes2Account {
     }
 */
 
+/*
     @Nullable
     public String GetFoldername() {
         return this.imapfolder;
     }
 
-    public void SetFoldername(@NonNull String folder) {
+    private void SetFolderName(@NonNull String folder) {
         this.imapfolder = folder;
     }
 
@@ -236,6 +224,7 @@ public class ImapNotes2Account {
     public void SetUsesAutomaticMerge(boolean usesAutomaticMerge) {
         this.usesAutomaticMerge = usesAutomaticMerge;
     }
+*/
 
 /*
     public void Clear() {

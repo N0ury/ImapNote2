@@ -135,7 +135,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         this.accountSpinner.setOnItemSelectedListener(this);
 
-        imapNotes2Account = new ImapNotes2Account();
+        //imapNotes2Account = new ImapNotes2Account();
         Listactivity.accountManager = AccountManager.get(getApplicationContext());
         Listactivity.accountManager.addOnAccountsUpdatedListener(
                 new AccountsUpdateListener(), null, true);
@@ -425,8 +425,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             }
         }
 
-        ImapNotes2Account imapNotes2Account = Listactivity.imapNotes2Account;
-        imapNotes2Account.SetAccount(account, getApplicationContext());
+        Listactivity.imapNotes2Account = new ImapNotes2Account(account, getApplicationContext());
         this.RefreshList();
     }
 

@@ -136,17 +136,17 @@ public class SyncUtils {
 //Log.d(TAG, "has UIDPLUS="+res.hasUIDPLUS);
 
             Folder[] folders = store.getPersonalNamespaces();
-            Folder folder = folders[0];
-//Log.d(TAG,"Personal Namespaces="+folder.getFullName());
-            // TODO: this the wrong place to make decisions about the name of the notes folder that
+            Folder rootFolder = folders[0];
+            Log.d(TAG, "Personal Namespaces=" + rootFolder.getFullName());
+            // TODO: this the wrong place to make decisions about the name of the notes folder, that
             // should be done where it is created.
             if (folderOverride.length() > 0) {
                 sfolder = folderOverride;
-            } else if (folder.getFullName().length() == 0) {
+            } else if (rootFolder.getFullName().length() == 0) {
                 sfolder = "Notes";
             } else {
-                char separator = folder.getSeparator();
-                sfolder = folder.getFullName() + separator + "Notes";
+                char separator = rootFolder.getSeparator();
+                sfolder = rootFolder.getFullName() + separator + "Notes";
             }
             // Get UIDValidity
             notesFolder = store.getFolder(sfolder);
