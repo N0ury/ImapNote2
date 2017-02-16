@@ -37,7 +37,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.Pau.ImapNotes2.Data.ConfigurationFieldNames;
 import com.Pau.ImapNotes2.Data.Db;
 import com.Pau.ImapNotes2.Data.ImapNotes2Account;
 import com.Pau.ImapNotes2.Data.OneNote;
@@ -175,7 +174,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 Log.d(TAG, "onItemClick");
                 Intent toDetail = new Intent(widget.getContext(), NoteDetailActivity.class);
                 toDetail.putExtra(NoteDetailActivity.selectedNote, (OneNote) parent.getItemAtPosition(selectedNote));
-                toDetail.putExtra(NoteDetailActivity.useSticky, Listactivity.imapNotes2Account.GetUsesticky());
+                toDetail.putExtra(NoteDetailActivity.useSticky, Listactivity.imapNotes2Account.usesticky);
                 startActivityForResult(toDetail, SEE_DETAIL);
                 Log.d(TAG, "onItemClick, back from detail.");
 
@@ -269,7 +268,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                             String noteBody,
                             Colors color,
                             UpdateThread.Action action) {
-        if (Listactivity.imapNotes2Account.GetUsesAutomaticMerge()) {
+        if (Listactivity.imapNotes2Account.usesAutomaticMerge) {
             new UpdateThread(Listactivity.imapNotes2Account,
                     noteList,
                     listToView,
@@ -346,7 +345,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 return true;
             case R.id.newnote:
                 Intent toNew = new Intent(this, NewNoteActivity.class);
-                toNew.putExtra(NewNoteActivity.usesSticky, Listactivity.imapNotes2Account.GetUsesticky());
+                toNew.putExtra(NewNoteActivity.usesSticky, Listactivity.imapNotes2Account.usesticky);
                 startActivityForResult(toNew, Listactivity.NEW_BUTTON);
                 return true;
             case R.id.about:
@@ -445,8 +444,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
 
         if (Listactivity.currentList.size() == 1) {
             Account account = Listactivity.accounts[0];
-            ImapNotes2Account imapNotes2Account = Listactivity.imapNotes2Account;
-            imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
+            Listactivity.imapNotes2Account = new ImapNotes2Account(account, getApplicationContext());
+/*            imapNotes2Account.SetUsername(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.UserName));
             String pwd = Listactivity.accountManager.getPassword(account);
             imapNotes2Account.SetPassword(pwd);
             imapNotes2Account.SetServer(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.Server));
@@ -455,6 +454,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             imapNotes2Account.SetUsesticky("true".equals(accountManager.getUserData(account, ConfigurationFieldNames.UseSticky)));
             imapNotes2Account.SetSyncinterval(Listactivity.accountManager.getUserData(account, ConfigurationFieldNames.SyncInterval));
             //imapNotes2Account.SetaccountHasChanged();
+ */
         }
     }
 

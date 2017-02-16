@@ -33,7 +33,7 @@ public class ImapNotes2Account {
     public final String imapfolder;
     @Nullable
     private final Account account;
-    private boolean usesAutomaticMerge = false;
+    public boolean usesAutomaticMerge = false;
 
 
     public ImapNotes2Account(String accountName,

@@ -117,7 +117,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 String[] tok = Html.fromHtml(noteBody).toString().split("\n", 2);
                 String title = tok[0];
                 //String position = "0 0 0 0";
-                String body = (imapNotes2Account.GetUsesticky()) ?
+                String body = (imapNotes2Account.usesticky) ?
                         noteTxt.replaceAll("\n", "\\\\n") :
                         "<html><head></head><body>" + noteBody + "</body></html>";
 
@@ -135,8 +135,8 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 // Must be done AFTER uid has been set in currenteNote
                 Log.d(TAG, "doInBackground body: " + body);
                 WriteMailToNew(currentNote,
-                        imapNotes2Account.GetUsesticky(),
-                        imapNotes2Account.GetUsesAutomaticMerge(),
+                        imapNotes2Account.usesticky,
+                        imapNotes2Account.usesAutomaticMerge,
                         body);
                 storedNotes.notes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountName());
                 storedNotes.CloseDb();

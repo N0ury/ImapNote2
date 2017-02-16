@@ -1,8 +1,9 @@
+package com.Pau.ImapNotes2.Merge;
 
-static class M {
+class M {
 
 
-    // takes 2 indexable objects (e.g. strings or lists)
+  /*  // takes 2 indexable objects (e.g. strings or lists)
 // returns a list of Change objects (Delete or Insert)
 // guaranteed to produce an optimal diff
     List<Change> str_diff(String a,
@@ -71,4 +72,5 @@ static class M {
 
         return changes
     }
+*/
 }
