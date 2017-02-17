@@ -93,6 +93,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Login Button
+            Log.d(TAG, "clickListenerLogin  onClick");
             CheckNameAndLogIn();
         }
     };
@@ -101,6 +102,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         @Override
         public void onClick(View v) {
             // Click on Edit Button
+            Log.d(TAG, "clickListenerEdit onClick");
             CheckNameAndLogIn();
         }
     };
@@ -237,6 +239,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             securitySpinner.setSelection(security.ordinal());
             Button buttonEdit = new Button(this);
             buttonEdit.setText(R.string.save);
+            Log.d(TAG, "Set onclick listener edit");
             buttonEdit.setOnClickListener(clickListenerEdit);
             layout.addView(buttonEdit);
             Button buttonRemove = new Button(this);
@@ -247,6 +250,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             // Here we have to create a new account
             Button buttonView = new Button(this);
             buttonView.setText(R.string.check_and_create_account);
+            Log.d(TAG, "Set onclick listener login");
             buttonView.setOnClickListener(clickListenerLogin);
             layout.addView(buttonView);
         }
@@ -267,6 +271,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     // DoLogin method is defined in account_selection.xml (account_selection layout)
     private void DoLogin() {
+        Log.d(TAG, "DoLogin");
         ImapNotes2Account imapNotes2Account = new ImapNotes2Account(
                 GetTextViewText(accountnameTextView),
                 GetTextViewText(usernameTextView),
@@ -298,9 +303,12 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         int syncIntervalInt = 0;
         boolean status = false;
         try {
+            Log.d(TAG, "GetSynchronizationInterval: " + syncInterval);
             syncIntervalInt = Integer.parseInt(GetTextViewText(syncintervalTextView), 10) * 60;
             if (syncIntervalInt <= 0) {
                 Toast.makeText(this, "Synchronization interval must be greater than zero: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
+            } else {
+                status = true;
             }
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Synchronization interval is invalid: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
