@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     private TextView passwordTextView;
     private TextView serverTextView;
     private TextView portnumTextView;
-    private TextView syncintervalTextView;
+    private NumberPicker syncIntervalNumberPicker;
     private TextView folderTextView;
     private CheckBox stickyCheckBox;
     private CheckBox automaticMergeCheckBox;
@@ -97,6 +98,16 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             CheckNameAndLogIn();
         }
     };
+/*
+    private final TextWatcher textWatcher = new TextWatcher(){
+
+        public void beforeTextChanged(CharSequence chars, int start, int count, int after){}
+        public void afterTextChanged(Editable editable){}
+        public void onTextChanged(CharSequence chars, int start, int before, int count) {
+
+        }
+
+    };*/
 
     private final OnClickListener clickListenerEdit = new View.OnClickListener() {
         @Override
@@ -106,6 +117,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             CheckNameAndLogIn();
         }
     };
+
 
     private void Toast(int message) {
         Toast.makeText(getApplicationContext(), message,
@@ -143,14 +155,20 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         setContentView(R.layout.account_selection);
         //noinspection ConstantConditions
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        TextView headingTextView = (TextView) (findViewById(R.id.heading));
-        accountnameTextView = (TextView) (findViewById(R.id.accountnameEdit));
-        usernameTextView = (TextView) findViewById(R.id.usernameEdit);
-        passwordTextView = (TextView) findViewById(R.id.passwordEdit);
-        serverTextView = (TextView) findViewById(R.id.serverEdit);
-        portnumTextView = (TextView) findViewById(R.id.portnumEdit);
-        syncintervalTextView = (TextView) findViewById(R.id.syncintervalEdit);
-        folderTextView = (TextView) findViewById(R.id.folderEdit);
+        TextView headingTextView = findTextViewById(R.id.heading);
+        accountnameTextView = findTextViewById(R.id.accountnameEdit);
+        usernameTextView = findTextViewById(R.id.usernameEdit);
+        passwordTextView = findTextViewById(R.id.passwordEdit);
+        serverTextView = findTextViewById(R.id.serverEdit);
+        portnumTextView = findTextViewById(R.id.portnumEdit);
+        //syncintervalTextView = findTextViewById(R.id.syncintervalEdit);
+        //syncintervalTextView.addTextChangedListener(textWatcher);
+        syncIntervalNumberPicker = (NumberPicker) findViewById(R.id.syncintervalMinutes);
+        syncIntervalNumberPicker.setMaxValue(24 * 60);
+        syncIntervalNumberPicker.setMinValue(1);
+        syncIntervalNumberPicker.setValue(15);
+
+        folderTextView = findTextViewById(R.id.folderEdit);
         stickyCheckBox = (CheckBox) findViewById(R.id.stickyCheckBox);
         automaticMergeCheckBox = (CheckBox) findViewById(R.id.automaticMergeCheckBox);
 
@@ -186,6 +204,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             }
         }
 
+
         // Settings can never be null so there is no need to guard it
         //if (settings != null) {
 /*
@@ -202,7 +221,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         automaticMergeCheckBox.setChecked(settings.GetUseAutomaticMerge());
         folderTextView.setText(settings.GetFoldername());
 */
-        syncintervalTextView.setText(R.string.default_sync_interval);
+        //syncintervalTextView.setText(R.string.default_sync_interval);
         //}
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.buttonsLayout);
@@ -232,7 +251,8 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             security = Security.from(GetConfigValue(ConfigurationFieldNames.Security));
             stickyCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseSticky)));
             automaticMergeCheckBox.setChecked(Boolean.parseBoolean(GetConfigValue(ConfigurationFieldNames.UseAutomaticMerge)));
-            syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
+            //syncintervalTextView.setText(GetConfigValue(ConfigurationFieldNames.SyncInterval));
+            syncIntervalNumberPicker.setValue(Integer.parseInt(GetConfigValue(ConfigurationFieldNames.SyncInterval)));
             folderTextView.setText(GetConfigValue(ConfigurationFieldNames.ImapFolder));
             //if (security == null) security = "0";
             //security_i = security.ordinal();
@@ -261,6 +281,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         );
     }
 
+    private TextView findTextViewById(int id) {
+        return (TextView) (findViewById(id));
+    }
+
     private String GetConfigValue(@NonNull String name) {
         return accountManager.getUserData(myAccount, name);
     }
@@ -272,7 +296,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
     // DoLogin method is defined in account_selection.xml (account_selection layout)
     private void DoLogin() {
         Log.d(TAG, "DoLogin");
-        ImapNotes2Account imapNotes2Account = new ImapNotes2Account(
+        final ImapNotes2Account imapNotes2Account = new ImapNotes2Account(
                 GetTextViewText(accountnameTextView),
                 GetTextViewText(usernameTextView),
                 GetTextViewText(passwordTextView),
@@ -281,46 +305,43 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 security,
                 stickyCheckBox.isChecked(),
                 automaticMergeCheckBox.isChecked(),
-                GetTextViewText(syncintervalTextView),
+                syncIntervalNumberPicker.getValue(),
                 GetTextViewText(folderTextView));
         // No need to check for valid numbers because the field only allows digits.  But it is
         // possible to remove all characters which causes the program to crash.  The easiest fix is
         // to add a zero at the beginning so that we are guaranteed to be able to parse it but that
         // leaves us with a zero sync. interval.
-        Result<Integer> synchronizationInterval = GetSynchronizationInterval();
+      /*  Result<Integer> synchronizationInterval = GetSynchronizationInterval();
         if (synchronizationInterval.succeeded) {
-
+*/
             new LoginThread(
                     imapNotes2Account,
                     this,
-                    action,
-                    synchronizationInterval.result).execute();
-        }
+                    action).execute();
+        //  }
     }
+/*
 
     Result<Integer> GetSynchronizationInterval() {
-        String syncInterval = GetTextViewText(syncintervalTextView).trim();
-        int syncIntervalInt = 0;
-        boolean status = false;
-        try {
+        final String syncInterval = GetTextViewText(syncintervalTextView).trim();
+        if (TextUtils.isDigitsOnly(syncInterval)){
             Log.d(TAG, "GetSynchronizationInterval: " + syncInterval);
-            syncIntervalInt = Integer.parseInt(GetTextViewText(syncintervalTextView), 10) * 60;
-            if (syncIntervalInt <= 0) {
-                Toast.makeText(this, "Synchronization interval must be greater than zero: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
-            } else {
-                status = true;
+            final int  syncIntervalInt = Integer.parseInt(GetTextViewText(syncintervalTextView), 10) * 60;
+            if (syncIntervalInt > 0) {
+                return new Result(syncIntervalInt, true);
             }
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Synchronization interval is invalid: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Synchronization interval must be greater than zero: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
         }
-        return new Result(syncIntervalInt, status);
+        Toast.makeText(this, "Synchronization interval is invalid: <" + syncInterval + ">.", Toast.LENGTH_LONG).show();
+        return new Result(0, false);
     }
+*/
 
     class LoginThread extends AsyncTask<Void, Void, Result<String>> {
 
         private final ImapNotes2Account imapNotes2Account;
         private final ProgressDialog progressDialog;
-        private final int synchronizationInterval;
+        //private final int synchronizationInterval;
 
         private final AccountConfigurationActivity accountConfigurationActivity;
 
@@ -328,13 +349,12 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
         LoginThread(ImapNotes2Account imapNotes2Account,
                     AccountConfigurationActivity accountConfigurationActivity,
-                    Actions action,
-                    int synchronizationInterval) {
+                    Actions action) {
             this.imapNotes2Account = imapNotes2Account;
             //this.progressDialog = loadingDialog;
             this.accountConfigurationActivity = accountConfigurationActivity;
             this.action = action;
-            this.synchronizationInterval = synchronizationInterval;
+            //this.synchronizationInterval = synchronizationInterval;
             this.progressDialog = ProgressDialog.show(accountConfigurationActivity,
                     getString(R.string.app_name),
                     getString(R.string.logging_in),
@@ -370,11 +390,11 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     return new Result("IMAP operation failed: " + res.errorMessage, false);
                 }
                 // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().
-                Account account = new Account(imapNotes2Account.GetAccountName(), "com.Pau.ImapNotes2");
-                AccountManager am = AccountManager.get(accountConfigurationActivity);
+                final Account account = new Account(imapNotes2Account.GetAccountName(), "com.Pau.ImapNotes2");
+                final AccountManager am = AccountManager.get(accountConfigurationActivity);
                 accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                 if (action == Actions.EDIT_ACCOUNT) {
-                    Bundle result = new Bundle();
+                    final Bundle result = new Bundle();
                     result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
                     result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
                     setAccountAuthenticatorResult(result);
@@ -382,7 +402,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     // Run the Sync Adapter Periodically
                     ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                     ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-                    ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), synchronizationInterval);
+                    ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), imapNotes2Account.syncInterval);
                     return new Result("Account has been modified", true);
                 } else {
                     if (!am.addAccountExplicitly(account, imapNotes2Account.password, null)) {
@@ -397,7 +417,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     // Run the Sync Adapter Periodically
                     ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                     ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
-                    ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), synchronizationInterval);
+                    ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), imapNotes2Account.syncInterval);
                     return new Result(getString(R.string.account_added), true);
                 }
             } catch (Exception e) {
@@ -414,7 +434,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.username);
             am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.server);
             am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.portnum);
-            am.setUserData(account, ConfigurationFieldNames.SyncInterval, imapNotes2Account.syncInterval);
+            am.setUserData(account, ConfigurationFieldNames.SyncInterval, Integer.toString(imapNotes2Account.syncInterval));
             am.setUserData(account, ConfigurationFieldNames.Security, imapNotes2Account.security.name());
             am.setUserData(account, ConfigurationFieldNames.UseSticky, String.valueOf(imapNotes2Account.usesticky));
             am.setUserData(account, ConfigurationFieldNames.ImapFolder, imapNotes2Account.imapfolder);
@@ -478,7 +498,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         passwordTextView.setText("");
         serverTextView.setText("");
         portnumTextView.setText("");
-        syncintervalTextView.setText(R.string.default_sync_interval);
+        syncIntervalNumberPicker.setValue(15);
         securitySpinner.setSelection(0);
         folderTextView.setText("");
         stickyCheckBox.setChecked(false);

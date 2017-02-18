@@ -124,18 +124,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#000000" />
 
-        <EditText
-            android:id="@+id/syncintervalEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dip"
-            android:ems="10"
-            android:hint="@string/sync_interval_for_this_account_in_minutes"
-            android:inputType="number"
-            android:text="15"
-            android:textColor="#000000">
+        <NumberPicker
+            android:id="@+id/syncintervalMinutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        </EditText>
 
         <TextView
             android:id="@+id/folderText"

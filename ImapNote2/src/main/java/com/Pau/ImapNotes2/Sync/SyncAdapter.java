@@ -184,7 +184,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         i.putExtra(Listactivity.ACCOUNTNAME, account.GetAccountName());
         i.putExtra(Listactivity.CHANGED, isChanged);
         i.putExtra(Listactivity.SYNCED, isSynced);
-        i.putExtra(Listactivity.SYNCINTERVAL, account.GetSyncinterval());
+        i.putExtra(Listactivity.SYNCINTERVAL, account.syncInterval);
         applicationContext.sendBroadcast(i);
 
     }

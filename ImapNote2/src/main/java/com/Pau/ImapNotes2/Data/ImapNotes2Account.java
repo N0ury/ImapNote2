@@ -28,7 +28,7 @@ public class ImapNotes2Account {
     @NonNull
     public final Security security;
     public final boolean usesticky;
-    public final String syncInterval;
+    public final int syncInterval;
     @NonNull
     public final String imapfolder;
     @Nullable
@@ -36,7 +36,7 @@ public class ImapNotes2Account {
     public boolean usesAutomaticMerge = false;
 
 
-    public ImapNotes2Account(String accountName,
+    public ImapNotes2Account(@NonNull String accountName,
                              @NonNull String username,
                              @NonNull String password,
                              @NonNull String server,
@@ -44,7 +44,7 @@ public class ImapNotes2Account {
                              @NonNull Security security,
                              boolean usesticky,
                              boolean usesAutomaticMerge,
-                             String syncinterval,
+                             int syncinterval,
                              @NonNull String folderName) {
         account = null;
         this.accountName = accountName;
@@ -74,7 +74,7 @@ public class ImapNotes2Account {
 
         this.account = account;
         AccountManager am = AccountManager.get(applicationContext);
-        syncInterval = am.getUserData(account, ConfigurationFieldNames.SyncInterval);
+        syncInterval = Integer.parseInt(am.getUserData(account, ConfigurationFieldNames.SyncInterval));
         username = am.getUserData(account, ConfigurationFieldNames.UserName);
         password = am.getPassword(account);
         server = am.getUserData(account, ConfigurationFieldNames.Server);
@@ -187,10 +187,10 @@ public class ImapNotes2Account {
     //    this.usesticky = Usesticky;
     //}
 
-    public String GetSyncinterval() {
+   /* public String GetSyncinterval() {
         return this.syncInterval;
     }
-
+*/
     //public void SetSyncinterval(String Syncinterval) {
     //    this.syncInterval = Syncinterval;
     //}
