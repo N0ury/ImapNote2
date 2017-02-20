@@ -10,5 +10,5 @@ public final class ConfigurationFieldNames {
     public static final String PortNumber = "portnum";
     public static final String SyncInterval = "syncinterval";
     public static final String Security = "security";
-
+    public static final String DeviceId = "deviceId";
 }

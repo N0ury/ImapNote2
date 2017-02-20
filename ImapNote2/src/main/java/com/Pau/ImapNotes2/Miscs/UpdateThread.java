@@ -100,7 +100,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 notesList.remove(getIndexByNumber(suid));
                 MoveMailToDeleted(suid);
                 storedNotes.OpenDb();
-                storedNotes.notes.DeleteANote(suid, Listactivity.imapNotes2Account.GetAccountName());
+                storedNotes.notes.DeleteANote(suid, Listactivity.imapNotes2Account.accountName);
                 storedNotes.CloseDb();
                 bool_to_return = true;
             }
@@ -129,7 +129,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                 // Add note to database
                 if (storedNotes == null) storedNotes = new Db(applicationContext);
                 storedNotes.OpenDb();
-                suid = storedNotes.notes.GetTempNumber(Listactivity.imapNotes2Account.GetAccountName());
+                suid = storedNotes.notes.GetTempNumber(Listactivity.imapNotes2Account.accountName);
                 currentNote.SetUid(suid);
                 // Here we ask to add the new note to the new note folder
                 // Must be done AFTER uid has been set in currenteNote
@@ -138,7 +138,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
                         imapNotes2Account.usesticky,
                         imapNotes2Account.usesAutomaticMerge,
                         body);
-                storedNotes.notes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.GetAccountName());
+                storedNotes.notes.InsertANoteInDb(currentNote, Listactivity.imapNotes2Account.accountName);
                 storedNotes.CloseDb();
                 // Add note to noteList but chage date format before
                 //DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(applicationContext);
@@ -178,7 +178,7 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
      */
     private void MoveMailToDeleted(@NonNull String suid) {
         String directory = applicationContext.getFilesDir() + "/" +
-                Listactivity.imapNotes2Account.GetAccountName();
+                Listactivity.imapNotes2Account.accountName;
         // TODO: Explain why we need to omit the first character of the UID
         File from = new File(directory, suid);
         if (!from.exists()) {
@@ -271,10 +271,10 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean> {
         // Get temporary UID
         String uid = Integer.toString(Math.abs(Integer.parseInt(note.GetUid())));
         File accountDirectory = new File(applicationContext.getFilesDir(),
-                Listactivity.imapNotes2Account.GetAccountName());
+                Listactivity.imapNotes2Account.accountName);
         File directory = new File(accountDirectory, "new");
-        //message.setFrom(new InternetAddress("ImapNotes2", Listactivity.imapNotes2Account.GetAccountName()));
-        message.setFrom(Listactivity.imapNotes2Account.GetAccountName());
+        //message.setFrom(new InternetAddress("ImapNotes2", Listactivity.imapNotes2Account.accountName));
+        message.setFrom(Listactivity.imapNotes2Account.accountName);
         File outfile = new File(directory, uid);
         OutputStream str = new FileOutputStream(outfile);
         message.writeTo(str);

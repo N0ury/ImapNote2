@@ -114,7 +114,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             String mClass = ".AccountConfigurationActivity";
             res.setComponent(new ComponentName(mPackage, mPackage + mClass));
             res.putExtra(ACTION, AccountConfigurationActivity.Actions.EDIT_ACCOUNT);
-            res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountName());
+            res.putExtra(AccountConfigurationActivity.ACCOUNTNAME, Listactivity.imapNotes2Account.accountName);
             startActivity(res);
         }
     };
@@ -223,8 +223,8 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
             Boolean isChanged = intent.getBooleanExtra(CHANGED, false);
             Boolean isSynced = intent.getBooleanExtra(SYNCED, false);
             String syncInterval = intent.getStringExtra(SYNCINTERVAL);
-            Log.d(TAG, "if " + accountName + " " + Listactivity.imapNotes2Account.GetAccountName());
-            if (accountName.equals(Listactivity.imapNotes2Account.GetAccountName())) {
+            Log.d(TAG, "if " + accountName + " " + Listactivity.imapNotes2Account.accountName);
+            if (accountName.equals(Listactivity.imapNotes2Account.accountName)) {
                 String statusText;
                 if (isSynced) {
                     // Display last sync date
@@ -336,7 +336,7 @@ public class Listactivity extends Activity implements OnItemSelectedListener, Fi
                 String mClass = ".AccountConfigurationActivity";
                 res.setComponent(new ComponentName(mPackage, mPackage + mClass));
                 res.putExtra(ACTION, AccountConfigurationActivity.Actions.CREATE_ACCOUNT);
-                res.putExtra(ACCOUNTNAME, Listactivity.imapNotes2Account.GetAccountName());
+                res.putExtra(ACCOUNTNAME, Listactivity.imapNotes2Account.accountName);
                 startActivity(res);
                 return true;
             case R.id.refresh:

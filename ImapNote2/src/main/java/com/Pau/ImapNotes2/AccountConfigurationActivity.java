@@ -302,6 +302,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 GetTextViewText(passwordTextView),
                 GetTextViewText(serverTextView),
                 GetTextViewText(portnumTextView),
+                "",
                 security,
                 stickyCheckBox.isChecked(),
                 automaticMergeCheckBox.isChecked(),
@@ -390,7 +391,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     return new Result("IMAP operation failed: " + res.errorMessage, false);
                 }
                 // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().
-                final Account account = new Account(imapNotes2Account.GetAccountName(), "com.Pau.ImapNotes2");
+                final Account account = new Account(imapNotes2Account.accountName, "com.Pau.ImapNotes2");
                 final AccountManager am = AccountManager.get(accountConfigurationActivity);
                 accountConfigurationActivity.setResult(AccountConfigurationActivity.TO_REFRESH);
                 if (action == Actions.EDIT_ACCOUNT) {

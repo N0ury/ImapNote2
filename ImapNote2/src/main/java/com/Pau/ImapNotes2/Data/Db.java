@@ -72,7 +72,7 @@ public class Db {
 
         private void CreateNotesDb(@NonNull SQLiteDatabase _db) {
             _db.execSQL(NotesDb.CREATE_NOTES_DB);
-            vectors.CreateTables(_db);
+            //vectors.CreateTables(_db);
         }
 
         @Override

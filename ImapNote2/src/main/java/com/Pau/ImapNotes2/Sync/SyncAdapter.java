@@ -181,7 +181,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                                     boolean isSynced) {
         Log.d(TAG, "NotifySyncFinished: " + isChanged + " " + isSynced);
         Intent i = new Intent(SyncService.SYNC_FINISHED);
-        i.putExtra(Listactivity.ACCOUNTNAME, account.GetAccountName());
+        i.putExtra(Listactivity.ACCOUNTNAME, account.accountName);
         i.putExtra(Listactivity.CHANGED, isChanged);
         i.putExtra(Listactivity.SYNCED, isSynced);
         i.putExtra(Listactivity.SYNCINTERVAL, account.syncInterval);
@@ -244,7 +244,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 AppendUID[] uids = SyncUtils.sendMessageToRemote(msg);
                 // Update uid in database entry
                 String newuid = Long.toString(uids[0].uid);
-                storedNotes.notes.UpdateANote(fileNew, newuid, account.GetAccountName());
+                storedNotes.notes.UpdateANote(fileNew, newuid, account.accountName);
                 // move new note from new dir, one level up
                 File fileInNew = new File(dirNew, fileNew);
                 File to = new File(accountDir, newuid);
@@ -262,7 +262,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         //Message message = null;
         Log.d(TAG, "handleDeletedNotes");
         boolean deletedNotesManaged = false;
-        String rootString = applicationContext.getFilesDir() + "/" + account.GetAccountName();
+        String rootString = applicationContext.getFilesDir() + "/" + account.accountName;
         File rootDir = new File(rootString);
         File dirDeleted = new File(rootDir + "/deleted");
         String[] listOfDeleted = dirDeleted.list();

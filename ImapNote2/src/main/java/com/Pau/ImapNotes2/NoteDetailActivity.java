@@ -70,7 +70,7 @@ public class NoteDetailActivity extends Activity {
         assert hm != null;
         suid = hm.get("uid").toString();
         File rootDir = new File(getApplicationContext().getFilesDir(),
-                Listactivity.imapNotes2Account.GetAccountName());
+                Listactivity.imapNotes2Account.accountName);
         Message message = SyncUtils.ReadMailFromFileRootAndNew(suid, rootDir);
         //Log.d(TAG, "rootDir is null: " + (rootDir == null));
         Log.d(TAG, "rootDir: " + rootDir.toString());
@@ -534,7 +534,7 @@ public class NoteDetailActivity extends Activity {
 // --Commented out by Inspection START (12/2/16 8:50 PM):
 //    private void WriteMailToFile(@NonNull String suid, @NonNull Message message) {
 //        String directory = getApplicationContext().getFilesDir() + "/" +
-//                Listactivity.imapNotes2Account.GetAccountName();
+//                Listactivity.imapNotes2Account.accountName;
 //        try {
 //            File outfile = new File(directory, suid);
 //            OutputStream str = new FileOutputStream(outfile);

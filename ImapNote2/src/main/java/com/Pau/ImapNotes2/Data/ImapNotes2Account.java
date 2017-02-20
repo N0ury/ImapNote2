@@ -16,7 +16,7 @@ public class ImapNotes2Account {
 
     private static final String TAG = "IN_ImapNotes2Account";
     @NonNull
-    private final String accountName;
+    public final String accountName;
     @NonNull
     public final String username;
     @NonNull
@@ -25,6 +25,8 @@ public class ImapNotes2Account {
     public final String server;
     @NonNull
     public final String portnum;
+    @NonNull
+    public final String deviceId;
     @NonNull
     public final Security security;
     public final boolean usesticky;
@@ -40,11 +42,12 @@ public class ImapNotes2Account {
                              @NonNull String username,
                              @NonNull String password,
                              @NonNull String server,
-                             @NonNull String portnum,
+                             @NonNull String portNumber,
+                             @NonNull String deviceId,
                              @NonNull Security security,
-                             boolean usesticky,
+                             boolean useSticky,
                              boolean usesAutomaticMerge,
-                             int syncinterval,
+                             int syncInterval,
                              @NonNull String folderName) {
         account = null;
         this.accountName = accountName;
@@ -52,11 +55,12 @@ public class ImapNotes2Account {
         this.password = password;
         this.server = server;
         this.security = security;
-        this.portnum = portnum;
-        this.usesticky = usesticky;
+        this.portnum = portNumber;
+        this.deviceId = deviceId;
+        this.usesticky = useSticky;
         this.usesAutomaticMerge = usesAutomaticMerge;
         this.imapfolder = folderName;
-        this.syncInterval = syncinterval;
+        this.syncInterval = syncInterval;
     }
 
     private File dirForNewFiles;
@@ -79,6 +83,7 @@ public class ImapNotes2Account {
         password = am.getPassword(account);
         server = am.getUserData(account, ConfigurationFieldNames.Server);
         portnum = am.getUserData(account, ConfigurationFieldNames.PortNumber);
+        deviceId = am.getUserData(account, ConfigurationFieldNames.DeviceId);
         security = Security.from(am.getUserData(account, ConfigurationFieldNames.Security));
         usesticky = "true".equals(am.getUserData(account, ConfigurationFieldNames.UseSticky));
         imapfolder = am.getUserData(account, ConfigurationFieldNames.ImapFolder);
@@ -110,11 +115,13 @@ public class ImapNotes2Account {
                 + this.server + ":" + this.portnum + ":" + this.security + ":"
                 + this.usesticky + ":" + this.imapfolder + ":" + Boolean.toString(this.accountHasChanged);
     }*/
+/*
 
     public String GetAccountName() {
         return accountName;
     }
 
+*/
     @Nullable
     public Account GetAccount() {
         return this.account;

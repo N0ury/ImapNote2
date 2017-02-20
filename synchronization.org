@@ -91,3 +91,70 @@ If there are conflicts then both texts survive.
 
 Initially
 
+** Device IDs
+
+Each device must have a unique id.  That is all files on a given
+device belong to that id.
+
+So how is this id defined?  One way is for the device id to be the
+same as the account name but then we have to name the accounts
+differently on each device.  Another is for the device id to be simply
+a field in the account and have the user fill it in.  We could search
+the device for some kind of id or we could create a random id when we
+install the application or we could create a random id when we create
+an account.  Each of these has pros and cons:
+
+- Same as account name:
+
+  - Pro:
+    Automatic
+  - Con:
+    Need different account names on each machine even though they
+    refer to the same IMAP account.
+
+- Device ID is a field in the account:
+
+  - Con:
+
+    User can carelessly use the same name for several devices
+
+- Find a device id somewhere in the device:
+
+  - Pro:
+    
+    User isn't involved and hence cannot make mistakes.
+
+  - Con:
+
+    Most devices do not have a canonical id.  Forces the device id to
+    be the same for all accounts on that device,  this makes testing
+    inconvenient because it is now necessary to have two devices
+    whereas having separate ids in each account allows us to
+    synchronize two accounts on the same machine.
+
+- Application creates a random id when installed
+
+  - Pro:
+
+    No user involvement.
+
+  - Con:
+
+    As for other solutions that have one id per device this makes
+    testing inconvenient.  If an account has to be recreated, perhaps
+    because the device has been replaced, it is hard to recover the
+    device id so that the files will be fetched from the repository.
+
+    
+
+- Application creates a random id when creating an account
+
+  - Pro:
+
+    No user involvement, makes testing convenient with multiple
+    accounts on the same device but different device ids.
+
+  - Con:
+
+    As for the application wide device id this makes recovery tedious.
+
