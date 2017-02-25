@@ -45,7 +45,9 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
 
     private Imaper imapFolder;
 
+
     private TextView accountnameTextView;
+    private TextView devicenameTextView;
     private TextView usernameTextView;
     private TextView passwordTextView;
     private TextView serverTextView;
@@ -157,6 +159,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         getActionBar().setDisplayHomeAsUpEnabled(true);
         TextView headingTextView = findTextViewById(R.id.heading);
         accountnameTextView = findTextViewById(R.id.accountnameEdit);
+        devicenameTextView = findTextViewById(R.id.devicenameEdit);
         usernameTextView = findTextViewById(R.id.usernameEdit);
         passwordTextView = findTextViewById(R.id.passwordEdit);
         serverTextView = findTextViewById(R.id.serverEdit);
@@ -243,6 +246,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
             // Here we have to edit an existing account
             headingTextView.setText(R.string.editAccount);
             accountnameTextView.setText(accountname);
+            devicenameTextView.setText(GetConfigValue(ConfigurationFieldNames.DeviceId));
             usernameTextView.setText(GetConfigValue(ConfigurationFieldNames.UserName));
             passwordTextView.setText(accountManager.getPassword(myAccount));
             serverTextView.setText(GetConfigValue(ConfigurationFieldNames.Server));
@@ -302,7 +306,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 GetTextViewText(passwordTextView),
                 GetTextViewText(serverTextView),
                 GetTextViewText(portnumTextView),
-                "",
+                GetTextViewText(devicenameTextView),
                 security,
                 stickyCheckBox.isChecked(),
                 automaticMergeCheckBox.isChecked(),
@@ -388,7 +392,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                 );
                 //accountConfigurationActivity = acountConfigurationActivity;
                 if (res.returnCode != Imaper.ResultCodeSuccess) {
-                    return new Result("IMAP operation failed: " + res.errorMessage, false);
+                    return new Result<>("IMAP operation failed: " + res.errorMessage, false);
                 }
                 // TODO: Find out if "com.Pau.ImapNotes2" is the same as getApplicationContext().getPackageName().
                 final Account account = new Account(imapNotes2Account.accountName, "com.Pau.ImapNotes2");
@@ -404,10 +408,10 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                     ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                     ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), imapNotes2Account.syncInterval);
-                    return new Result("Account has been modified", true);
+                    return new Result<>("Account has been modified", true);
                 } else {
                     if (!am.addAccountExplicitly(account, imapNotes2Account.password, null)) {
-                        return new Result(getString(R.string.account_already_exists_or_is_null), false);
+                        return new Result<>(getString(R.string.account_already_exists_or_is_null), false);
                     }
                     // TODO: make function for these repeated lines.
                     Bundle result = new Bundle();
@@ -419,11 +423,11 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
                     ContentResolver.setIsSyncable(account, AUTHORITY, 1);
                     ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
                     ContentResolver.addPeriodicSync(account, AUTHORITY, new Bundle(), imapNotes2Account.syncInterval);
-                    return new Result(getString(R.string.account_added), true);
+                    return new Result<>(getString(R.string.account_added), true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return new Result("Unexpected exception: " + e.getMessage(), false);
+                return new Result<>("Unexpected exception: " + e.getMessage(), false);
             } finally {
                 progressDialog.dismiss();
             }
@@ -433,6 +437,7 @@ public class AccountConfigurationActivity extends AccountAuthenticatorActivity i
         private void setUserData(@NonNull AccountManager am,
                                  @NonNull Account account) {
             am.setUserData(account, ConfigurationFieldNames.UserName, imapNotes2Account.username);
+            am.setUserData(account, ConfigurationFieldNames.DeviceId, imapNotes2Account.deviceId);
             am.setUserData(account, ConfigurationFieldNames.Server, imapNotes2Account.server);
             am.setUserData(account, ConfigurationFieldNames.PortNumber, imapNotes2Account.portnum);
             am.setUserData(account, ConfigurationFieldNames.SyncInterval, Integer.toString(imapNotes2Account.syncInterval));

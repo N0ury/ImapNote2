@@ -158,3 +158,9 @@ an account.  Each of these has pros and cons:
 
     As for the application wide device id this makes recovery tedious.
 
+The objections to random ids can mostly be overcome if they are short
+so that they can easily be noted down or simply searched for inside
+the IMAP account using a mail program.  The question is how short can
+they be before we risk collisions?
+
+We could use the Unix time converted to Base64.   

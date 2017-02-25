@@ -44,4 +44,6 @@
     <string name="updating_notes_list">"Updating notes list... "</string>
     <string name="default_sync_interval">15</string>
     <string name="editAccount">Edit Account</string>
+    <string name="device_name">Device name</string>
+    <string name="choose_a_name_for_this_device">Choose a name for this device.</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -19,14 +20,25 @@ import java.io.File;
 class VectorDb {
 
 
+    /**
+     * Reference to the SQLite database used for all data in this application.
+     */
+    @NonNull
     private final Db db;
+    @NonNull
     private final FileTable fileTable;
+    @NonNull
     private final VectorTable vectorTable;
 
     public VectorDb(@NonNull Db db) {
         this.db = db;
-        vectorTable = new VectorTable(db.notesDb);
-        fileTable = new FileTable(db.notesDb);
+        vectorTable = new VectorTable();
+        fileTable = new FileTable();
+    }
+
+    void CreateTables(SQLiteDatabase db) {
+        vectorTable.CreateTable(db);
+        fileTable.CreateTable(db);
     }
 
 /*
@@ -56,9 +68,6 @@ class VectorDb {
                 + " PRIMARY KEY (" + COL_FILE_PATH + ", " + COL_ACCOUNT_NAME + "));";
 
 
-        VectorTable(SQLiteDatabase db) {
-            CreateTable(db);
-        }
 
         void CreateTable(@NonNull SQLiteDatabase db) {
             db.execSQL(CREATE_TABLE);
@@ -107,9 +116,7 @@ class VectorDb {
                 + COL_ACCOUNT_NAME + " text not null);";
 
 
-        FileTable(SQLiteDatabase db) {
-            CreateTable(db);
-        }
+
 
 
         void CreateTable(@NonNull SQLiteDatabase db) {
@@ -179,6 +186,7 @@ class VectorDb {
 
 */
 
+        @Nullable
         public Cursor GetRecord(@NonNull String relativeFilePath,
                                 @NonNull String accountname) {
             String selectQuery = "select " +
@@ -216,16 +224,16 @@ class VectorDb {
      * @param accountName
      * @param accountRoot
      */
-    public void UpdateAccount(String accountName,
-                              File accountRoot) {
+    public void UpdateAccount(@NonNull String accountName,
+                              @NonNull File accountRoot) {
         for (File file : accountRoot.listFiles()) {
             UpdateFile(file, accountName, accountRoot);
         }
     }
 
-    public void UpdateFile(File file,
-                           String accountName,
-                           File accountRoot) {
+    public void UpdateFile(@NonNull File file,
+                           @NonNull String accountName,
+                           @NonNull File accountRoot) {
 
         String relativeFile = RelativePath(accountRoot, file);
         try (Cursor c = fileTable.GetRecord(RelativePath(accountRoot, file), accountName)) {
@@ -246,7 +254,8 @@ class VectorDb {
      * @param file
      * @return
      */
-    public String RelativePath(final File base, final File file) {
+    @NonNull
+    public String RelativePath(@NonNull final File base, @NonNull final File file) {
         final int rootLength = base.getAbsolutePath().length();
         final String absFileName = file.getAbsolutePath();
         return absFileName.substring(rootLength + 1);
